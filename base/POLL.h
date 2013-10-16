@@ -4,8 +4,7 @@
  * @short Poll dispatcher
  *
  * The poll function provides the infrastructure for multiplexed IO. Multiple modules
- * can make use of the POLL system. A single thread is shared for all modules that
- * must read from a file. The module must not create its own thread.
+ * can make use of the POLL system.
  * The file descriptor can be registered with the function POLL_AddReadFd, if the
  * file is ready for reading, the callback function passed to POLL_AddReadFd is
  * called to read and process the data.

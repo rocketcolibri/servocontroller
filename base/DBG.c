@@ -1,5 +1,5 @@
 /**
- *
+ * Debug modul contains error handling, assertions and singnal handler
  */
 
 #include <execinfo.h>

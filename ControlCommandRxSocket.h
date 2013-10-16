@@ -1,4 +1,4 @@
-/*
+/**
  * ControlCommandRxSocket.h
  *
  *  Created on: 14.10.2013

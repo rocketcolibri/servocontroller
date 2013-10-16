@@ -1,7 +1,6 @@
 /**
- * @addtogroup  BKGR-Poll
+ * @addtogroup  Poll
  *
- * @short BKGR poll thread
  * @{
  */
 

@@ -2,23 +2,7 @@
  * @addtogroup  BKGR-Timer fd
  *
  * @short BKGR timer file descriptor
- *
- * The timer file descriptor was introduced for the first time in the kernel version 2.6.22.
- *
- * Because the API from 2.6.22 is is not powerful enough, the API has been removed in 2.6.23 and
- * a new has been introduced in kernel version 2.6.25.
- * The new API is supported by the glibc (include/linux/timerfd.h )
- *
- * Since we use the kernel 2.6.22 for the ACCEED devices we have to deal with the old timerfd functions
- * which are not supported by the glibc.
- *
- * This module provides the BKGR_TimerFd_Create and BKGR_TimerFd_Read function to create and read the
- * timer file descriptors directly with the linux system calls.
- *
  * @see BKGR_TimerFd_MonCmd to have an example how to use the timer fd.
- *
- * @note This code runs only on kernel 2.6.22
- * @note This code runs only on ARM platform (since syscall IDs are platform dependent)
  *
  * @{
  */

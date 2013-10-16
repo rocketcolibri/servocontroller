@@ -1,18 +1,7 @@
-// HEADERSTART ****************************************************************
-//
-// PROJECT:     ULAF+
-//
-// FILENAME:    TRC.C
-//
-// EQUIPMENT:   STU4
-//
-// DESCRIPTION: ........
-//
-// HISTORY
-//
-// HEADEREND ******************************************************************
+/**
+ * Implementation of the trace module
+ */
 
-/// --- Standard Libraries
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
@@ -48,22 +37,17 @@ typedef struct
 	UINT8 LevelFormat; // output format level: 0: --, 1: trace level
 } TraceConfig_t;
 
-/************************************************************
- * internal variable
- ***********************************************************/
 static TraceConfig_t TraceConfig;
 static TraceGroupEntry_t TraceGroup[GEN_TRC_MAX_GROUPS];
 
-/******************************************************************************
- * TRC_AddTraceGroup
- ******************************************************************************
- * Purpose: Registers a new group and assigns a number which is returned
+/**
+ * @short TRC_AddTraceGroup
  *
- * Input:   group_name: ASCII-Z string
- * Output:  -
- * Return:  BOOL (always TRUE)
- * Note:    Call this function from the monitor task only.
- *****************************************************************************/
+ * Registers a new group and assigns a number which is returned
+ *
+ * @param group_name: ASCII-Z string
+ * @return:  BOOL (always TRUE)
+ */
 UINT8 TRC_AddTraceGroup(char * group_name)
 {
 	DBG_ASSERT(TraceConfig.NofGroups < GEN_TRC_MAX_GROUPS);
@@ -72,21 +56,18 @@ UINT8 TRC_AddTraceGroup(char * group_name)
 	return TraceConfig.NofGroups++;
 }
 
-/******************************************************************************
- * TRC_Print
- ******************************************************************************
- * Purpose: Prints a trace message depending on trace module settings.
- *
- * Input:   line:  line number (source file), inserted by macro
- *          file:  file name (source file), inserted by macro
- *          group: group number returned after calling TRC_AddTraceGroup()
- *          lvl:   severity of trace message
- *          fmt:   format string (as for printf)
- *          ...:   variables as needed for fmt
- * Output:  -
- * Return:  FALSE if message was not sent to serial port due to lack of memory.
+/**
+ * @short Prints a trace message depending on trace module settings.
  * Note:    Call this function by using macro TRC_PRINT.
- *****************************************************************************/
+ *
+ * @param line:  line number (source file), inserted by macro
+ * @param file:  file name (source file), inserted by macro
+ * @param group: group number returned after calling TRC_AddTraceGroup()
+ * @param lvl:   severity of trace message
+ * @param fmt:   format string (as for printf)
+ * @param ...:   variables as needed for fmt
+ * @return:  FALSE if message was not sent to serial port due to lack of memory.
+ */
 BOOL TRC_Print(const char *file, const UINT16 line, const UINT8 group,
 		const TRC_TraceLevel lvl, FILE *fout, const char *fmt, ...)
 {
@@ -177,16 +158,13 @@ BOOL TRC_Print(const char *file, const UINT16 line, const UINT8 group,
 	return retval;
 }
 
-/******************************************************************************
- * TRC_SetTraceLevel
- ******************************************************************************
- * Purpose: Set the trace level of a group
+/**
+ * @short Set the trace level of a group
  *
- * Input:   group: group number returned after calling TRC_AddTraceGroup()
- *          lvl:   severity of trace message (set to TL_NOF_LVL to disable)
- * Output:  -
- * Return:  old trace level
- *****************************************************************************/
+ * @param group: group number returned after calling TRC_AddTraceGroup()
+ * @param lvl:   severity of trace message (set to TL_NOF_LVL to disable)
+ * @return:  old trace level
+ */
 TRC_TraceLevel TRC_SetTraceLevel(const UINT8 group, const TRC_TraceLevel lvl)
 {
 	DBG_ASSERT(TraceConfig.NofGroups >= group);
@@ -196,15 +174,12 @@ TRC_TraceLevel TRC_SetTraceLevel(const UINT8 group, const TRC_TraceLevel lvl)
 	return oldlvl;
 }
 
-/******************************************************************************
- * TRC_GetTraceLevel
- ******************************************************************************
- * Purpose: Get the trace level of a group
+/**
+ * @short Get the trace level of a group
  *
- * Input:   group: group number returned after calling TRC_AddTraceGroup()
- * Output:  -
- * Return:  actual trace level
- *****************************************************************************/
+ * @param  group: group number returned after calling TRC_AddTraceGroup()
+ * @return:  actual trace level
+ */
 TRC_TraceLevel TRC_GetTraceLevel(const UINT8 group)
 {
 	DBG_ASSERT(TraceConfig.NofGroups >= group);
@@ -421,16 +396,9 @@ BOOL TRC_ExecMonCmd(UINT16 sNr, char *cmdLine)
 // end - SDSM_ExecMonCmd()
 #endif
 
-/******************************************************************************
- * TRC_Init
- ******************************************************************************
- * Purpose: -
- *
- * Input:   -
- * Output:  -
- * Return:  -
- * Note:    -
- *****************************************************************************/
+/**
+ * TRC init function
+ */
 void TRC_Init()
 {
 	UINT8 ii;

@@ -75,7 +75,6 @@ void TRC_File_Print(TRC_File_t* fileTrc, const char *fmt, ...)
     {
       if(fileTrc->file)
       {
-        // --- Variable Argumentenliste an vsprintf weitergeben
         va_start(args, fmt);
         vfprintf(fileTrc->file, fmt, args);
         va_end(args);

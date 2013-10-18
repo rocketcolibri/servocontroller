@@ -15,8 +15,6 @@
 #include "ControlCommandRxSocket.h"
 #include "TransmitTelemetryTimerHandler.h"
 
-
-
 int main(int argc, char**argv)
 {
 	DBG_LOG_ENTRY("Starting ServoController");

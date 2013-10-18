@@ -20,10 +20,11 @@ typedef struct Connection
 	UINT32 lastSequence;
 	void *hConnectionTimeoutPoll;
 	const ConnectionContainer_t *pConnectionContainer;
+	UINT8 hTrc; // trace handle
 } Connection_t;
 
 
-extern void HandleJsonMessage(const Connection_t *pConn, const char *pJsonString);
+extern void HandleJsonMessage( Connection_t *pConn, const char *pJsonString);
 
 extern Connection_t *NewConnection(const ConnectionContainer_t *pContainerConnection, const struct sockaddr_in *pSrcAddr);
 

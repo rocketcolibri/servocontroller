@@ -20,6 +20,12 @@
  * init POLL module
  */
 extern void POLL_Init();
+
+/**
+ * monitor command called from in BKGR main init function
+ */
+extern BOOL POLL_MonCmd(UINT16 dummy, char * cmdLine);
+
 /**
  * @short BKGR_Functions Typ
  *
@@ -54,6 +60,19 @@ extern void POLL_RemoveFd(void *pPollDataHandle);
  * @param pPollDataHandle
  */
 extern void POLL_RemoveFdAndClose(void *pPollDataHandle);
+
+/**
+ * @short Dispatch function
+ *
+ * endless loop with a polling wait that calles the Event handler as soon as a
+ * file description in the poll list is ready.
+ */
+extern void* POLL_Dispatch();
+
+/**
+ * quits the endless poll loop
+ */
+extern void POLL_DispatchAbort();
 
 /**
  * Same as POLL_RemoveFdAndClose, but the pPollDataHandle handle is set to NULL

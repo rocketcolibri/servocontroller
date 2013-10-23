@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "base/GEN.h"
+#include "base/MON.h"
 #include "base/DBG.h"
 #include "base/POLL.h"
 #include "base/TRC.h"
@@ -20,17 +21,11 @@ int main(int argc, char**argv)
 	DBG_LOG_ENTRY("Starting ServoController");
 
 	DBG_Init();
-	TRC_Init();
 	POLL_Init();
-
-	int tfd = TIMERFD_Create(1000);
-	unsigned char value[8];
-	read(tfd, value, 8);
-
-	UINT32 t = TIMERFD_Read(tfd);
-
-
-	fprintf(stderr, "\ntime:%d",t);
+	MON_Init();
+	TRC_Init();
+	MON_AddMonCmd("poll", POLL_MonCmd, 0 );
+	MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
 
 	void *pControlCommandRxSocket = NewControlCommandRxSocket();
 	void *pTranmitTelemetryTimerHandler = NewTransmitTelemetryTimerHandler();

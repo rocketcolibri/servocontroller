@@ -17,6 +17,7 @@
 
 #include "GEN.h"
 #include "DBG.h"
+#include "MON.h"
 #include "TRC.h"
 #include "POLL.h"
 
@@ -61,7 +62,11 @@ void * POLL_AddReadFd(int fd, POLL_CallbackFunction_t pCallbackFn,void *pData, c
 {
   DBG_ASSERT(pCallbackFn);
   DBG_ASSERT(pDescription);
-  DBG_ASSERT(fd);
+  if(fd<0)
+  {
+  	DBG_MAKE_ENTRY_FMT(TRUE, "invalid file handle:%d from %s",fd, pDescription);
+  }
+
 
   PollData_t * pPollData = malloc(sizeof(PollData_t));
   bzero(pPollData, sizeof(pPollData));
@@ -169,26 +174,37 @@ void* POLL_Dispatch()
   return NULL;
 }
 
-void POLL_Init()
+void POLL_DispatchAbort()
 {
-  bzero(&bkgr_poll, sizeof(bkgr_poll));
-  bkgr_poll.epollfd = epoll_create(POLL_NOF);
-  bkgr_poll.hTrc=TRC_AddTraceGroup((char *)pPollName);
+	// TODO
 }
-#if 0
+
+static const char *pPollCmd="poll";
+
 /** monitor command called from in BKGR main init function */
-BOOL POLL_MonCmd(int argc, char **argv)
+BOOL POLL_MonCmd(UINT16 dummy, char * cmdLine)
 {
+	UINT8 argc;
+	char** argv;
+	MON_SplitArgs(cmdLine, &argc, &argv);
   static const char *pCmdToggleTrace = "t";
-  if ((argc == 1) && (0 == strcmp(argv[0], pCmdToggleTrace)))
+  if ((argc == 2) && (0 == strcmp(argv[1], pCmdToggleTrace)))
   {
     MON_WriteInfof("\nTrace level set to %d", bkgr_poll.traceLevel);
     bkgr_poll.traceLevel = TRC_SetTraceLevel(bkgr_poll.hTrc, bkgr_poll.traceLevel);
   }
   else
   {
-    MON_WriteInfof("\n%s %s %s\ttoggle trace level", pBkgrMonCmd, pBkgrPollCmd, pCmdToggleTrace);
+    MON_WriteInfof("\n%s %s\ttoggle trace level", pPollCmd, pCmdToggleTrace);
   }
   return TRUE;
 }
-#endif
+
+void POLL_Init()
+{
+  bzero(&bkgr_poll, sizeof(bkgr_poll));
+  bkgr_poll.epollfd = epoll_create(POLL_NOF);
+  bkgr_poll.hTrc=TRC_AddTraceGroup((char *)pPollName);
+
+}
+

@@ -214,7 +214,7 @@ extern void hp_free(HEAP *hp);
 /*----------------------------------------------------------------------*
  * AVL Tree                 *
  *----------------------------------------------------------------------*/
-typedef unsigned int  DSKEY;
+typedef size_t  DSKEY;
 typedef int   (*DSKEYCMPFUN)(const DSKEY,const DSKEY);
 
 

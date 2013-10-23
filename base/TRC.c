@@ -9,6 +9,7 @@
 #include <pthread.h>
 
 #include "GEN.h"
+#include "MON.h"
 #include "DBG.h"
 #include "TRC.h"
 
@@ -187,7 +188,7 @@ TRC_TraceLevel TRC_GetTraceLevel(const UINT8 group)
 	return TraceGroup[group].DispTrcLvl;
 }
 
-#if 0
+
 /******************************************************************************
  * TRC_ExecMonCmd
  ******************************************************************************
@@ -206,9 +207,6 @@ BOOL TRC_ExecMonCmd(UINT16 sNr, char *cmdLine)
 	char** argv;
 
 	MON_SplitArgs(cmdLine, &argc, &argv);
-
-	GEN_UNUSED(sNr);
-
 	MON_WriteInfof("\r\n");
 
 	switch (argv[0][0])
@@ -394,7 +392,7 @@ BOOL TRC_ExecMonCmd(UINT16 sNr, char *cmdLine)
 	return(TRUE);
 }
 // end - SDSM_ExecMonCmd()
-#endif
+
 
 /**
  * TRC init function

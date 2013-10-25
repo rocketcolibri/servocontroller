@@ -96,11 +96,11 @@ static void ControlCommandRxSocketHandler(int socketfd, void *pData)
 }
 
 
-void *NewControlCommandRxSocket()
+void *NewControlCommandRxSocket(ConnectionContainer_t *pConnectionContainer)
 {
 	getControlCommandRx_t *pControlCommandRx = malloc(sizeof(getControlCommandRx_t));
 	bzero(pControlCommandRx, sizeof(pControlCommandRx));
-	pControlCommandRx->connectionContainer = NewConnectionContainer();
+	pControlCommandRx->connectionContainer = pConnectionContainer;
 	pControlCommandRx->hControlCmdRxPoll = POLL_AddReadFd(GetControlCmdSocket(),
 			ControlCommandRxSocketHandler, pControlCommandRx, "ControlCmdRx");
 

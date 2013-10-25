@@ -24,7 +24,7 @@ extern void POLL_Init();
 /**
  * monitor command called from in BKGR main init function
  */
-extern BOOL POLL_MonCmd(UINT16 dummy, char * cmdLine);
+extern BOOL POLL_MonCmd(void * dummy, char * cmdLine);
 
 /**
  * @short BKGR_Functions Typ

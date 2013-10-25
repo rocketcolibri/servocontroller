@@ -9,7 +9,7 @@
 #define CONTROLCOMMANDRXSOCKET_H_
 
 
-extern void *NewControlCommandRxSocket();
+extern void *NewControlCommandRxSocket(ConnectionContainer_t *pConnectionContainer);
 extern void DeleteControlCommandRxSocket(void *pControlCommandRxHandlerHandle);
 
 #endif /* CONTROLCOMMANDRXSOCKET_H_ */

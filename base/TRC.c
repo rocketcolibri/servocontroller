@@ -189,19 +189,13 @@ TRC_TraceLevel TRC_GetTraceLevel(const UINT8 group)
 }
 
 
-/******************************************************************************
- * TRC_ExecMonCmd
- ******************************************************************************
- * Purpose: Execute command received by the debug monitor. *cmdLine contains
- *          the parameters of the monitor command.
+/**
+ * @short Execute command received by the debug monitor
  *
- * Input:   UINT16 sNr (instance)
- *          char *cmdLine
- * Output:  various terminal messages
- * Return:  BOOL (always TRUE)
- * Note:    Call this function from the monitor task only.
- *****************************************************************************/
-BOOL TRC_ExecMonCmd(UINT16 sNr, char *cmdLine)
+ * @param   dummy
+ * @param   cmdLine command line string
+ */
+BOOL TRC_ExecMonCmd(void *dummy, char *cmdLine)
 {
 	UINT8 argc;
 	char** argv;
@@ -209,7 +203,7 @@ BOOL TRC_ExecMonCmd(UINT16 sNr, char *cmdLine)
 	MON_SplitArgs(cmdLine, &argc, &argv);
 	MON_WriteInfof("\r\n");
 
-	switch (argv[0][0])
+	switch (argv[1][0])
 	{
 		case 'a':
 		if(argc!=2)
@@ -228,25 +222,6 @@ BOOL TRC_ExecMonCmd(UINT16 sNr, char *cmdLine)
 			}
 		}
 		break;
-#ifdef TEST
-//#####################################################################################################
-		case 'b':
-		{
-			static UINT8 current_group = 0;
-			static UINT8 GrpNdx;
-			static const char *GroupNames[] =
-			{	"Mon", "B_Min", "C_Oli", "D_Maximilian", "E_Hop", "F_xxx"};
-			current_group = TRC_AddTraceGroup(GroupNames[GrpNdx++]);
-			MON_WriteInfof(" registered group: %d", current_group);
-		}
-		break;
-		case 'c':
-		{
-			TRC_Print(__FILE__, __LINE__, /*group*/0, TL_ERROR, "| Text %u |", 192);
-		}
-		break;
-//#####################################################################################################
-#endif
 		case 'd':
 		MON_WriteInfof("Trace messages %sabled\r\n", TraceConfig.TraceOutputOn ? "en" : "dis");
 		MON_WriteInfof("all levels enabled for task id:");
@@ -391,8 +366,6 @@ BOOL TRC_ExecMonCmd(UINT16 sNr, char *cmdLine)
 	}
 	return(TRUE);
 }
-// end - SDSM_ExecMonCmd()
-
 
 /**
  * TRC init function

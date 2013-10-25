@@ -7,12 +7,17 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include "base/GEN.h"
+#include "base/AD.h"
 #include "base/MON.h"
 #include "base/DBG.h"
 #include "base/POLL.h"
 #include "base/TRC.h"
 
+#include "Connection.h"
+#include "ConnectionContainer.h"
 #include "ControlCommandRxSocket.h"
 #include "TransmitTelemetryTimerHandler.h"
 
@@ -27,8 +32,9 @@ int main(int argc, char**argv)
 	MON_AddMonCmd("poll", POLL_MonCmd, 0 );
 	MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
 
-	void *pControlCommandRxSocket = NewControlCommandRxSocket();
-	void *pTranmitTelemetryTimerHandler = NewTransmitTelemetryTimerHandler();
+	ConnectionContainer_t *pConnectionContainer = NewConnectionContainer();
+	void *pControlCommandRxSocket = NewControlCommandRxSocket(pConnectionContainer);
+	void *pTranmitTelemetryTimerHandler = NewTransmitTelemetryTimerHandler(pConnectionContainer);
 
 	POLL_Dispatch();
 

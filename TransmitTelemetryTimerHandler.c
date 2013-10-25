@@ -17,8 +17,12 @@
 #include <json-c/json.h>
 
 #include "base/GEN.h"
+#include "base/AD.h"
 #include "base/DBG.h"
 #include "base/POLL.h"
+
+#include "Connection.h"
+#include "ConnectionContainer.h"
 
 typedef struct
 {
@@ -33,7 +37,7 @@ static void TransmitTelemetryTimerHandler(int socketfd, void *pData)
 	UINT32 expiredTime = TIMERFD_Read(socketfd);
 }
 
-void *NewTransmitTelemetryTimerHandler()
+void *NewTransmitTelemetryTimerHandler(ConnectionContainer_t *pConnectionContainer)
 {
 	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = malloc(sizeof(transmitTelemetryTimerHandler_t));
 	bzero(pTransmitTelemetryTimerHandler, sizeof(pTransmitTelemetryTimerHandler));

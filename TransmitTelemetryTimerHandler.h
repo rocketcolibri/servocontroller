@@ -9,7 +9,7 @@
 #define TRANSMITTELEMETRYTIMERHANDLER_H_
 
 
-void *NewTransmitTelemetryTimerHandler();
+void *NewTransmitTelemetryTimerHandler(ConnectionContainer_t *pConnectionContainer);
 void DeleteTransmitTelemetryTimerHandler(void *pDeleteTransmitTelemetryHandlerHandle);
 
 

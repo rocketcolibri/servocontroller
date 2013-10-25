@@ -182,7 +182,7 @@ void POLL_DispatchAbort()
 static const char *pPollCmd="poll";
 
 /** monitor command called from in BKGR main init function */
-BOOL POLL_MonCmd(UINT16 dummy, char * cmdLine)
+BOOL POLL_MonCmd(void * dummy, char * cmdLine)
 {
 	UINT8 argc;
 	char** argv;

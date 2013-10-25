@@ -149,7 +149,6 @@ static void CatchSigUsr2(int sig_nr)
 
 void DBG_Init()
 {
-	DBG_LOG_ENTRY("ServoController starting...");
 	DBG_InstallSignalHandler(SIGFPE, CatchSigFpe);
 	DBG_InstallSignalHandler(SIGILL, CatchSigIll);
 	DBG_InstallSignalHandler(SIGBUS, CatchSigBus);

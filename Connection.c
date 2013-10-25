@@ -24,6 +24,10 @@
 #include "Connection.h"
 #include "ConnectionContainer.h"
 
+#include "ServoDriver.h"
+
+#include "MessageSinkCdc.h"
+
 #define CONNECTION_NOF_ACTION 2
 
 /**
@@ -118,29 +122,6 @@ static void Connection_ExecuteEvent(Connection_t *pArpingInst,
   pArpingInst->state = newState;
 }
 
-static void ParseCdcCommand(json_object * jobj)
-{
-  json_object *pChannelArray = json_object_object_get(jobj, "channels");
-  int u;
-  for (u=0; u<json_object_array_length(pChannelArray); u++)
-  {
-    json_object *pChannel = json_object_array_get_idx(pChannelArray, u);
-    // set servos ere
-    // TODO: ServoSetChannel(u, json_object_get_int(pChannel);
-    json_object_put(pChannel);
-  }
-  json_object_put(pChannelArray);
-}
-
-static void ParseHelloCommand(json_object * jobj)
-{
-
-}
-
-static void ParseHandoverCommand(json_object * jobj)
-{
-
-}
 
 void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
 {
@@ -186,15 +167,18 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
         {
           if (0 == strcmp(json_object_get_string(command), "cdc"))
           {
-            ParseCdcCommand(jobj);
+          	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
+            MessageSinkCdc_t *pMsgCdc = NewMessageSinkCdc(jobj);
+            pServoDriver->SetServos(GetNofChannel(pMsgCdc), GetChannelVector(pMsgCdc));
+            DeleteMessageSinkCdc(pMsgCdc);
           }
           else if (0 == strcmp(json_object_get_string(command), "hello"))
           {
-            ParseHelloCommand(jobj);
+            // TODO
           }
           else if (0 == strcmp(json_object_get_string(command), "handover"))
           {
-            ParseHandoverCommand(jobj);
+            // TODO
           }
           else
           {

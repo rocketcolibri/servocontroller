@@ -55,7 +55,7 @@ extern void  TRC_Init();
  * @param cmdLine Pointer to command line string
  * @return TRUE in any case.
  */
-extern BOOL  TRC_ExecMonCmd(UINT16 sNr, char *cmdLine);
+extern BOOL  TRC_ExecMonCmd(void *dummy, char *cmdLine);
 
 /**
  * @short Registering a new group for trace output

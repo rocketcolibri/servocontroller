@@ -211,7 +211,7 @@ BOOL TRC_ExecMonCmd(void *dummy, char *cmdLine)
 		else
 		{
 			UINT16 ii;
-			ii = atoi(argv[1]);  // extract the task identifier
+			ii = atoi(argv[2]);  // extract the task identifier
 			if (ii >= GEN_MAX_NOF_THREADS)
 			MON_WriteInfof("Only tasks 0..%u available\r\n", GEN_MAX_NOF_THREADS-1);
 			else
@@ -241,18 +241,18 @@ BOOL TRC_ExecMonCmd(void *dummy, char *cmdLine)
 		break;
 
 		case 'l':
-		if(argc!=3)
+		if(argc!=4)
 		MON_WriteInfo("Use: trc l <group>,<level>\r\n");
 		else
 		{
 			UINT16 gg, ll;
-			gg = atoi(argv[1]);  // extract the trace group
+			gg = atoi(argv[2]);  // extract the trace group
 			if (gg >= TraceConfig.NofGroups)
 			MON_WriteInfof("Only groups 0..%u available\r\n",
 					TraceConfig.NofGroups ? TraceConfig.NofGroups-1 : 0);
 			else
 			{
-				ll = atoi(argv[2]);  // extract the new trace level
+				ll = atoi(argv[3]);  // extract the new trace level
 				if (ll > TL_NOF_LVL)
 				MON_WriteInfof("Only levels 0..%u available\r\n", TL_NOF_LVL);
 				else
@@ -266,15 +266,15 @@ BOOL TRC_ExecMonCmd(void *dummy, char *cmdLine)
 		break;
 
 		case 'o':
-		if(argc!=3)
+		if(argc!=4)
 		MON_WriteInfo("Use: trc o <parameter>,<format>\r\n");
 		else
 		{
 			const char ONLY_FMT_0_x_AVLBL[] = "Only format 0..%u available\r\n";
 			const char OUT_FMT_x_SET_TO_n[] = " Output format for %s set to %s\r\n";
 			UINT16 fm;
-			fm = atoi(argv[2]);  // extract the new format
-			switch (argv[1][0])// check the parameter
+			fm = atoi(argv[3]);  // extract the new format
+			switch (argv[2][0])// check the parameter
 			{
 				case 't':
 				if (fm > 2)

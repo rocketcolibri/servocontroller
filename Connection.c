@@ -126,8 +126,7 @@ static void Connection_ExecuteEvent(Connection_t *pArpingInst,
 void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
 {
   struct json_tokener *tok = json_tokener_new();
-  struct json_object * jobj = json_tokener_parse_ex(tok, pJsonString,
-      strlen(pJsonString));
+  struct json_object * jobj = json_tokener_parse_ex(tok, pJsonString, strlen(pJsonString));
   if (!jobj)
   {
     TRC_ERROR(pConn->hTrc,
@@ -153,7 +152,7 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
       json_object_put(pUserObj);
     }
 
-    json_object *seqObj = json_object_object_get(jobj, "seq");
+    json_object *seqObj = json_object_object_get(jobj, "sequence");
     if (seqObj)
     {
       int sequence = json_object_get_int(seqObj);
@@ -167,6 +166,7 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
         {
           if (0 == strcmp(json_object_get_string(command), "cdc"))
           {
+          	TRC_INFO(pConn->hTrc, "cdc: user:%s sequence:%d", pConn->pUserName, pConn->lastSequence);
           	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
             MessageSinkCdc_t *pMsgCdc = NewMessageSinkCdc(jobj);
             pServoDriver->SetServos(GetNofChannel(pMsgCdc), GetChannelVector(pMsgCdc));
@@ -195,7 +195,7 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
             "JSON invalid sequence number last:% current:%", pConn->lastSequence, sequence);
       }
 
-      json_object_put(sequence);
+      json_object_put(seqObj);
     }
     json_object_put(jobj);
   }
@@ -206,12 +206,12 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
   {
     Connection_t *pConn = (Connection_t *) pData;
     DBG_ASSERT(pConn);
-    fprintf(stderr, "C");
+    //fprintf(stderr, "C");
     UINT32 expiredTime = TIMERFD_Read(timerfd20ms);
   }
 
   Connection_t *NewConnection(const ConnectionContainer_t *pContainerConnection,
-      const struct sockaddr_in *pSrcAddr)
+      const struct sockaddr_in *pSrcAddr, UINT8 hTrcSocket)
   {
     DBG_ASSERT(pContainerConnection);
     DBG_ASSERT(pSrcAddr);
@@ -220,6 +220,7 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
     pConn->pConnectionContainer = pContainerConnection;
     pConn->srcAddress = *pSrcAddr;
     pConn->state = CONN_IDLE;
+    pConn->hTrc = hTrcSocket; // inherits the trace handle from the socket
     pConn->hConnectionTimeoutPoll = POLL_AddReadFd(TIMERFD_Create(40 * 1000),
         ConnectionTimeoutHandler, pConn, "ConnectionTimeoutRx");
 

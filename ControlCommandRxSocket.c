@@ -19,6 +19,7 @@
 #include "base/DBG.h"
 #include "base/POLL.h"
 #include "base/AD.h"
+#include "base/TRC.h"
 
 #include "Connection.h"
 #include "ConnectionContainer.h"
@@ -29,13 +30,13 @@
 
 typedef struct
 {
-	UINT8 dummy;
+	UINT8 hTrc;
 	void *hControlCmdRxPoll;
 	void *hTimeoutControlCmdRxPoll;
 	ConnectionContainer_t *connectionContainer;
 } getControlCommandRx_t;
 
-int GetControlCmdSocket()
+static int GetControlCmdSocket()
 {
 	int sock, flag = 1;
 	struct sockaddr_in sock_name;
@@ -84,14 +85,19 @@ static void ControlCommandRxSocketHandler(int socketfd, void *pData)
 
 		if (!pConn)
 		{
-			pConn = NewConnection(pControlCommandRxSocket->connectionContainer, &srcAddr);
+			pConn = NewConnection(pControlCommandRxSocket->connectionContainer, &srcAddr, pControlCommandRxSocket->hTrc);
 			ConnectionContainerAddConnection(pControlCommandRxSocket->connectionContainer, pConn, &srcAddr);
+			TRC_INFO(pControlCommandRxSocket->hTrc, "connection created:%s",inet_ntoa(srcAddr.sin_addr));
+		}
+		else
+		{
+			TRC_INFO(pControlCommandRxSocket->hTrc, "connection found:%s",inet_ntoa(srcAddr.sin_addr));
 		}
 
 		buffer[rxLen]=0;
 		HandleJsonMessage(pConn, buffer);
 
-		fprintf(stderr, "\nreceived %d bytes containing:%s from %s",rxLen, buffer, inet_ntoa(srcAddr.sin_addr));
+		TRC_INFO(pControlCommandRxSocket->hTrc, "received %d bytes containing:%s from %s",rxLen, buffer, inet_ntoa(srcAddr.sin_addr));
 	}
 }
 
@@ -103,8 +109,7 @@ void *NewControlCommandRxSocket(ConnectionContainer_t *pConnectionContainer)
 	pControlCommandRx->connectionContainer = pConnectionContainer;
 	pControlCommandRx->hControlCmdRxPoll = POLL_AddReadFd(GetControlCmdSocket(),
 			ControlCommandRxSocketHandler, pControlCommandRx, "ControlCmdRx");
-
-
+	pControlCommandRx->hTrc = TRC_AddTraceGroup("rxSocket");
 	return pControlCommandRx;
 }
 

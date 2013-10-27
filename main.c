@@ -20,6 +20,8 @@
 #include "ConnectionContainer.h"
 #include "ControlCommandRxSocket.h"
 #include "TransmitTelemetryTimerHandler.h"
+#include "ServoDriver.h"
+#include "ServoDriverRPi.h"
 
 int main(int argc, char**argv)
 {
@@ -31,6 +33,8 @@ int main(int argc, char**argv)
 	TRC_Init();
 	MON_AddMonCmd("poll", POLL_MonCmd, 0 );
 	MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
+
+	ServoDriverRegister(ServoDriverRPiSetServos, NULL);
 
 	ConnectionContainer_t *pConnectionContainer = NewConnectionContainer();
 	void *pControlCommandRxSocket = NewControlCommandRxSocket(pConnectionContainer);

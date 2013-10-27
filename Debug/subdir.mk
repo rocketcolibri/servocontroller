@@ -9,6 +9,7 @@ C_SRCS += \
 ../ControlCommandRxSocket.c \
 ../MessageSinkCdc.c \
 ../ServoDriver.c \
+../ServoDriverRPi.c \
 ../TransmitTelemetryTimerHandler.c \
 ../main.c 
 
@@ -18,6 +19,7 @@ OBJS += \
 ./ControlCommandRxSocket.o \
 ./MessageSinkCdc.o \
 ./ServoDriver.o \
+./ServoDriverRPi.o \
 ./TransmitTelemetryTimerHandler.o \
 ./main.o 
 
@@ -27,6 +29,7 @@ C_DEPS += \
 ./ControlCommandRxSocket.d \
 ./MessageSinkCdc.d \
 ./ServoDriver.d \
+./ServoDriverRPi.d \
 ./TransmitTelemetryTimerHandler.d \
 ./main.d 
 

@@ -26,7 +26,17 @@ ServoDriver_t *pServoDriver = NULL;
 
 static void SetServo(UINT32 servoc, UINT32 servov[])
 {
+	char msg[1024];
+	msg[0]='\000';
+	while(servoc)
+	{
+		char submsg[40];
+		servoc--;
+		sprintf(submsg, "c%d=%d ", servoc, servov[servoc]);
+		strcat(msg, submsg);
 
+	}
+	TRC_INFO(pServoDriver->hTrc, "%s", msg);
 }
 
 ServoDriver_t *ServoDriverGetInstance()
@@ -36,6 +46,7 @@ ServoDriver_t *ServoDriverGetInstance()
 		pServoDriver = malloc(sizeof(ServoDriver_t));
 		bzero(pServoDriver, sizeof(ServoDriver_t));
 		pServoDriver->SetServos = SetServo;
+		pServoDriver->hTrc = TRC_AddTraceGroup("servo");
 	}
 	return pServoDriver;
 }
@@ -44,6 +55,7 @@ ServoDriver_t *ServoDriverGetInstance()
 void ServoDriverRegister(void (* SetServos)(UINT32, UINT32 *), void *pServoDriverObject)
 {
 	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
+	TRC_INFO(pServoDriver->hTrc, "Servo driver registered");
 	pServoDriver->SetServos = SetServos;
 	pServoDriver->pServoDriverObject = pServoDriverObject;
 }

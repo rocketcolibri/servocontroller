@@ -26,7 +26,7 @@ typedef struct Connection
 
 extern void HandleJsonMessage( Connection_t *pConn, const char *pJsonString);
 
-extern Connection_t *NewConnection(const ConnectionContainer_t *pContainerConnection, const struct sockaddr_in *pSrcAddr);
+extern Connection_t *NewConnection(const ConnectionContainer_t *pContainerConnection, const struct sockaddr_in *pSrcAddr, UINT8 hTrcSocket);
 
 extern void DeleteConnection(Connection_t *pConn);
 

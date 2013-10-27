@@ -23,12 +23,21 @@
 #include "Connection.h"
 #include "ConnectionContainer.h"
 
+static int IpCmp(DSKEY ip1, DSKEY ip2)
+{
+	if(ip1 > ip2)
+		return 1;
+	else if (ip1 < ip2)
+		return -1;
+	else
+		return 0;
+}
 
 ConnectionContainer_t *NewConnectionContainer()
 {
 	ConnectionContainer_t *pConnectioContainer = malloc(sizeof(ConnectionContainer_t));
 	bzero(pConnectioContainer, sizeof(ConnectionContainer_t));
-	pConnectioContainer->hAllConnections = avlMake();
+	pConnectioContainer->hAllConnections = avlNewTree(IpCmp, sizeof(UINT32), 0);
 	return pConnectioContainer;
 }
 

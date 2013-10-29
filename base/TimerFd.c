@@ -27,25 +27,6 @@
 #include "TRC.h"
 #include "POLL.h"
 
-
-static unsigned long long TimerFdGetUsTime(int clockid) {
-  struct timespec tp;
-
-  if (clock_gettime((clockid_t) clockid, &tp))
-  {
-    DBG_MAKE_ENTRY_MSG(FALSE, strerror(errno));
-    return 0;
-  }
-
-  return 1000000ULL * tp.tv_sec + tp.tv_nsec / 1000;
-}
-
-static void TimerFdSetTimespec(struct timespec *tmr, unsigned long long ustime)
-{
-  tmr->tv_sec = (time_t) (ustime / 1000000ULL);
-  tmr->tv_nsec = (long) (1000ULL * (ustime % 1000000ULL));
-}
-
 /**
  * @short Create a timer file descriptor
  *

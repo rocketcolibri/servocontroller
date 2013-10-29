@@ -207,7 +207,7 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
     Connection_t *pConn = (Connection_t *) pData;
     DBG_ASSERT(pConn);
     //fprintf(stderr, "C");
-    UINT32 expiredTime = TIMERFD_Read(timerfd20ms);
+    TIMERFD_Read(timerfd20ms);
   }
 
   Connection_t *NewConnection(const ConnectionContainer_t *pContainerConnection,

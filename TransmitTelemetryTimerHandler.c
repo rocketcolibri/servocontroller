@@ -34,7 +34,7 @@ static void TransmitTelemetryTimerHandler(int socketfd, void *pData)
 	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimer =(transmitTelemetryTimerHandler_t *)pData;
 	DBG_ASSERT(pTransmitTelemetryTimer);
 	//fprintf(stderr, ".");
-	UINT32 expiredTime = TIMERFD_Read(socketfd);
+	TIMERFD_Read(socketfd);
 }
 
 void *NewTransmitTelemetryTimerHandler(ConnectionContainer_t *pConnectionContainer)

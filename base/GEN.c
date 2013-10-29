@@ -6,6 +6,7 @@
  */
 
 #include <time.h>
+#include <unistd.h>
 #include <sys/syscall.h>
 #include "GEN.h"
  /**

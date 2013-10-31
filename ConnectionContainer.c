@@ -32,51 +32,62 @@ static int IpCmp(DSKEY ip1, DSKEY ip2)
 	else
 		return 0;
 }
+typedef struct ConnectionContainer
+{
+  UINT8 dummy;
+  ConnectionObject_t *pActiveConnectionObject;
+  AVLTREE hAllConnections;
+} ConnectionContainer_t;
 
-ConnectionContainer_t *NewConnectionContainer()
+ConnectionContainerObject_t NewConnectionContainer()
 {
 	ConnectionContainer_t *pConnectioContainer = malloc(sizeof(ConnectionContainer_t));
 	bzero(pConnectioContainer, sizeof(ConnectionContainer_t));
 	pConnectioContainer->hAllConnections = avlNewTree(IpCmp, sizeof(UINT32), 0);
-	return pConnectioContainer;
+	return (ConnectionContainerObject_t) pConnectioContainer;
 }
 
-void DeleteConnectionContainer(ConnectionContainer_t *pConnectionContainer)
+void DeleteConnectionContainer(ConnectionContainerObject_t connectionContainerObject)
 {
+  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(pConnectionContainer);
 }
 
-BOOL ConnectionContainerHandover(ConnectionContainer_t *pConnectionContainer, struct sockaddr_in *pNewSrcAddr)
+BOOL ConnectionContainerHandover(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pNewSrcAddr)
 {
+  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(pConnectionContainer);
 	DBG_ASSERT(pNewSrcAddr);
-	Connection_t *pNewActive = avlFind(pConnectionContainer->hAllConnections, (DSKEY)pNewSrcAddr->sin_addr.s_addr);
+	ConnectionContainerObject_t pNewActive = avlFind(pConnectionContainer->hAllConnections, (DSKEY)pNewSrcAddr->sin_addr.s_addr);
 	if(pNewActive)
 	{
-		pConnectionContainer->pActiveConnection = pNewActive;
+		pConnectionContainer->pActiveConnectionObject = pNewActive;
 	}
 	return FALSE;
 }
 
-Connection_t *ConnectionContainerFindConnection(ConnectionContainer_t *pConnectionContainer, struct sockaddr_in *pSrcAddr)
+ConnectionContainerObject_t ConnectionContainerFindConnection(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pSrcAddr)
 {
+  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(pConnectionContainer);
 	DBG_ASSERT(pSrcAddr);
-	return (Connection_t *)avlFind(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
+	return (ConnectionContainerObject_t)avlFind(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
 }
 
-void ConnectionContainerAddConnection(ConnectionContainer_t *pConnectionContainer, Connection_t *pConnection, struct sockaddr_in *pSrcAddr)
+void ConnectionContainerAddConnection(ConnectionContainerObject_t connectionContainerObject , ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr)
 {
+  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(pConnectionContainer);
-	DBG_ASSERT(pConnection);
+	DBG_ASSERT(connectionObject);
 	DBG_ASSERT(pSrcAddr);
 	DBG_ASSERT(NULL == avlFind(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr));
-	avlInsert(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr, pConnection);
+	avlInsert(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr, connectionObject);
 }
 
-void ConnectionContainerRemoveConnection(ConnectionContainer_t *pConnectionContainer, Connection_t *pConnection)
+void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr)
 {
+  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(pConnectionContainer);
-	DBG_ASSERT(pConnection);
-	avlRemoveByKey(pConnectionContainer->hAllConnections, (DSKEY)pConnection->srcAddress.sin_addr.s_addr);
+	DBG_ASSERT(connectionObject);
+	avlRemoveByKey(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
 }

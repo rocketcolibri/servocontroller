@@ -36,13 +36,13 @@ int main(int argc, char**argv)
 
 	ServoDriverRegister(ServoDriverRPiSetServos, NULL);
 
-	ConnectionContainer_t *pConnectionContainer = NewConnectionContainer();
-	void *pControlCommandRxSocket = NewControlCommandRxSocket(pConnectionContainer);
-	void *pTranmitTelemetryTimerHandler = NewTransmitTelemetryTimerHandler(pConnectionContainer);
+	ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();
+	ControlCommandRxSocketObject_t controlCommandRxSocketObject = NewControlCommandRxSocket(connectionContainerObject);
+	void *pTranmitTelemetryTimerHandler = NewTransmitTelemetryTimerHandler(connectionContainerObject);
 
 	POLL_Dispatch();
 
-	DeleteControlCommandRxSocket(pControlCommandRxSocket);
+	DeleteControlCommandRxSocket(controlCommandRxSocketObject);
 	DeleteTransmitTelemetryTimerHandler(pTranmitTelemetryTimerHandler);
 
 	return 0;

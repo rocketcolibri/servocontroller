@@ -28,7 +28,26 @@
 
 #include "MessageSinkCdc.h"
 
+typedef enum { CONN_IDLE, CONN_IDENTIFIED, CONN_UP, CONN_DEGRADED_1, CONN_DEGRADED_2, CONN_DEGRADED_3 } connectionState_t;
+
+typedef struct ConnectionContainer ConnectionContainer_t;
+
+typedef struct Connection
+{
+  struct sockaddr_in srcAddress;
+  char *pUserName;
+  connectionState_t state;
+  UINT32 lastSequence;
+  void *hConnectionTimeoutPoll;
+  ConnectionContainerObject_t connectionContainer;
+  UINT8 hTrc; // trace handle
+} Connection_t;
+
+
+
 #define CONNECTION_NOF_ACTION 2
+
+
 
 /**
  * @short Master state machine states
@@ -66,6 +85,7 @@ typedef struct
   Connection_State_t nextState;
 } Connection_EventAction_t;
 
+#if 0
 void Connection_DummyFn(Connection_t *pArpingInst)
 {
 
@@ -122,9 +142,10 @@ static void Connection_ExecuteEvent(Connection_t *pArpingInst,
   pArpingInst->state = newState;
 }
 
-
-void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
+#endif
+void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonString)
 {
+  Connection_t *pConn = (Connection_t*) connectionObject;
   struct json_tokener *tok = json_tokener_new();
   struct json_object * jobj = json_tokener_parse_ex(tok, pJsonString, strlen(pJsonString));
   if (!jobj)
@@ -210,20 +231,20 @@ void HandleJsonMessage(Connection_t *pConn, const char *pJsonString)
     TIMERFD_Read(timerfd20ms);
   }
 
-  Connection_t *NewConnection(const ConnectionContainer_t *pContainerConnection,
+  ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnectionObject,
       const struct sockaddr_in *pSrcAddr, UINT8 hTrcSocket)
   {
-    DBG_ASSERT(pContainerConnection);
+    DBG_ASSERT(containerConnectionObject);
     DBG_ASSERT(pSrcAddr);
     Connection_t *pConn = malloc(sizeof(Connection_t));
     bzero(pConn, sizeof(Connection_t));
-    pConn->pConnectionContainer = pContainerConnection;
+    pConn->connectionContainer = containerConnectionObject;
     pConn->srcAddress = *pSrcAddr;
     pConn->state = CONN_IDLE;
     pConn->hTrc = hTrcSocket; // inherits the trace handle from the socket
     pConn->hConnectionTimeoutPoll = POLL_AddReadFd(TIMERFD_Create(40 * 1000),
         ConnectionTimeoutHandler, pConn, "ConnectionTimeoutRx");
 
-    return pConn;
+    return (ConnectionObject_t)pConn;
   }
 

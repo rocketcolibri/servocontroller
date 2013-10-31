@@ -8,20 +8,12 @@
 #ifndef CONNECTIONCONTAINER_H_
 #define CONNECTIONCONTAINER_H_
 
-typedef struct Connection Connection_t;
 
-typedef struct ConnectionContainer
-{
-	UINT8 dummy;
-	Connection_t *pActiveConnection;
-	AVLTREE hAllConnections;
-} ConnectionContainer_t;
-
-extern ConnectionContainer_t *NewConnectionContainer();
-extern void DeleteConnectionContainer(ConnectionContainer_t *pConnectionContainer);
-extern BOOL ConnectionContainerHandover(ConnectionContainer_t *pConnectionContainer, struct sockaddr_in *pNewSrcAddr);
-extern Connection_t *ConnectionContainerFindConnection(ConnectionContainer_t *pConnectionContainer, struct sockaddr_in *pSrcAddr);
-extern void ConnectionContainerAddConnection(ConnectionContainer_t *pConnectionContainer, Connection_t *pConnection, struct sockaddr_in *pSrcAddr);
-extern void ConnectionContainerRemoveConnection(ConnectionContainer_t *pConnectionContainer, Connection_t *pConnection);
+extern ConnectionContainerObject_t NewConnectionContainer();
+extern void DeleteConnectionContainer(ConnectionContainerObject_t connectionContainerObject);
+extern BOOL ConnectionContainerHandover(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pNewSrcAddr);
+extern ConnectionObject_t ConnectionContainerFindConnection(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pSrcAddr);
+extern void ConnectionContainerAddConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr);
+extern void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr);
 
 #endif /* CONNECTIONCONTAINER_H_ */

@@ -23,7 +23,7 @@
 
 #include "Connection.h"
 #include "ConnectionContainer.h"
-
+#include "TransmitTelemetryTimerHandler.h"
 typedef struct
 {
 	void *hTransmitTelemetryTimerPoll;
@@ -37,19 +37,19 @@ static void TransmitTelemetryTimerHandler(int socketfd, void *pData)
 	TIMERFD_Read(socketfd);
 }
 
-void *NewTransmitTelemetryTimerHandler(ConnectionContainer_t *pConnectionContainer)
+TransmitTelemetryTimerHandlerObject_t NewTransmitTelemetryTimerHandler(ConnectionContainerObject_t connectionContainerObject)
 {
 	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = malloc(sizeof(transmitTelemetryTimerHandler_t));
 	bzero(pTransmitTelemetryTimerHandler, sizeof(pTransmitTelemetryTimerHandler));
 	pTransmitTelemetryTimerHandler->hTransmitTelemetryTimerPoll
 		= POLL_AddReadFd(TIMERFD_Create(100*1000), TransmitTelemetryTimerHandler, pTransmitTelemetryTimerHandler, "TransmitTelemetryHanlder");
 
-	return pTransmitTelemetryTimerHandler;
+	return (TransmitTelemetryTimerHandlerObject_t)pTransmitTelemetryTimerHandler;
 }
 
-void DeleteTransmitTelemetryTimerHandler(void *pDeleteTransmitTelemetryHandlerHandle)
+void DeleteTransmitTelemetryTimerHandler(TransmitTelemetryTimerHandlerObject_t deleteTransmitTelemetryHandlerObject)
 {
-	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = (transmitTelemetryTimerHandler_t *)pDeleteTransmitTelemetryHandlerHandle;
+	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = (transmitTelemetryTimerHandler_t *)deleteTransmitTelemetryHandlerObject;
 	POLL_RemoveFdAndClose(pTransmitTelemetryTimerHandler->hTransmitTelemetryTimerPoll);
 	free(pTransmitTelemetryTimerHandler);
 }

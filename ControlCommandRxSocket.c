@@ -23,6 +23,7 @@
 
 #include "Connection.h"
 #include "ConnectionContainer.h"
+#include "ControlCommandRxSocket.h"
 
 #define BUFLEN 512
 #define NPACK 10
@@ -33,7 +34,7 @@ typedef struct
 	UINT8 hTrc;
 	void *hControlCmdRxPoll;
 	void *hTimeoutControlCmdRxPoll;
-	ConnectionContainer_t *connectionContainer;
+	ConnectionContainerObject_t connectionContainer;
 } getControlCommandRx_t;
 
 static int GetControlCmdSocket()
@@ -79,9 +80,9 @@ static void ControlCommandRxSocketHandler(int socketfd, void *pData)
 	char buffer[1500];
 	ssize_t rxLen=0;
 	if(0 < (rxLen=recvfrom(socketfd, buffer, sizeof(buffer), MSG_DONTWAIT,
-			&srcAddr, &srcAddrLen)))
+			(struct sockaddr*)&srcAddr, &srcAddrLen)))
 	{
-		Connection_t *pConn=ConnectionContainerFindConnection(pControlCommandRxSocket->connectionContainer, &srcAddr);
+		ConnectionObject_t pConn=ConnectionContainerFindConnection(pControlCommandRxSocket->connectionContainer, &srcAddr);
 
 		if (!pConn)
 		{
@@ -101,24 +102,23 @@ static void ControlCommandRxSocketHandler(int socketfd, void *pData)
 	}
 }
 
-
-void *NewControlCommandRxSocket(ConnectionContainer_t *pConnectionContainer)
+ControlCommandRxSocketObject_t NewControlCommandRxSocket(ConnectionContainerObject_t pConnectionContainerObject)
 {
 	getControlCommandRx_t *pControlCommandRx = malloc(sizeof(getControlCommandRx_t));
 	bzero(pControlCommandRx, sizeof(pControlCommandRx));
-	pControlCommandRx->connectionContainer = pConnectionContainer;
+	pControlCommandRx->connectionContainer = pConnectionContainerObject;
 	pControlCommandRx->hControlCmdRxPoll = POLL_AddReadFd(GetControlCmdSocket(),
 			ControlCommandRxSocketHandler, pControlCommandRx, "ControlCmdRx");
 	pControlCommandRx->hTrc = TRC_AddTraceGroup("rxSocket");
-	return pControlCommandRx;
+	return (ControlCommandRxSocketObject_t)pControlCommandRx;
 }
 
-void DeleteControlCommandRxSocket(void *pControlCommandRxHandlerHandle)
+void DeleteControlCommandRxSocketControl(ControlCommandRxSocketObject_t controlCommandRxHandlerObject)
 {
-	getControlCommandRx_t *pControlCommandRx =
-			(getControlCommandRx_t *) pControlCommandRxHandlerHandle;
+  getControlCommandRx_t *pControlCommandRx =
+			(getControlCommandRx_t *) controlCommandRxHandlerObject;
 	POLL_RemoveFdAndClose(pControlCommandRx->hControlCmdRxPoll);
 	POLL_RemoveFdAndClose(pControlCommandRx->hTimeoutControlCmdRxPoll);
 	DeleteConnectionContainer(pControlCommandRx->connectionContainer);
-	free(pControlCommandRxHandlerHandle);
+	free(controlCommandRxHandlerObject);
 }

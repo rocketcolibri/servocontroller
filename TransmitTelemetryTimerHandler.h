@@ -8,9 +8,10 @@
 #ifndef TRANSMITTELEMETRYTIMERHANDLER_H_
 #define TRANSMITTELEMETRYTIMERHANDLER_H_
 
+typedef void * TransmitTelemetryTimerHandlerObject_t;
 
-void *NewTransmitTelemetryTimerHandler(ConnectionContainer_t *pConnectionContainer);
-void DeleteTransmitTelemetryTimerHandler(void *pDeleteTransmitTelemetryHandlerHandle);
+TransmitTelemetryTimerHandlerObject_t NewTransmitTelemetryTimerHandler(ConnectionContainerObject_t connectionContainerObject);
+void DeleteTransmitTelemetryTimerHandler(TransmitTelemetryTimerHandlerObject_t transmitTelemetryHandlerObject);
 
 
 #endif /* TRANSMITTELEMETRYTIMERHANDLER_H_ */

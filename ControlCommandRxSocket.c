@@ -113,7 +113,7 @@ ControlCommandRxSocketObject_t NewControlCommandRxSocket(ConnectionContainerObje
 	return (ControlCommandRxSocketObject_t)pControlCommandRx;
 }
 
-void DeleteControlCommandRxSocketControl(ControlCommandRxSocketObject_t controlCommandRxHandlerObject)
+void DeleteControlCommandRxSocket(ControlCommandRxSocketObject_t controlCommandRxHandlerObject)
 {
   getControlCommandRx_t *pControlCommandRx =
 			(getControlCommandRx_t *) controlCommandRxHandlerObject;

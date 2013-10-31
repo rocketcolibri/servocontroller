@@ -38,12 +38,12 @@ int main(int argc, char**argv)
 
 	ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();
 	ControlCommandRxSocketObject_t controlCommandRxSocketObject = NewControlCommandRxSocket(connectionContainerObject);
-	void *pTranmitTelemetryTimerHandler = NewTransmitTelemetryTimerHandler(connectionContainerObject);
+	TransmitTelemetryTimerHandlerObject_t tranmitTelemetryTimerHandlerObject = NewTransmitTelemetryTimerHandler(connectionContainerObject);
 
 	POLL_Dispatch();
 
 	DeleteControlCommandRxSocket(controlCommandRxSocketObject);
-	DeleteTransmitTelemetryTimerHandler(pTranmitTelemetryTimerHandler);
-
+	DeleteTransmitTelemetryTimerHandler(tranmitTelemetryTimerHandlerObject);
+	DeleteConnectionContainer(connectionContainerObject);
 	return 0;
 }

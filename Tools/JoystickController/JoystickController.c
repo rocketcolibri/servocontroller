@@ -154,7 +154,7 @@ int main()
 	MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
 
 	hTrc = TRC_AddTraceGroup("joystick");
-	senderSocket = GetSendSocket("192.168.10.112");
+	senderSocket = GetSendSocket("192.168.200.1");
 
 	JoystickData_t joystick;
   int joystickfd = GetJoysticFd(JOY_DEVICE, &joystick);

@@ -29,6 +29,9 @@
 #define NPACK 10
 #define CONTROL_CMD_PORT 30001
 
+/**
+ * internal data structure of the ControlCommand socket object
+ */
 typedef struct
 {
 	UINT8 hTrc;
@@ -37,6 +40,9 @@ typedef struct
 	ConnectionContainerObject_t connectionContainer;
 } getControlCommandRx_t;
 
+/**
+ * Creates a ControlCmd socket and binds to the port.
+ */
 static int GetControlCmdSocket()
 {
 	int sock, flag = 1;
@@ -70,9 +76,15 @@ static int GetControlCmdSocket()
 	return sock;
 }
 
-static void ControlCommandRxSocketHandler(int socketfd, void *pData)
+/**
+ * This method is called on reception of a message on the ControlComand socket
+ * @Override POLL_CallbackFunction_t
+ * @param socketfd socket file descriptor
+ * @param socketObj this
+ */
+static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketObject_t socketObj)
 {
-	getControlCommandRx_t *pControlCommandRxSocket=(getControlCommandRx_t *)pData;
+	getControlCommandRx_t *pControlCommandRxSocket=(getControlCommandRx_t *)socketObj;
 
 	DBG_ASSERT(pControlCommandRxSocket);
 	struct sockaddr_in srcAddr;

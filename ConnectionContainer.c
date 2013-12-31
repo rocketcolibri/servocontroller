@@ -23,6 +23,7 @@
 #include "Connection.h"
 #include "ConnectionContainer.h"
 
+/** compare function for the AVLTREE, used IP addresses as the key (4 bytes) */
 static int IpCmp(DSKEY ip1, DSKEY ip2)
 {
 	if(ip1 > ip2)
@@ -32,11 +33,14 @@ static int IpCmp(DSKEY ip1, DSKEY ip2)
 	else
 		return 0;
 }
+
+/**
+ * Data structure of the ConnectionContainer object
+ */
 typedef struct ConnectionContainer
 {
-  UINT8 dummy;
-  ConnectionObject_t *pActiveConnectionObject;
-  AVLTREE hAllConnections;
+  ConnectionObject_t *pActiveConnectionObject; // reference to the currently active connection
+  AVLTREE hAllConnections; // storage for the connection objects
 } ConnectionContainer_t;
 
 ConnectionContainerObject_t NewConnectionContainer()
@@ -51,6 +55,7 @@ void DeleteConnectionContainer(ConnectionContainerObject_t connectionContainerOb
 {
   ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(pConnectionContainer);
+	// TODO:
 }
 
 BOOL ConnectionContainerHandover(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pNewSrcAddr)

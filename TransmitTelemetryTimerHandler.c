@@ -24,14 +24,21 @@
 #include "Connection.h"
 #include "ConnectionContainer.h"
 #include "TransmitTelemetryTimerHandler.h"
+
+/** data structure of a TransmitTelemetryTimerHanlder object */
 typedef struct
 {
 	void *hTransmitTelemetryTimerPoll;
 } transmitTelemetryTimerHandler_t;
 
-static void TransmitTelemetryTimerHandler(int socketfd, void *pData)
+/**
+ * @Override POLL_CallbackFunction_t
+ * @param socketfd
+ * @param connectionContainerObject this
+ */
+static void TransmitTelemetryTimerHandler(int socketfd, ConnectionContainerObject_t connectionContainerObject)
 {
-	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimer =(transmitTelemetryTimerHandler_t *)pData;
+	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimer =(transmitTelemetryTimerHandler_t *)connectionContainerObject;
 	DBG_ASSERT(pTransmitTelemetryTimer);
 	//fprintf(stderr, ".");
 	TIMERFD_Read(socketfd);

@@ -1,8 +1,8 @@
 /*
- * Connection.h
+ * Connection.c
  *
- *  Created on: 15.10.2013
- *      Author: lorenz
+ * Implements the RocketColibri protocol on the receiver side.
+ *
  */
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -50,28 +50,28 @@ typedef struct Connection
 
 
 /**
- * @short Master state machine states
+ * @short Rocket Colibri protocol states, see state diagram
  */
 typedef enum
 {
   CONNECTION_IDLE, // not active
-  CONNECTION_IDENTIFIED, // try to reach host
-  CONNECTION_UP, // host not reached for the first time
-  CONNECTION_DEGRADED_1, // host not reached for the 2nd time
-  CONNECTION_DEGRADED_2, // host not reached for the 3rd time
-  CONNECTION_DEGRADED_3, // connection to host
+  CONNECTION_UP, //
+  CONNECTION_DEGRADED_1, //
+  CONNECTION_IDENTIFIED, //
+  CONNECTION_DEGRADED_2, //
+  CONNECTION_DEGRADED_3, //
   CONNECTION_NOF_STATE
 } Connection_State_t;
 
 /**
- * @short Master event type
+ * @short List of all events
  */
 typedef enum
 {
   CONNECTION_EVENT_START, // start state machine
-  CONNECTION_EVENT_OK, // mac address received from host
-  CONNECTION_EVENT_FAIL, // no arp reply from host
-  CONNECTION_EVENT_STOP, // stop state machine
+  CONNECTION_EVENT_OK, //
+  CONNECTION_EVENT_FAIL, //
+  CONNECTION_EVENT_STOP, //
   CONNECTION_NOF_EVENT
 } Connection_Event_t;
 
@@ -143,6 +143,8 @@ static void Connection_ExecuteEvent(Connection_t *pArpingInst,
 }
 
 #endif
+
+
 void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonString)
 {
   Connection_t *pConn = (Connection_t*) connectionObject;
@@ -215,7 +217,6 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
         TRC_ERROR(pConn->hTrc,
             "JSON invalid sequence number last:% current:%", pConn->lastSequence, sequence);
       }
-
       json_object_put(seqObj);
     }
     json_object_put(jobj);
@@ -247,4 +248,3 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
 
     return (ConnectionObject_t)pConn;
   }
-

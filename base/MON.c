@@ -11,7 +11,7 @@
 #include "GEN.h"
 #include "MON.h"
 #include "DBG.h"
-#include "POLL.h"
+#include "Reactor.h"
 
 // --- declarations of some ASCII-characters ...
 #define NUL     0x00
@@ -249,9 +249,9 @@ void MON_Init()
 	SetFdNDelay(mon.pipeOutputFd[0]);
 	SetFdNDelay(mon.pipeOutputFd[1]);
 	// add standard input to poll list
-	POLL_AddReadFd(fileno(stdin), HandleInput, &mon, "MON in");
+	Reactor_AddReadFd(fileno(stdin), HandleInput, &mon, "MON in");
 	// add output pipe to poll list
-	POLL_AddReadFd(mon.pipeOutputFd[0], HandleOutput, &mon, "MON out");
+	Reactor_AddReadFd(mon.pipeOutputFd[0], HandleOutput, &mon, "MON out");
 	MON_WriteInfo("\n\nServoController monitor started");
 	WritePrompt();
 }

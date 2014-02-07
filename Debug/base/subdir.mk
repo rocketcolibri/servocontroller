@@ -7,7 +7,7 @@ C_SRCS += \
 ../base/DBG.c \
 ../base/GEN.c \
 ../base/MON.c \
-../base/POLL.c \
+../base/Reactor.c \
 ../base/TRC.c \
 ../base/TRC_File.c \
 ../base/TimerFd.c \
@@ -23,7 +23,7 @@ OBJS += \
 ./base/DBG.o \
 ./base/GEN.o \
 ./base/MON.o \
-./base/POLL.o \
+./base/Reactor.o \
 ./base/TRC.o \
 ./base/TRC_File.o \
 ./base/TimerFd.o \
@@ -39,7 +39,7 @@ C_DEPS += \
 ./base/DBG.d \
 ./base/GEN.d \
 ./base/MON.d \
-./base/POLL.d \
+./base/Reactor.d \
 ./base/TRC.d \
 ./base/TRC_File.d \
 ./base/TimerFd.d \

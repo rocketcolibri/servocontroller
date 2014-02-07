@@ -19,29 +19,29 @@
 #include "DBG.h"
 #include "MON.h"
 #include "TRC.h"
-#include "POLL.h"
+#include "Reactor.h"
 
-#define POLL_NOF  100
+#define REACTOR_NOF  100
 
-static const char* pPollName = "poll";
+static const char* pPollName = "reactor";
 
 /** module data */
 static struct
 {
-    struct epoll_event events[POLL_NOF]; // epoll event struct
+    struct epoll_event events[REACTOR_NOF]; // epoll event struct
     int epollfd; // epoll file descriptor
     pthread_t hArpingThread; // thread handle
     pthread_mutex_t pStateMachineMutex; // state machnie mutex
     UINT8 hTrc; // trace handle
     UINT8 traceLevel; // and level
-} bkgr_poll;
+} reactor;
 
 
 /** module data */
 typedef struct
 {
     int fd;
-    POLL_CallbackFunction_t pCallBackFn;
+    Reactor_CallbackFunction_t pCallBackFn;
     void *pData;
     const char *pPollDescription;
     struct epoll_event event; // event for epoll wait
@@ -58,7 +58,7 @@ typedef struct
  * @param pData void pointer to the data of the consumer
  * @param pDescription description for trace
  */
-void * POLL_AddReadFd(int fd, POLL_CallbackFunction_t pCallbackFn,void *pData, const char *pDescription)
+void * Reactor_AddReadFd(int fd, Reactor_CallbackFunction_t pCallbackFn,void *pData, const char *pDescription)
 {
   DBG_ASSERT(pCallbackFn);
   DBG_ASSERT(pDescription);
@@ -84,7 +84,7 @@ void * POLL_AddReadFd(int fd, POLL_CallbackFunction_t pCallbackFn,void *pData, c
   pPollData->event.data.ptr = pPollData;
 
   // add to poll list
-  if(-1 == epoll_ctl(bkgr_poll.epollfd, EPOLL_CTL_ADD, pPollData->fd, &pPollData->event))
+  if(-1 == epoll_ctl(reactor.epollfd, EPOLL_CTL_ADD, pPollData->fd, &pPollData->event))
   {
     DBG_MAKE_ENTRY_MSG(FALSE, strerror(errno));
     free(pPollData);
@@ -99,16 +99,16 @@ void * POLL_AddReadFd(int fd, POLL_CallbackFunction_t pCallbackFn,void *pData, c
  *
  * @param pPollDataHandle
  */
-void POLL_RemoveFd(void *pPollDataHandle)
+void Reactor_RemoveFd(void *pPollDataHandle)
 {
   DBG_ASSERT(pPollDataHandle);
   PollData_t * pPollData = (PollData_t*)pPollDataHandle;
-  TRC_INFO(bkgr_poll.hTrc, "%s:0x%x removed fd:%d",pPollData->pPollDescription,  pPollData, pPollData->fd );
+  TRC_INFO(reactor.hTrc, "%s:0x%x removed fd:%d",pPollData->pPollDescription,  pPollData, pPollData->fd );
 
     // close pipe
   if(pPollData->fd)
   {
-    epoll_ctl(bkgr_poll.epollfd, EPOLL_CTL_DEL, pPollData->fd, NULL);
+    epoll_ctl(reactor.epollfd, EPOLL_CTL_DEL, pPollData->fd, NULL);
   }
 
   free(pPollData);
@@ -119,10 +119,10 @@ void POLL_RemoveFd(void *pPollDataHandle)
  *
  * @param pPollDataHandle
  */
-void POLL_RemoveFdAndClose(void *pPollDataHandle)
+void Reactor_RemoveFdAndClose(void *pPollDataHandle)
 {
   int fd = ((PollData_t*)pPollDataHandle)->fd;
-  POLL_RemoveFd(pPollDataHandle);
+  Reactor_RemoveFd(pPollDataHandle);
   close(fd);
 }
 
@@ -130,30 +130,30 @@ void POLL_RemoveFdAndClose(void *pPollDataHandle)
  * Waits for an event in the poll list and calls the callback function associated with
  * the file descriptor.
  */
-void* POLL_Dispatch()
+void* Reactor_Dispatch()
 {
   for (;;)
   {
     // wait until at least one file descriptor is ready
-    UINT ready = epoll_wait(bkgr_poll.epollfd, bkgr_poll.events, POLL_NOF, -1);
+    UINT ready = epoll_wait(reactor.epollfd, reactor.events, REACTOR_NOF, -1);
     if (ready == -1)
     {
       DBG_MAKE_ENTRY_MSG(FALSE, strerror(errno));
       continue;
     }
 
-    TRC_INFO(bkgr_poll.hTrc, "Epoll ready:%d", ready);
+    TRC_INFO(reactor.hTrc, "Epoll ready:%d", ready);
 
     // go trough the file descriptor list
     int i;
     for (i = 0; i < ready; i++)
     {
       // check if the listen file descriptor is ready for a new connection request
-      if (bkgr_poll.events[i].data.ptr)
+      if (reactor.events[i].data.ptr)
       {
-        PollData_t *pInst = (PollData_t *)bkgr_poll.events[i].data.ptr;
+        PollData_t *pInst = (PollData_t *)reactor.events[i].data.ptr;
 
-        TRC_INFO(bkgr_poll.hTrc, "%s:0x%x fd %d", pInst->pPollDescription, pInst, pInst->fd);
+        TRC_INFO(reactor.hTrc, "%s:0x%x fd %d", pInst->pPollDescription, pInst, pInst->fd);
 
         if(pInst->pCallBackFn)
         {
@@ -167,14 +167,14 @@ void* POLL_Dispatch()
       }
       else
       {
-        TRC_INFO(bkgr_poll.hTrc, "no data in event:%d", i);
+        TRC_INFO(reactor.hTrc, "no data in event:%d", i);
       }
     }
   }
   return NULL;
 }
 
-void POLL_DispatchAbort()
+void Reactor_DispatchAbort()
 {
 	// TODO
 }
@@ -182,7 +182,7 @@ void POLL_DispatchAbort()
 static const char *pPollCmd="poll";
 
 /** monitor command called from in BKGR main init function */
-BOOL POLL_MonCmd(void * dummy, char * cmdLine)
+BOOL Reactor_MonCmd(void * dummy, char * cmdLine)
 {
 	UINT8 argc;
 	char** argv;
@@ -190,8 +190,8 @@ BOOL POLL_MonCmd(void * dummy, char * cmdLine)
   static const char *pCmdToggleTrace = "t";
   if ((argc == 2) && (0 == strcmp(argv[1], pCmdToggleTrace)))
   {
-    MON_WriteInfof("\nTrace level set to %d", bkgr_poll.traceLevel);
-    bkgr_poll.traceLevel = TRC_SetTraceLevel(bkgr_poll.hTrc, bkgr_poll.traceLevel);
+    MON_WriteInfof("\nTrace level set to %d", reactor.traceLevel);
+    reactor.traceLevel = TRC_SetTraceLevel(reactor.hTrc, reactor.traceLevel);
   }
   else
   {
@@ -200,11 +200,11 @@ BOOL POLL_MonCmd(void * dummy, char * cmdLine)
   return TRUE;
 }
 
-void POLL_Init()
+void Reactor_Init()
 {
-  bzero(&bkgr_poll, sizeof(bkgr_poll));
-  bkgr_poll.epollfd = epoll_create(POLL_NOF);
-  bkgr_poll.hTrc=TRC_AddTraceGroup((char *)pPollName);
+  bzero(&reactor, sizeof(reactor));
+  reactor.epollfd = epoll_create(REACTOR_NOF);
+  reactor.hTrc=TRC_AddTraceGroup((char *)pPollName);
 
 }
 

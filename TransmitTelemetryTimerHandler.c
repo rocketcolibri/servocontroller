@@ -19,7 +19,7 @@
 #include "base/GEN.h"
 #include "base/AD.h"
 #include "base/DBG.h"
-#include "base/POLL.h"
+#include "base/Reactor.h"
 
 #include "Connection.h"
 #include "ConnectionContainer.h"
@@ -49,7 +49,7 @@ TransmitTelemetryTimerHandlerObject_t NewTransmitTelemetryTimerHandler(Connectio
 	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = malloc(sizeof(transmitTelemetryTimerHandler_t));
 	bzero(pTransmitTelemetryTimerHandler, sizeof(pTransmitTelemetryTimerHandler));
 	pTransmitTelemetryTimerHandler->hTransmitTelemetryTimerPoll
-		= POLL_AddReadFd(TIMERFD_Create(100*1000), TransmitTelemetryTimerHandler, pTransmitTelemetryTimerHandler, "TransmitTelemetryHanlder");
+		= Reactor_AddReadFd(TIMERFD_Create(100*1000), TransmitTelemetryTimerHandler, pTransmitTelemetryTimerHandler, "TransmitTelemetryHanlder");
 
 	return (TransmitTelemetryTimerHandlerObject_t)pTransmitTelemetryTimerHandler;
 }
@@ -57,6 +57,6 @@ TransmitTelemetryTimerHandlerObject_t NewTransmitTelemetryTimerHandler(Connectio
 void DeleteTransmitTelemetryTimerHandler(TransmitTelemetryTimerHandlerObject_t deleteTransmitTelemetryHandlerObject)
 {
 	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = (transmitTelemetryTimerHandler_t *)deleteTransmitTelemetryHandlerObject;
-	POLL_RemoveFdAndClose(pTransmitTelemetryTimerHandler->hTransmitTelemetryTimerPoll);
+	Reactor_RemoveFdAndClose(pTransmitTelemetryTimerHandler->hTransmitTelemetryTimerPoll);
 	free(pTransmitTelemetryTimerHandler);
 }

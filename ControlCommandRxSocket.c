@@ -17,7 +17,7 @@
 
 #include "base/GEN.h"
 #include "base/DBG.h"
-#include "base/POLL.h"
+#include "base/Reactor.h"
 #include "base/AD.h"
 #include "base/TRC.h"
 
@@ -119,7 +119,7 @@ ControlCommandRxSocketObject_t NewControlCommandRxSocket(ConnectionContainerObje
 	getControlCommandRx_t *pControlCommandRx = malloc(sizeof(getControlCommandRx_t));
 	bzero(pControlCommandRx, sizeof(pControlCommandRx));
 	pControlCommandRx->connectionContainer = pConnectionContainerObject;
-	pControlCommandRx->hControlCmdRxPoll = POLL_AddReadFd(GetControlCmdSocket(),
+	pControlCommandRx->hControlCmdRxPoll = Reactor_AddReadFd(GetControlCmdSocket(),
 			ControlCommandRxSocketHandler, pControlCommandRx, "ControlCmdRx");
 	pControlCommandRx->hTrc = TRC_AddTraceGroup("rxSocket");
 	return (ControlCommandRxSocketObject_t)pControlCommandRx;
@@ -129,8 +129,8 @@ void DeleteControlCommandRxSocket(ControlCommandRxSocketObject_t controlCommandR
 {
   getControlCommandRx_t *pControlCommandRx =
 			(getControlCommandRx_t *) controlCommandRxHandlerObject;
-	POLL_RemoveFdAndClose(pControlCommandRx->hControlCmdRxPoll);
-	POLL_RemoveFdAndClose(pControlCommandRx->hTimeoutControlCmdRxPoll);
+	Reactor_RemoveFdAndClose(pControlCommandRx->hControlCmdRxPoll);
+	Reactor_RemoveFdAndClose(pControlCommandRx->hTimeoutControlCmdRxPoll);
 	DeleteConnectionContainer(pControlCommandRx->connectionContainer);
 	free(controlCommandRxHandlerObject);
 }

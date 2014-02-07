@@ -19,12 +19,12 @@
 /**
  * init POLL module
  */
-extern void POLL_Init();
+extern void Reactor_Init();
 
 /**
  * monitor command called from in BKGR main init function
  */
-extern BOOL POLL_MonCmd(void * dummy, char * cmdLine);
+extern BOOL Reactor_MonCmd(void * dummy, char * cmdLine);
 
 /**
  * @short BKGR_Functions Typ
@@ -33,7 +33,7 @@ extern BOOL POLL_MonCmd(void * dummy, char * cmdLine);
  * a parameter with the file descriptor and a pointer to the data of the consumer
  *
  */
-typedef void (* POLL_CallbackFunction_t)(int fd, void *pData);
+typedef void (* Reactor_CallbackFunction_t)(int fd, void *pData);
 
 /**
  * @short Add a file descriptor to the poll thread
@@ -46,20 +46,20 @@ typedef void (* POLL_CallbackFunction_t)(int fd, void *pData);
  * @param pData void pointer to the data of the consumer
  * @param pDescription description for trace
  */
-extern void * POLL_AddReadFd(int fd, POLL_CallbackFunction_t pCallbackFn,void *pData, const char *pDescription);
+extern void * Reactor_AddReadFd(int fd, Reactor_CallbackFunction_t pCallbackFn,void *pData, const char *pDescription);
 
 /**
  * @short remove a file descriptor from the poll thread.
  * @param pPollDataHandle
  */
-extern void POLL_RemoveFd(void *pPollDataHandle);
+extern void Reactor_RemoveFd(void *pPollDataHandle);
 
 /**
  * @short remove a file descriptor from the poll list and close the file
  *
  * @param pPollDataHandle
  */
-extern void POLL_RemoveFdAndClose(void *pPollDataHandle);
+extern void Reactor_RemoveFdAndClose(void *pPollDataHandle);
 
 /**
  * @short Dispatch function
@@ -67,18 +67,18 @@ extern void POLL_RemoveFdAndClose(void *pPollDataHandle);
  * endless loop with a polling wait that calles the Event handler as soon as a
  * file description in the poll list is ready.
  */
-extern void* POLL_Dispatch();
+extern void* Reactor_Dispatch();
 
 /**
  * quits the endless poll loop
  */
-extern void POLL_DispatchAbort();
+extern void Reactor_DispatchAbort();
 
 /**
  * Same as POLL_RemoveFdAndClose, but the pPollDataHandle handle is set to NULL
  * @param pPollDataHandle
  */
-#define POLL_RemoveFdAndCloseAndNull(pPollDataHandle) { BKGR_POLL_RemoveFdAndClose(pPollDataHandle); pPollDataHandle=NULL;}
+#define Reactor_RemoveFdAndCloseAndNull(pPollDataHandle) { BKGR_POLL_RemoveFdAndClose(pPollDataHandle); pPollDataHandle=NULL;}
 
 /**
  * @short Create a timer file descriptor

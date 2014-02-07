@@ -18,7 +18,7 @@
 #include "base/GEN.h"
 #include "base/DBG.h"
 #include "base/TRC.h"
-#include "base/POLL.h"
+#include "base/Reactor.h"
 #include "base/AD.h"
 
 #include "Connection.h"
@@ -243,7 +243,7 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
     pConn->srcAddress = *pSrcAddr;
     pConn->state = CONN_IDLE;
     pConn->hTrc = hTrcSocket; // inherits the trace handle from the socket
-    pConn->hConnectionTimeoutPoll = POLL_AddReadFd(TIMERFD_Create(40 * 1000),
+    pConn->hConnectionTimeoutPoll = Reactor_AddReadFd(TIMERFD_Create(40 * 1000),
         ConnectionTimeoutHandler, pConn, "ConnectionTimeoutRx");
 
     return (ConnectionObject_t)pConn;

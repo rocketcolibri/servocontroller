@@ -13,7 +13,7 @@
 #include "base/AD.h"
 #include "base/MON.h"
 #include "base/DBG.h"
-#include "base/POLL.h"
+#include "base/Reactor.h"
 #include "base/TRC.h"
 
 #include "Connection.h"
@@ -28,10 +28,10 @@ int main(int argc, char**argv)
 	DBG_LOG_ENTRY("Starting ServoController");
 
 	DBG_Init();
-	POLL_Init();
+	Reactor_Init();
 	MON_Init();
 	TRC_Init();
-	MON_AddMonCmd("poll", POLL_MonCmd, 0 );
+	MON_AddMonCmd("poll", Reactor_MonCmd, 0 );
 	MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
 
 	ServoDriverRegister(ServoDriverRPiSetServos, NULL);
@@ -40,7 +40,7 @@ int main(int argc, char**argv)
 	ControlCommandRxSocketObject_t controlCommandRxSocketObject = NewControlCommandRxSocket(connectionContainerObject);
 	TransmitTelemetryTimerHandlerObject_t tranmitTelemetryTimerHandlerObject = NewTransmitTelemetryTimerHandler(connectionContainerObject);
 
-	POLL_Dispatch();
+	Reactor_Dispatch();
 
 	DeleteControlCommandRxSocket(controlCommandRxSocketObject);
 	DeleteTransmitTelemetryTimerHandler(tranmitTelemetryTimerHandlerObject);

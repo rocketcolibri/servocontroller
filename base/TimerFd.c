@@ -25,7 +25,7 @@
 #include "GEN.h"
 #include "DBG.h"
 #include "TRC.h"
-#include "POLL.h"
+#include "Reactor.h"
 
 /**
  * @short Create a timer file descriptor

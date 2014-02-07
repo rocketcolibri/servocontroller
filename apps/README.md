@@ -8,3 +8,6 @@ from:  https://github.com/json-c/json-c
 
 ServoBlaster:Servo driver for Raspberry Pi PWM hardware
 from: git clone https://github.com/richardghirst/PiBits.git
+
+minunit: minimal C uint test framework for C
+from: https://github.com/siu/minunit

@@ -156,7 +156,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="Tools/|RtspServer/|ServoBlaster/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry excluding="Tools/*|RtspServer/*|ServoBlaster/*" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -184,19 +184,25 @@
 	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 	<storageModule moduleId="scannerConfiguration">
 		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679;cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.406250166;cdt.managedbuild.tool.gnu.cpp.compiler.input.841988776">
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221;cdt.managedbuild.config.gnu.exe.debug.1938801221.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1082579690;cdt.managedbuild.tool.gnu.cpp.compiler.input.1250344768">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221;cdt.managedbuild.config.gnu.exe.debug.1938801221.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1837622592;cdt.managedbuild.tool.gnu.c.compiler.input.240399541">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221;cdt.managedbuild.config.gnu.exe.debug.1938801221.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1082579690;cdt.managedbuild.tool.gnu.cpp.compiler.input.1250344768">
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679;cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.406250166;cdt.managedbuild.tool.gnu.cpp.compiler.input.841988776">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679;cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1978074277;cdt.managedbuild.tool.gnu.c.compiler.input.1418789167">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1659558126;cdt.managedbuild.config.gnu.exe.release.1659558126.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1246035802;cdt.managedbuild.tool.gnu.cpp.compiler.input.757408384">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.110598383;cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.110598383.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1218523124;cdt.managedbuild.tool.gnu.c.compiler.input.229320610">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.110598383;cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.110598383.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1397187440;cdt.managedbuild.tool.gnu.cpp.compiler.input.1413663271">
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
 		</scannerConfigBuildInfo>
 		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1659558126;cdt.managedbuild.config.gnu.exe.release.1659558126.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.2109377611;cdt.managedbuild.tool.gnu.c.compiler.input.446371495">

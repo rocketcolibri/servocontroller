@@ -8,8 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
--include ServoBlaster/subdir.mk
--include RtspServer/subdir.mk
+-include base/subdir.mk
 -include subdir.mk
 -include objects.mk
 

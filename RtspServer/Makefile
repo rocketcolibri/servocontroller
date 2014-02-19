@@ -21,3 +21,20 @@ all: /usr/include/libv4l2.h /usr/include/liveMedia/liveMedia.hh $(TARGETS)
 clean:
 	rm -f $(TARGETS)
 
+
+.PHONY: all install uninstall
+
+install: h264_v4l2_rtspserver
+	[ "`id -u`" = "0" ] || { echo "Must be run as root"; exit 1; }
+	cp -f h264_v4l2_rtspserver /usr/local/sbin
+	cp -f init-script /etc/init.d/rtspserver
+	chmod 755 /etc/init.d/rtspserver
+	update-rc.d rtspserver defaults 92 08
+	/etc/init.d/rtspserver start
+
+uninstall:
+	[ "`id -u`" = "0" ] || { echo "Must be run as root"; exit 1; }
+	[ -e /etc/init.d/rtspserver ] && /etc/init.d/rtspserver stop || :
+	update-rc.d rtspserver remove
+	rm -f /usr/local/sbin/h264_v4l2_rtspserver
+	rm -f /etc/init.d/rtspserver

@@ -32,4 +32,8 @@ extern ConnectionObject_t NewConnection(const ConnectionContainerObject_t contai
  */
 extern void DeleteConnection(ConnectionObject_t *pConn);
 
+// getter
+extern struct sockaddr_in* ConnectionGetAddress(ConnectionObject_t connectionObject);
+extern char* ConnectionGetUserName(ConnectionObject_t connectionObject);
+
 #endif /* CONNECTION_H_ */

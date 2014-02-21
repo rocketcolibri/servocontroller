@@ -47,4 +47,16 @@ extern void ConnectionContainerAddConnection(ConnectionContainerObject_t connect
 extern void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr);
  */
 
+/**
+ * Add a connection to the connection container.
+ * @param connectionContainerObject, this
+ * @return AVL tree containing all connections
+ */
+extern AVLTREE ConnectionContainerGetAllConnections(ConnectionContainerObject_t connectionContainerObject);
+
+extern ConnectionContainerObject_t ConnectionContainerGetActiveConnection(ConnectionContainerObject_t connectionContainerObject);
+
+// setter
+extern void ConnectionContainerSetActiveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t newActiveConnection);
+
 #endif /* CONNECTIONCONTAINER_H_ */

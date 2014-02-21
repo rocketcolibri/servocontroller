@@ -58,12 +58,11 @@ static int GetSendSocket(const char *pIpAddress)
 }
 
 /**
- * @short converts the unsigned short range -32768..32767 to the servo range (50..250
+ * @short converts the unsigned short range -32768..32767 to the servo range (0..1000)
  */
 static SINT32 Convert(SINT16 axis)
 {
-	SINT32 c = axis/327;
-	c +=150;
+	SINT32 c = (axis + 32768) / 0xFFFF;
 	return c;
 }
 

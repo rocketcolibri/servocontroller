@@ -109,6 +109,8 @@ static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketOb
 
 		buffer[rxLen]=0;
 		HandleJsonMessage(pConn, buffer);
+  		// TODO set everey connection to the currently active, this must be changed
+		ConnectionContainerSetActiveConnection(pControlCommandRxSocket->connectionContainer, pConn);
 
 		TRC_INFO(pControlCommandRxSocket->hTrc, "received %d bytes containing:%s from %s",rxLen, buffer, inet_ntoa(srcAddr.sin_addr));
 	}

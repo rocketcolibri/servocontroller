@@ -189,7 +189,10 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
         {
           if (0 == strcmp(json_object_get_string(command), "cdc"))
           {
+
+        	pConn->lastSequence = sequence;
           	TRC_INFO(pConn->hTrc, "cdc: user:%s sequence:%d", pConn->pUserName, pConn->lastSequence);
+
           	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
             MessageSinkCdc_t *pMsgCdc = NewMessageSinkCdc(jobj);
             pServoDriver->SetServos(GetNofChannel(pMsgCdc), GetChannelVector(pMsgCdc));
@@ -219,10 +222,18 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
       }
       json_object_put(seqObj);
     }
+    else
+    {
+    	DBG_MAKE_ENTRY(FALSE);
+    }
     json_object_put(jobj);
   }
-  json_tokener_free(tok);
+  else
+  {
+   	DBG_MAKE_ENTRY(FALSE);
   }
+  json_tokener_free(tok);
+}
 
   static void ConnectionTimeoutHandler(int timerfd20ms, void *pData)
   {
@@ -248,3 +259,15 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
 
     return (ConnectionObject_t)pConn;
   }
+
+  // getter
+  struct sockaddr_in* ConnectionGetAddress(ConnectionObject_t connectionObject)
+  {
+	  return &((Connection_t*) connectionObject)->srcAddress;
+  }
+
+  char* ConnectionGetUserName(ConnectionObject_t connectionObject)
+  {
+  	  return &((Connection_t*) connectionObject)->pUserName;
+  }
+

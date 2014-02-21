@@ -39,7 +39,7 @@ static int IpCmp(DSKEY ip1, DSKEY ip2)
  */
 typedef struct ConnectionContainer
 {
-  ConnectionObject_t *pActiveConnectionObject; // reference to the currently active connection
+  ConnectionObject_t activeConnectionObject; // reference to the currently active connection
   AVLTREE hAllConnections; // storage for the connection objects
 } ConnectionContainer_t;
 
@@ -63,10 +63,10 @@ BOOL ConnectionContainerHandover(ConnectionContainerObject_t connectionContainer
   ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(pConnectionContainer);
 	DBG_ASSERT(pNewSrcAddr);
-	ConnectionContainerObject_t pNewActive = avlFind(pConnectionContainer->hAllConnections, (DSKEY)pNewSrcAddr->sin_addr.s_addr);
-	if(pNewActive)
+	ConnectionObject_t newActiveConnection = avlFind(pConnectionContainer->hAllConnections, (DSKEY)pNewSrcAddr->sin_addr.s_addr);
+	if(newActiveConnection)
 	{
-		pConnectionContainer->pActiveConnectionObject = pNewActive;
+		pConnectionContainer->activeConnectionObject = newActiveConnection;
 	}
 	return FALSE;
 }
@@ -95,4 +95,26 @@ void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionC
 	DBG_ASSERT(pConnectionContainer);
 	DBG_ASSERT(connectionObject);
 	avlRemoveByKey(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
+}
+
+AVLTREE ConnectionContainerGetAllConnections(ConnectionContainerObject_t connectionContainerObject)
+{
+	ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(pConnectionContainer);
+	return pConnectionContainer->hAllConnections;
+}
+
+ConnectionObject_t ConnectionContainerGetActiveConnection(ConnectionContainerObject_t connectionContainerObject)
+{
+	ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(pConnectionContainer);
+	return pConnectionContainer->activeConnectionObject;
+}
+
+void ConnectionContainerSetActiveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t newActiveConnection)
+{
+	ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(pConnectionContainer);
+	DBG_ASSERT(newActiveConnection);
+	pConnectionContainer->activeConnectionObject = newActiveConnection;
 }

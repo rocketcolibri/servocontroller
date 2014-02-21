@@ -13,13 +13,13 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 . /lib/init/vars.sh
 
-OPTS="&"
+OPTS=""
 
 res=0
 
 case "$1" in
   start)
-	/usr/local/sbin/ServoController $OPTS >/dev/null
+	/usr/local/sbin/ServoController $OPTS &
 	;;
   restart|reload|force-reload)
 	killall ServoController

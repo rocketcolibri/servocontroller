@@ -40,8 +40,8 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 			\n\tc\tconfing file", argv[0]);
 	pArguments->pUsage = strdup(pTmp);
 
-    char c;
-	while (-1 != (c = getopt (argc, argv, "mc:")))
+	int c=0;
+	while ((c = getopt(argc, argv, "mc:")) != -1)
 	{
 		switch (c)
 		{
@@ -56,6 +56,7 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 			pArguments->parseError = TRUE;
 			break;
 		}
+		fprintf(stderr, "c:%c=%d ", c,c);
 	}
 
 	/* Now set the values of "argc" and "argv" to the values after the

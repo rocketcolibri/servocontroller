@@ -13,17 +13,18 @@
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 . /lib/init/vars.sh
 
-OPTS="&"
+OPTS=""
 
 res=0
 
 case "$1" in
   start)
-	/usr/local/sbin/h264_v4l2_rtspserver $OPTS >/dev/null
+	/usr/local/sbin/h264_v4l2_rtspserver $OPTS  > /dev/null  &
 	;;
   restart|reload|force-reload)
 	killall h264_v4l2_rtspserver
 	/usr/local/sbin/h264_v4l2_rtspserver $OPTS >/dev/null
+	rm /tmp/rtspserver.url
 	;;
   stop)
 	killall h264_v4l2_rtspserver

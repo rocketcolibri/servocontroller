@@ -14,6 +14,6 @@ cd ../Raspian_Install
 cp -f ../Debug_Rpi/ServoController /usr/local/sbin
 cp -f init-script.servocontroller /etc/init.d/servocontroller
 	chmod 755 /etc/init.d/servocontroller
-	update-rc.d servocontroller defaults 99 08
+	update-rc.d servocontroller defaults 92 08
 	/etc/init.d/servocontroller start
 

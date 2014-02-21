@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../CommandLineArguments.c \
 ../Connection.c \
 ../ConnectionContainer.c \
 ../ControlCommandRxSocket.c \
@@ -14,6 +15,7 @@ C_SRCS += \
 ../main.c 
 
 OBJS += \
+./CommandLineArguments.o \
 ./Connection.o \
 ./ConnectionContainer.o \
 ./ControlCommandRxSocket.o \
@@ -24,6 +26,7 @@ OBJS += \
 ./main.o 
 
 C_DEPS += \
+./CommandLineArguments.d \
 ./Connection.d \
 ./ConnectionContainer.d \
 ./ControlCommandRxSocket.d \

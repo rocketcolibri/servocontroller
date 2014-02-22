@@ -35,6 +35,7 @@ typedef struct ConnectionContainer ConnectionContainer_t;
 typedef struct Connection
 {
   struct sockaddr_in srcAddress;
+  int socketFd;
   char *pUserName;
   connectionState_t state;
   UINT32 lastSequence;
@@ -147,12 +148,12 @@ static void Connection_ExecuteEvent(Connection_t *pArpingInst,
 
 void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonString)
 {
-  Connection_t *pConn = (Connection_t*) connectionObject;
+  Connection_t *this = (Connection_t*) connectionObject;
   struct json_tokener *tok = json_tokener_new();
   struct json_object * jobj = json_tokener_parse_ex(tok, pJsonString, strlen(pJsonString));
   if (!jobj)
   {
-    TRC_ERROR(pConn->hTrc,
+    TRC_ERROR(this->hTrc,
         "JSON error: %s %s", (char *)json_tokener_error_desc(json_tokener_get_error(tok)), (char *)pJsonString);
     return;
   }
@@ -162,15 +163,15 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
     json_object *pUserObj = json_object_object_get(jobj, "user");
     if (pUserObj)
     {
-      if (NULL == pConn->pUserName)
+      if (NULL == this->pUserName)
       {
-        pConn->pUserName = strdup(json_object_get_string(pUserObj));
+        this->pUserName = strdup(json_object_get_string(pUserObj));
       }
       else
       {
         // user name must remain the same
         DBG_ASSERT_NO_RES(
-            0==strcmp(pConn->pUserName, json_object_get_string(pUserObj)));
+            0==strcmp(this->pUserName, json_object_get_string(pUserObj)));
       }
       json_object_put(pUserObj);
     }
@@ -179,7 +180,7 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
     if (seqObj)
     {
       int sequence = json_object_get_int(seqObj);
-      if (pConn->lastSequence < sequence)
+      if (this->lastSequence < sequence)
       {
         // here comes the interesting part, parsing the command and call the command process function
 
@@ -190,8 +191,8 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
           if (0 == strcmp(json_object_get_string(command), "cdc"))
           {
 
-        	pConn->lastSequence = sequence;
-          	TRC_INFO(pConn->hTrc, "cdc: user:%s sequence:%d", pConn->pUserName, pConn->lastSequence);
+        	this->lastSequence = sequence;
+          	TRC_INFO(this->hTrc, "cdc: user:%s sequence:%d", this->pUserName, this->lastSequence);
 
           	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
             MessageSinkCdc_t *pMsgCdc = NewMessageSinkCdc(jobj);
@@ -208,7 +209,7 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
           }
           else
           {
-            TRC_ERROR(pConn->hTrc,
+            TRC_ERROR(this->hTrc,
                 "JSON unknown command: %s", json_object_get_string(command));
             return;
           }
@@ -217,8 +218,8 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
       }
       else
       {
-        TRC_ERROR(pConn->hTrc,
-            "JSON invalid sequence number last:% current:%", pConn->lastSequence, sequence);
+        TRC_ERROR(this->hTrc,
+            "JSON invalid sequence number last:% current:%", this->lastSequence, sequence);
       }
       json_object_put(seqObj);
     }
@@ -237,27 +238,28 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
 
   static void ConnectionTimeoutHandler(int timerfd20ms, void *pData)
   {
-    Connection_t *pConn = (Connection_t *) pData;
-    DBG_ASSERT(pConn);
+    Connection_t *this = (Connection_t *) pData;
+    DBG_ASSERT(this);
     //fprintf(stderr, "C");
     TIMERFD_Read(timerfd20ms);
   }
 
   ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnectionObject,
-      const struct sockaddr_in *pSrcAddr, UINT8 hTrcSocket)
+      const struct sockaddr_in *pSrcAddr, const int socketFd,  UINT8 hTrcSocket)
   {
     DBG_ASSERT(containerConnectionObject);
     DBG_ASSERT(pSrcAddr);
-    Connection_t *pConn = malloc(sizeof(Connection_t));
-    bzero(pConn, sizeof(Connection_t));
-    pConn->connectionContainer = containerConnectionObject;
-    pConn->srcAddress = *pSrcAddr;
-    pConn->state = CONN_IDLE;
-    pConn->hTrc = hTrcSocket; // inherits the trace handle from the socket
-    pConn->hConnectionTimeoutPoll = Reactor_AddReadFd(TIMERFD_Create(40 * 1000),
-        ConnectionTimeoutHandler, pConn, "ConnectionTimeoutRx");
+    Connection_t *this = malloc(sizeof(Connection_t));
+    bzero(this, sizeof(Connection_t));
+    this->connectionContainer = containerConnectionObject;
+    this->srcAddress = *pSrcAddr;
+    this->socketFd = socketFd;
+    this->state = CONN_IDLE;
+    this->hTrc = hTrcSocket; // inherits the trace handle from the socket
+    this->hConnectionTimeoutPoll = Reactor_AddReadFd(TIMERFD_Create(40 * 1000),
+        ConnectionTimeoutHandler, this, "ConnectionTimeoutRx");
 
-    return (ConnectionObject_t)pConn;
+    return (ConnectionObject_t)this;
   }
 
   // getter
@@ -266,8 +268,13 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
 	  return &((Connection_t*) connectionObject)->srcAddress;
   }
 
+  int ConnectionGetSocket(ConnectionObject_t connectionObject)
+  {
+	  return ((Connection_t*) connectionObject)->socketFd;
+  }
+
   char* ConnectionGetUserName(ConnectionObject_t connectionObject)
   {
-  	  return &((Connection_t*) connectionObject)->pUserName;
+  	  return ((Connection_t*) connectionObject)->pUserName;
   }
 

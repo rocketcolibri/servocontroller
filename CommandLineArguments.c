@@ -31,14 +31,14 @@ typedef struct
    */
 CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 {
-	CommandLineArguments_t *pArguments = malloc(sizeof(CommandLineArguments_t));
-	bzero(pArguments, sizeof(CommandLineArguments_t));
+	CommandLineArguments_t *this = malloc(sizeof(CommandLineArguments_t));
+	bzero(this, sizeof(CommandLineArguments_t));
 
 	char pTmp[1000];
 	snprintf(pTmp, sizeof(pTmp), "Usage: %s [-m] [-c <cfg-file>] \
 			\n\tm\tenable debug monitor \
 			\n\tc\tconfing file", argv[0]);
-	pArguments->pUsage = strdup(pTmp);
+	this->pUsage = strdup(pTmp);
 
 	int c=0;
 	while ((c = getopt(argc, argv, "mc:")) != -1)
@@ -46,14 +46,14 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 		switch (c)
 		{
 		case 'm':
-			pArguments->monitorEnabled = TRUE;
+			this->monitorEnabled = TRUE;
 			break;
 		case 'c':
-			pArguments->pConfigFile = strdup(optarg);
+			this->pConfigFile = strdup(optarg);
 			break;
 		case '?':
 		default:
-			pArguments->parseError = TRUE;
+			this->parseError = TRUE;
 			break;
 		}
 		fprintf(stderr, "c:%c=%d ", c,c);
@@ -67,7 +67,7 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 	/* Now do something with the remaining command-line arguments, if
 	   necessary. */
 
-	return pArguments;
+	return this;
 }
 
 BOOL CommandLineArguments_getMonitorEnable(CommandLineArgumentsObject_t obj)

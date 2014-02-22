@@ -17,6 +17,7 @@
 #include <json-c/json.h>
 
 #include "base/GEN.h"
+#include "base/TRC.h"
 #include "base/AD.h"
 #include "base/DBG.h"
 #include "base/Reactor.h"
@@ -26,49 +27,70 @@
 #include "TransmitTelemetryTimerHandler.h"
 #define TRANSMIT_TELEMETRY_CMD_PORT 30002
 
-/**
- * Creates a ControlCmd socket and binds to the port.
- */
-static int GetTransmitTelemetryCmdSocket()
-{
-	int sock, flag = 1;
-	struct sockaddr_in sock_name;
-
-	/* Create a datagram socket*/
-	sock = socket(PF_INET, SOCK_DGRAM, 0);
-	/* Setting the socket to non blocking*/
-	fcntl(sock, F_SETFL, O_NONBLOCK);
-
-	if (sock < 0)
-	{
-		perror("socket");
-		exit(EXIT_FAILURE);
-	}
-	/* Set the reuse flag. */
-	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag)) < 0)
-	{
-		perror("setsockopt(SOL_SOCKET, SO_REUSEADDR)");
-		DBG_MAKE_ENTRY(TRUE);
-	}
-	/* Give the socket a name. */
-	sock_name.sin_family = AF_INET;
-	sock_name.sin_port = htons(TRANSMIT_TELEMETRY_CMD_PORT);
-	sock_name.sin_addr.s_addr = htonl(INADDR_ANY );
-	if (bind(sock, (struct sockaddr *) &sock_name, sizeof(sock_name)) < 0)
-	{
-		perror("bind");
-		DBG_MAKE_ENTRY(TRUE);
-	}
-	return sock;
-}
 
 /** data structure of a TransmitTelemetryTimerHanlder object */
 typedef struct
 {
-	int trasmitTelemetryFd;
+	int sequenceNumber;
+	UINT8 hTrc;
 	ConnectionContainerObject_t connectionContainerObject;
 	void *hTransmitTelemetryTimerPoll;
 } transmitTelemetryTimerHandler_t;
+
+static struct json_object* GetJsonUserAndIp(const char *pUser, struct sockaddr_in* ipAddress)
+{
+	json_object * jobj = json_object_new_object();
+	json_object_object_add(jobj, "user", json_object_new_string( pUser));
+	json_object_object_add(jobj, "ip", json_object_new_string( inet_ntoa (ipAddress->sin_addr)));
+	return jobj;
+}
+
+static char * GetJsonTrasmitTelemetryMsg(int sequenceNumber, AVLTREE connections, ConnectionObject_t activeConnection)
+{
+	 json_object * jobj = json_object_new_object();
+	 json_object_object_add(jobj, "v", json_object_new_int(1));
+	 json_object_object_add(jobj, "cmd", json_object_new_string("tdc"));
+	 json_object_object_add(jobj, "sequence", json_object_new_int( sequenceNumber));
+	 if(activeConnection)
+	 {
+		 json_object_object_add(jobj, "activeip",
+			 GetJsonUserAndIp( ConnectionGetUserName(activeConnection),
+					 	 	   ConnectionGetAddress(activeConnection)));
+	 }
+	  json_object *jarray = json_object_new_array();
+	  void addConnectionToArray(ConnectionObject_t connection)
+	  {
+		  if(activeConnection != connection)
+		  {
+			  json_object_array_add(jarray,
+							  GetJsonUserAndIp( ConnectionGetUserName(connection),
+							  					ConnectionGetAddress(connection)));
+		  }
+	  }
+	  avlWalkAscending(connections, addConnectionToArray);
+	  json_object_object_add(jobj,"availip", jarray);
+	  char *pJsonStr = strdup(json_object_to_json_string(jobj));
+	  json_object_put(jobj);
+	  return pJsonStr;
+}
+
+static void SendToAll(transmitTelemetryTimerHandler_t *this, AVLTREE connections, const char *pJsonMsg)
+{
+  TRC_INFO(this->hTrc, "%s", pJsonMsg);
+  void addConnectionToArray(ConnectionObject_t connection)
+  {
+	  struct sockaddr_in sendSock;
+	  memcpy(&sendSock, ConnectionGetAddress(connection), sizeof(sendSock));
+	  sendSock.sin_family = AF_INET;
+	  sendSock.sin_port = htons(TRANSMIT_TELEMETRY_CMD_PORT);
+	  sendSock.sin_addr.s_addr = htonl(INADDR_ANY );
+
+	  sendto(ConnectionGetSocket(connection), pJsonMsg, strlen(pJsonMsg), 0,
+			  (struct sockaddr*)ConnectionGetAddress(connection) , sizeof(struct sockaddr_in));
+
+  }
+  avlWalkAscending(ConnectionContainerGetAllConnections(this->connectionContainerObject), addConnectionToArray);
+}
 
 /**
  * @Override POLL_CallbackFunction_t
@@ -80,31 +102,14 @@ static void TransmitTelemetryTimerHandler(int socketfd, TransmitTelemetryTimerHa
 	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimer =(transmitTelemetryTimerHandler_t *)transmitTelemetryTimerHandlerObject;
 	DBG_ASSERT(pTransmitTelemetryTimer);
 
-	ConnectionObject_t activeConnection = ConnectionContainerGetActiveConnection(pTransmitTelemetryTimer->connectionContainerObject);
+	char *pJsonMsg = GetJsonTrasmitTelemetryMsg(
+			pTransmitTelemetryTimer->sequenceNumber++,
+			ConnectionContainerGetAllConnections(pTransmitTelemetryTimer->connectionContainerObject),
+			ConnectionContainerGetActiveConnection(pTransmitTelemetryTimer->connectionContainerObject));
 
-	AVLTREE connections = ConnectionContainerGetAllConnections(pTransmitTelemetryTimer->connectionContainerObject);
+	SendToAll(pTransmitTelemetryTimer, ConnectionContainerGetAllConnections(pTransmitTelemetryTimer->connectionContainerObject), pJsonMsg);
 
-	void printConnection(ConnectionObject_t connection)
-	{
-#if 0
-		if(activeConnection == connection)
-		{
-			fprintf(stderr, "\nActiveUser:%s", ConnectionGetUserName(connection));
-		}
-		else
-			fprintf(stderr, "\nPassiveUser:%s", ConnectionGetUserName(connection));
-#endif
-	}
-
-	if(avlSize(connections))
-		avlWalkAscending(connections, printConnection);
-	else
-		fprintf(stderr, ".");
-
-	if(activeConnection)
-	{
-		fprintf(stderr, "\nActiveUser:%s", ConnectionGetUserName(activeConnection));
-	}
+	free(pJsonMsg);
 	TIMERFD_Read(socketfd);
 }
 
@@ -113,18 +118,16 @@ TransmitTelemetryTimerHandlerObject_t NewTransmitTelemetryTimerHandler(Connectio
 	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = malloc(sizeof(transmitTelemetryTimerHandler_t));
 	bzero(pTransmitTelemetryTimerHandler, sizeof(pTransmitTelemetryTimerHandler));
 	pTransmitTelemetryTimerHandler->connectionContainerObject = connectionContainerObject;
+	pTransmitTelemetryTimerHandler->hTrc = TRC_AddTraceGroup("TelementryCmd");
 	pTransmitTelemetryTimerHandler->hTransmitTelemetryTimerPoll
 		= Reactor_AddReadFd(TIMERFD_Create(1000*1000), TransmitTelemetryTimerHandler, pTransmitTelemetryTimerHandler, "TransmitTelemetryHanlder");
-
-	// open UDP socket for the Transmit telemetry commands
-	pTransmitTelemetryTimerHandler->trasmitTelemetryFd = GetTransmitTelemetryCmdSocket();
 
 	return (TransmitTelemetryTimerHandlerObject_t)pTransmitTelemetryTimerHandler;
 }
 
 void DeleteTransmitTelemetryTimerHandler(TransmitTelemetryTimerHandlerObject_t deleteTransmitTelemetryHandlerObject)
 {
-	transmitTelemetryTimerHandler_t *pTransmitTelemetryTimerHandler = (transmitTelemetryTimerHandler_t *)deleteTransmitTelemetryHandlerObject;
-	Reactor_RemoveFdAndClose(pTransmitTelemetryTimerHandler->hTransmitTelemetryTimerPoll);
-	free(pTransmitTelemetryTimerHandler);
+	transmitTelemetryTimerHandler_t *this = (transmitTelemetryTimerHandler_t *)deleteTransmitTelemetryHandlerObject;
+	Reactor_RemoveFdAndClose(this->hTransmitTelemetryTimerPoll);
+	free(this);
 }

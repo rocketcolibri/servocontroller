@@ -98,7 +98,7 @@ static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketOb
 
 		if (!pConn)
 		{
-			pConn = NewConnection(pControlCommandRxSocket->connectionContainer, &srcAddr, pControlCommandRxSocket->hTrc);
+			pConn = NewConnection(pControlCommandRxSocket->connectionContainer, &srcAddr, socketfd, pControlCommandRxSocket->hTrc);
 			ConnectionContainerAddConnection(pControlCommandRxSocket->connectionContainer, pConn, &srcAddr);
 			TRC_INFO(pControlCommandRxSocket->hTrc, "connection created:%s",inet_ntoa(srcAddr.sin_addr));
 		}

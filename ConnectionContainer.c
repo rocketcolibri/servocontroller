@@ -45,76 +45,78 @@ typedef struct ConnectionContainer
 
 ConnectionContainerObject_t NewConnectionContainer()
 {
-	ConnectionContainer_t *pConnectioContainer = malloc(sizeof(ConnectionContainer_t));
-	bzero(pConnectioContainer, sizeof(ConnectionContainer_t));
-	pConnectioContainer->hAllConnections = avlNewTree(IpCmp, sizeof(UINT32), 0);
-	return (ConnectionContainerObject_t) pConnectioContainer;
+	ConnectionContainer_t *this = malloc(sizeof(ConnectionContainer_t));
+	bzero(this, sizeof(ConnectionContainer_t));
+	this->hAllConnections = avlNewTree(IpCmp, sizeof(UINT32), 0);
+	return (ConnectionContainerObject_t) this;
 }
 
 void DeleteConnectionContainer(ConnectionContainerObject_t connectionContainerObject)
 {
-  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
+  ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
 	// TODO:
 }
 
 BOOL ConnectionContainerHandover(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pNewSrcAddr)
 {
-  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
+  ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
 	DBG_ASSERT(pNewSrcAddr);
-	ConnectionObject_t newActiveConnection = avlFind(pConnectionContainer->hAllConnections, (DSKEY)pNewSrcAddr->sin_addr.s_addr);
+	ConnectionObject_t newActiveConnection = avlFind(this->hAllConnections, (DSKEY)pNewSrcAddr->sin_addr.s_addr);
 	if(newActiveConnection)
 	{
-		pConnectionContainer->activeConnectionObject = newActiveConnection;
+		this->activeConnectionObject = newActiveConnection;
 	}
 	return FALSE;
 }
 
 ConnectionContainerObject_t ConnectionContainerFindConnection(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pSrcAddr)
 {
-  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
+  ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
 	DBG_ASSERT(pSrcAddr);
-	return (ConnectionContainerObject_t)avlFind(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
+	return (ConnectionContainerObject_t)avlFind(this->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
 }
 
 void ConnectionContainerAddConnection(ConnectionContainerObject_t connectionContainerObject , ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr)
 {
-  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
+  ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
 	DBG_ASSERT(connectionObject);
 	DBG_ASSERT(pSrcAddr);
-	DBG_ASSERT(NULL == avlFind(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr));
-	avlInsert(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr, connectionObject);
+	DBG_ASSERT(NULL == avlFind(this->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr));
+	avlInsert(this->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr, connectionObject);
 }
 
 void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr)
 {
-  ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
+  ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
 	DBG_ASSERT(connectionObject);
-	avlRemoveByKey(pConnectionContainer->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
+	avlRemoveByKey(this->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
 }
 
 AVLTREE ConnectionContainerGetAllConnections(ConnectionContainerObject_t connectionContainerObject)
 {
-	ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
-	return pConnectionContainer->hAllConnections;
+	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
+	return this->hAllConnections;
 }
 
 ConnectionObject_t ConnectionContainerGetActiveConnection(ConnectionContainerObject_t connectionContainerObject)
 {
-	ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
-	return pConnectionContainer->activeConnectionObject;
+	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
+	return this->activeConnectionObject;
 }
 
-void ConnectionContainerSetActiveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t newActiveConnection)
+void ConnectionContainerSetActiveConnection(
+		ConnectionContainerObject_t connectionContainerObject,
+		ConnectionObject_t newActiveConnection)
 {
-	ConnectionContainer_t* pConnectionContainer = (ConnectionContainer_t*)connectionContainerObject;
-	DBG_ASSERT(pConnectionContainer);
+	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
 	DBG_ASSERT(newActiveConnection);
-	pConnectionContainer->activeConnectionObject = newActiveConnection;
+	this->activeConnectionObject = newActiveConnection;
 }

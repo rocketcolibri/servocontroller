@@ -54,8 +54,8 @@ ServoDriver_t *ServoDriverGetInstance()
 
 void ServoDriverRegister(void (* SetServos)(UINT32, UINT32 *), void *pServoDriverObject)
 {
-	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
-	TRC_INFO(pServoDriver->hTrc, "Servo driver registered");
-	pServoDriver->SetServos = SetServos;
-	pServoDriver->pServoDriverObject = pServoDriverObject;
+	ServoDriver_t *this = ServoDriverGetInstance();
+	TRC_INFO(this->hTrc, "Servo driver registered");
+	this->SetServos = SetServos;
+	this->pServoDriverObject = pServoDriverObject;
 }

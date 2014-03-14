@@ -19,6 +19,7 @@ typedef struct
 	BOOL monitorEnabled;
 	char *pConfigFile;
 	BOOL parseError;
+	BOOL execUnitTests;
 	char *pUsage;
 } CommandLineArguments_t;
 
@@ -37,7 +38,8 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 	char pTmp[1000];
 	snprintf(pTmp, sizeof(pTmp), "Usage: %s [-m] [-c <cfg-file>] \
 			\n\tm\tenable debug monitor \
-			\n\tc\tconfing file", argv[0]);
+			\n\tc\tconfing file\
+			\n\tu\texecute unit tests", argv[0]);
 	this->pUsage = strdup(pTmp);
 
 	int c=0;
@@ -50,6 +52,9 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 			break;
 		case 'c':
 			this->pConfigFile = strdup(optarg);
+			break;
+		case 'u':
+			this->execUnitTests = TRUE;
 			break;
 		case '?':
 		default:

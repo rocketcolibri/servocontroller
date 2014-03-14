@@ -24,6 +24,7 @@
 #include "TransmitTelemetryTimerHandler.h"
 #include "ServoDriver.h"
 #include "ServoDriverRPi.h"
+#include "ServoDriverMock.h"
 
 int main(int argc, char**argv)
 {
@@ -45,9 +46,12 @@ int main(int argc, char**argv)
 			MON_Init();
 			MON_AddMonCmd("poll", Reactor_MonCmd, 0 );
 			MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
+			ServoDriverRegister(ServoDriverMockSetServos, NULL);
 		}
-
-		ServoDriverRegister(ServoDriverRPiSetServos, NULL);
+		else
+		{
+			ServoDriverRegister(ServoDriverRPiSetServos, NULL);
+		}
 		ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();
 		ControlCommandRxSocketObject_t controlCommandRxSocketObject = NewControlCommandRxSocket(connectionContainerObject);
 		TransmitTelemetryTimerHandlerObject_t tranmitTelemetryTimerHandlerObject = NewTransmitTelemetryTimerHandler(connectionContainerObject);

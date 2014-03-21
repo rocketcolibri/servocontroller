@@ -41,9 +41,13 @@ static UINT32 oldChannels[MAX_SERVOS] = { 0,0,0,0,0,0,0,0};
 
 static void SetServo(UINT32 s, UINT32 pos)
 {
-	char cmd[64];
-	sprintf(cmd, "echo %d=%d > /dev/servoblaster", s, ConvertChannelToServoHw(pos));
-	if(0!=system(cmd))
+	FILE *f= fopen("/dev/servoblaster", "w");
+	if(f)
+	{
+		fprintf(f, "%d=%d\n", s, ConvertChannelToServoHw(pos));
+		fclose(f);
+	}
+	else
 	{
 		DBG_MAKE_ENTRY_FMT(TRUE, "no permissions to write to '/dev/servoblaster' (%d=%d)", s, ConvertChannelToServoHw(pos));
 	}

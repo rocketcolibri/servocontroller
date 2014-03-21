@@ -38,7 +38,7 @@ typedef struct
 static struct json_object* GetJsonUserAndIp(const char *pUser, struct sockaddr_in* ipAddress)
 {
 	json_object * jobj = json_object_new_object();
-	json_object_object_add(jobj, "user", json_object_new_string( pUser));
+	json_object_object_add(jobj, "user", json_object_new_string( pUser ? pUser : ""));
 	json_object_object_add(jobj, "ip", json_object_new_string( inet_ntoa (ipAddress->sin_addr)));
 	return jobj;
 }

@@ -60,7 +60,7 @@ int main(int argc, char**argv)
 		else
 		{
 			TRC_Log_Print(TRC_log, "Register RPi servo driver");
-			ServoDriverRegister(ServoDriverRPiSetServos, fopen("/dev/servoblaster","w"));
+			ServoDriverRegister(ServoDriverRPiSetServos, NULL);
 		}
 
 		ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();

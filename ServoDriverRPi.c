@@ -41,12 +41,9 @@ static UINT32 oldChannels[MAX_SERVOS] = { 0,0,0,0,0,0,0,0};
 
 static void SetServo(UINT32 s, UINT32 pos)
 {
-	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
-	if(pServoDriver->pServoDriverObject)
-	{
-		fprintf((FILE*)pServoDriver->pServoDriverObject, "%d=%d\n", s, ConvertChannelToServoHw(pos));
-	}
-	else
+	char cmd[64];
+	sprintf(cmd, "echo %d=%d > /dev/servoblaster", s, ConvertChannelToServoHw(pos));
+	if(0!=system(cmd))
 	{
 		DBG_MAKE_ENTRY_FMT(TRUE, "no permissions to write to '/dev/servoblaster' (%d=%d)", s, ConvertChannelToServoHw(pos));
 	}

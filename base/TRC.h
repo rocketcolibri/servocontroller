@@ -18,6 +18,7 @@
 #include "stdio.h"
 #include "GEN.h"
 
+
 extern char *TRC_varargs(const char *fmt, ...);
 
 /**
@@ -188,7 +189,7 @@ extern void TRC_File_Close(TRC_File_t* fileTrc);
 #define TRC_File_CloseAndNull(fileTrc) { TRC_File_Close(fileTrc); fileTrc=NULL;}
 
 /**
- * @short LOG Messag to the trace file
+ * @short write message to the trace file
  *
  * @param fileTrc
  * @param fmt
@@ -196,10 +197,20 @@ extern void TRC_File_Close(TRC_File_t* fileTrc);
 extern void TRC_File_Print(TRC_File_t* fileTrc, const char *fmt, ...);
 
 /**
+ * @short write log message (with timestamp and newline) to the trace file
+ *
+ * @param fileTrc
+ * @param fmt
+ */
+extern void TRC_Log_Print(TRC_File_t* fileTrc, const char *fmt, ...);
+
+/**
  * Macro that can be used to ease the use of TRC_File_Print
  */
 #define TRC_FILE_PRINT(trc, c...) {TRC_File_Print(trc, ##c);}
 
+/** globel trace file */
+extern TRC_File_t* TRC_log;
 
 /** @} */
 #endif

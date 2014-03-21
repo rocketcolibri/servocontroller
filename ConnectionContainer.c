@@ -16,6 +16,7 @@
 #include <json-c/json.h>
 
 #include "base/GEN.h"
+#include "base/TRC.h"
 #include "base/DBG.h"
 #include "base/Reactor.h"
 #include "base/AD.h"
@@ -118,5 +119,12 @@ void ConnectionContainerSetActiveConnection(
 	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(this);
 	DBG_ASSERT(newActiveConnection);
-	this->activeConnectionObject = newActiveConnection;
+	if(this->activeConnectionObject != newActiveConnection)
+	{
+		TRC_Log_Print(TRC_log, "%s: set new active connection %s ",__PRETTY_FUNCTION__,
+				inet_ntoa(ConnectionGetAddress(newActiveConnection)->sin_addr));
+		this->activeConnectionObject = newActiveConnection;
+	}
+
+
 }

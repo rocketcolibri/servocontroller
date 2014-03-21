@@ -14,7 +14,6 @@
 #include "DBG.h"
 #include "TRC.h"
 
-
 /**
  * @short Create a new Trace File
  *
@@ -84,8 +83,28 @@ void TRC_File_Print(TRC_File_t* fileTrc, const char *fmt, ...)
   }
 }
 
+void TRC_Log_Print(TRC_File_t* fileTrc, const char *fmt, ...)
+{
+  if(fileTrc)
+  {
+    va_list args;
+    if(fileTrc->doLog)
+    {
+      if(fileTrc->file)
+      {
+        UINT32 time = GEN_GetRTC();                // print secound.millisec sec
+        fprintf(fileTrc->file, "%7d.%03u ", time / 1000, (UINT16) (time % 1000));
+        va_start(args, fmt);
+        vfprintf(fileTrc->file, fmt, args);
+        va_end(args);
+        fprintf(fileTrc->file, "\n");
+        fflush(fileTrc->file);
+      }
+    }
+  }
+}
+
 /**
  * Macro that can be used to ease the use of TRC_File_Print
  */
 #define TRC_FILE_PRINT(trc, c...) {TRC_File_Print(trc, ##c);}
-

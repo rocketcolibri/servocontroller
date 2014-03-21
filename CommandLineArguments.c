@@ -18,6 +18,7 @@ typedef struct
 {
 	BOOL monitorEnabled;
 	char *pConfigFile;
+	char *logEnabled;
 	BOOL parseError;
 	BOOL execUnitTests;
 	char *pUsage;
@@ -39,11 +40,12 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 	snprintf(pTmp, sizeof(pTmp), "Usage: %s [-m] [-c <cfg-file>] \
 			\n\tm\tenable debug monitor \
 			\n\tc\tconfing file\
-			\n\tu\texecute unit tests", argv[0]);
+			\n\tu\texecute unit tests\
+			\n\tl\tlogfile", argv[0]);
 	this->pUsage = strdup(pTmp);
 
 	int c=0;
-	while ((c = getopt(argc, argv, "mc:")) != -1)
+	while ((c = getopt(argc, argv, "mulc:")) != -1)
 	{
 		switch (c)
 		{
@@ -55,6 +57,9 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 			break;
 		case 'u':
 			this->execUnitTests = TRUE;
+			break;
+		case 'l':
+			this->logEnabled = TRUE;
 			break;
 		case '?':
 		default:
@@ -88,6 +93,11 @@ BOOL CommandLineArguments_getParseError(CommandLineArgumentsObject_t obj)
 char * CommandLineArguments_getCfgFileName(CommandLineArgumentsObject_t obj)
 {
 	return ((CommandLineArguments_t*)obj)->pConfigFile;
+}
+
+BOOL CommandLineArguments_getLogEnabled(CommandLineArgumentsObject_t obj)
+{
+	return ((CommandLineArguments_t*)obj)->logEnabled;
 }
 
 char * CommandLineArguments_getUsageStr(CommandLineArgumentsObject_t obj)

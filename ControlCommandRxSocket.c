@@ -78,7 +78,7 @@ static int GetControlCmdSocket()
 
 /**
  * This method is called on reception of a message on the ControlComand socket
- * @Override POLL_CallbackFunction_t
+ * @Override Reactor_CallbackFunction_t
  * @param socketfd socket file descriptor
  * @param socketObj this
  */
@@ -100,7 +100,7 @@ static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketOb
 		{
 			pConn = NewConnection(pControlCommandRxSocket->connectionContainer, &srcAddr, socketfd, pControlCommandRxSocket->hTrc);
 			ConnectionContainerAddConnection(pControlCommandRxSocket->connectionContainer, pConn, &srcAddr);
-			TRC_INFO(pControlCommandRxSocket->hTrc, "connection created:%s",inet_ntoa(srcAddr.sin_addr));
+			TRC_Log_Print(TRC_log, "%s: new connection created:%s",__PRETTY_FUNCTION__, inet_ntoa(srcAddr.sin_addr));
 		}
 		else
 		{
@@ -109,7 +109,7 @@ static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketOb
 
 		buffer[rxLen]=0;
 		HandleJsonMessage(pConn, buffer);
-  		// TODO set everey connection to the currently active, this must be changed
+  		// TODO set every connection to the currently active, this must be changed
 		ConnectionContainerSetActiveConnection(pControlCommandRxSocket->connectionContainer, pConn);
 
 		TRC_INFO(pControlCommandRxSocket->hTrc, "received %d bytes containing:%s from %s",rxLen, buffer, inet_ntoa(srcAddr.sin_addr));

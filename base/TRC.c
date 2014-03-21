@@ -41,6 +41,9 @@ typedef struct
 static TraceConfig_t TraceConfig;
 static TraceGroupEntry_t TraceGroup[GEN_TRC_MAX_GROUPS];
 
+// global log file
+TRC_File_t* TRC_log=NULL;
+
 /**
  * @short TRC_AddTraceGroup
  *

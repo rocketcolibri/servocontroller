@@ -26,6 +26,8 @@
 #include "ServoDriverRPi.h"
 #include "ServoDriverMock.h"
 
+
+
 int main(int argc, char**argv)
 {
 	CommandLineArgumentsObject_t args = NewCommandLineArguments(argc, argv);
@@ -36,20 +38,24 @@ int main(int argc, char**argv)
 	}
 	else
 	{
-		DBG_LOG_ENTRY("Starting ServoController");
 		DBG_Init();
 		Reactor_Init();
-
 		TRC_Init();
+
+		TRC_log = TRC_File_Create("/tmp/servocontroller.log", CommandLineArguments_getLogEnabled(args));
+		TRC_Log_Print(TRC_log, "Starting ServoController");
 		if(CommandLineArguments_getMonitorEnable(args))
 		{
 			MON_Init();
 			MON_AddMonCmd("poll", Reactor_MonCmd, 0 );
 			MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
+
+			TRC_Log_Print(TRC_log, "Register mock servo driver");
 			ServoDriverRegister(ServoDriverMockSetServos, NULL);
 		}
 		else
 		{
+			TRC_Log_Print(TRC_log, "Register RPi servo driver");
 			ServoDriverRegister(ServoDriverRPiSetServos, NULL);
 		}
 		ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();

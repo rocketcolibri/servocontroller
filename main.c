@@ -30,6 +30,7 @@
 
 int main(int argc, char**argv)
 {
+
 	CommandLineArgumentsObject_t args = NewCommandLineArguments(argc, argv);
 	if(CommandLineArguments_getParseError(args))
 	{
@@ -49,15 +50,19 @@ int main(int argc, char**argv)
 			MON_Init();
 			MON_AddMonCmd("poll", Reactor_MonCmd, 0 );
 			MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
+		}
 
+		if(CommandLineArguments_getSimEnabled(args))
+		{
 			TRC_Log_Print(TRC_log, "Register mock servo driver");
 			ServoDriverRegister(ServoDriverMockSetServos, NULL);
 		}
 		else
 		{
 			TRC_Log_Print(TRC_log, "Register RPi servo driver");
-			ServoDriverRegister(ServoDriverRPiSetServos, NULL);
+			ServoDriverRegister(ServoDriverRPiSetServos, fopen("/dev/servoblaster","w"));
 		}
+
 		ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();
 		ControlCommandRxSocketObject_t controlCommandRxSocketObject = NewControlCommandRxSocket(connectionContainerObject);
 		TransmitTelemetryTimerHandlerObject_t tranmitTelemetryTimerHandlerObject = NewTransmitTelemetryTimerHandler(connectionContainerObject);

@@ -219,7 +219,7 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
       else
       {
         TRC_ERROR(this->hTrc,
-            "JSON invalid sequence number last:% current:%", this->lastSequence, sequence);
+            "JSON invalid sequence number last:%d current:%d", this->lastSequence, sequence);
       }
       json_object_put(seqObj);
     }

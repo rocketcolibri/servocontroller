@@ -2,108 +2,43 @@
 <diagram program="umlet" version="12.2">
   <zoom_level>10</zoom_level>
   <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>370</x>
-      <y>20</y>
-      <w>124</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-CONN_E1</panel_attributes>
-    <additional_attributes>70;100;70;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>370</x>
-      <y>210</y>
-      <w>124</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-CONN_E2
-CONN_A1</panel_attributes>
-    <additional_attributes>70;110;70;30</additional_attributes>
-  </element>
-  <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>360</x>
-      <y>320</y>
-      <w>170</w>
+      <x>190</x>
+      <y>170</y>
+      <w>180</w>
       <h>120</h>
     </coordinates>
-    <panel_attributes>CONN_ACTIVE</panel_attributes>
+    <panel_attributes>SYS_IDLE</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.custom.State</type>
     <coordinates>
-      <x>360</x>
-      <y>120</y>
-      <w>170</w>
+      <x>190</x>
+      <y>380</y>
+      <w>180</w>
       <h>120</h>
     </coordinates>
-    <panel_attributes>CONN_IDENTIFIED</panel_attributes>
+    <panel_attributes>SYS_CONTROLLING</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>250</x>
+      <y>80</y>
+      <w>50</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30;90;30;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.InitialState</type>
     <coordinates>
-      <x>430</x>
-      <y>30</y>
-      <w>20</w>
-      <h>20</h>
-    </coordinates>
-    <panel_attributes>i</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>500</x>
-      <y>110</y>
-      <w>194</w>
-      <h>90</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-CONN_E1</panel_attributes>
-    <additional_attributes>30;70;140;70;140;30;30;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>170</x>
-      <y>140</y>
-      <w>210</w>
-      <h>260</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-CONN_E1
-CONN_A2
-</panel_attributes>
-    <additional_attributes>190;30;70;30;70;240;190;240</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>380</x>
-      <y>410</y>
-      <w>124</w>
-      <h>140</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-CONN_E3
-CONN_A2
-CONN_A3</panel_attributes>
-    <additional_attributes>70;120;70;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.custom.FinalState</type>
-    <coordinates>
-      <x>440</x>
-      <y>520</y>
+      <x>270</x>
+      <y>90</y>
       <w>20</w>
       <h>20</h>
     </coordinates>
@@ -113,52 +48,56 @@ CONN_A3</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>430</x>
-      <y>180</y>
-      <w>264</w>
-      <h>370</h>
+      <x>340</x>
+      <y>200</y>
+      <w>118</w>
+      <h>270</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
-CONN_E3
-CONN_A2
-CONN_A3</panel_attributes>
-    <additional_attributes>30;350;210;350;210;30;100;30</additional_attributes>
+SYS_E1</panel_attributes>
+    <additional_attributes>30;250;70;250;70;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>90</x>
+      <y>200</y>
+      <w>120</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+SYS_E2
+SYS_A1</panel_attributes>
+    <additional_attributes>100;30;60;30;60;250;100;250</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.InteractionFrame</type>
     <coordinates>
-      <x>70</x>
-      <y>10</y>
-      <w>770</w>
-      <h>770</h>
+      <x>0</x>
+      <y>20</y>
+      <w>540</w>
+      <h>700</h>
     </coordinates>
-    <panel_attributes>Connection
-State machine
-CONN</panel_attributes>
+    <panel_attributes>System State 
+machine</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Text</id>
     <coordinates>
-      <x>80</x>
-      <y>550</y>
-      <w>760</w>
-      <h>240</h>
+      <x>10</x>
+      <y>520</y>
+      <w>520</w>
+      <h>190</h>
     </coordinates>
     <panel_attributes>Events
-CONN_E1: reception of a hello message
-
-CONN_E2 reception of a channel data command message and System State machine is in SYS_IDLE state
-
-CONN_E3 Timeout occured (no valie message received during a certain period of time)
+E1 Indicates a transition of the the connection state of a connection from CONN_IDENTIFIED to CONN_ACTIVE
+E2 Indicates a transition of the the connection state of a connection from  CONN_ACTIVE to CONN_IDENTIFIED 
 
 Actions
-CONN_A1 send SYS_E1 event to system state mc
-
-CONN_A2 send SYS_E2 event to system state mc
-
-CONN_A3 delete connection
-elementstyle=wordwrap</panel_attributes>
+A1 set the servos to the idle postion
+elementstyle=wordwrap
+</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

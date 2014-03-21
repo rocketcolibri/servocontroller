@@ -88,7 +88,7 @@ static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketOb
 
 	DBG_ASSERT(pControlCommandRxSocket);
 	struct sockaddr_in srcAddr;
-	socklen_t srcAddrLen;
+	socklen_t srcAddrLen =  sizeof(srcAddr);
 	char buffer[1500];
 	ssize_t rxLen=0;
 	if(0 < (rxLen=recvfrom(socketfd, buffer, sizeof(buffer), MSG_DONTWAIT,

@@ -18,7 +18,8 @@ typedef struct
 {
 	BOOL monitorEnabled;
 	char *pConfigFile;
-	char *logEnabled;
+	BOOL logEnabled;
+	BOOL simEnabled;
 	BOOL parseError;
 	BOOL execUnitTests;
 	char *pUsage;
@@ -45,7 +46,7 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 	this->pUsage = strdup(pTmp);
 
 	int c=0;
-	while ((c = getopt(argc, argv, "mulc:")) != -1)
+	while ((c = getopt(argc, argv, "mulsc:")) != -1)
 	{
 		switch (c)
 		{
@@ -61,12 +62,14 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 		case 'l':
 			this->logEnabled = TRUE;
 			break;
+		case 's':
+			this->simEnabled = TRUE;
+			break;
 		case '?':
 		default:
 			this->parseError = TRUE;
 			break;
 		}
-		fprintf(stderr, "c:%c=%d ", c,c);
 	}
 
 	/* Now set the values of "argc" and "argv" to the values after the
@@ -99,6 +102,12 @@ BOOL CommandLineArguments_getLogEnabled(CommandLineArgumentsObject_t obj)
 {
 	return ((CommandLineArguments_t*)obj)->logEnabled;
 }
+
+BOOL CommandLineArguments_getSimEnabled(CommandLineArgumentsObject_t obj)
+{
+	return ((CommandLineArguments_t*)obj)->simEnabled;
+}
+
 
 char * CommandLineArguments_getUsageStr(CommandLineArgumentsObject_t obj)
 {

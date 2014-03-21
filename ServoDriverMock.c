@@ -29,6 +29,6 @@ void ServoDriverMockSetServos(UINT32 servoc, UINT32 *servov)
 	printf("\n");
 	for(s=0; s < MAX_SERVOS; s++)
 	{
-		printf("servo:%d=%d", s, servov[s]);
+		fprintf(stderr, "servo:%d=%d", s, servov[s]);
 	}
 }

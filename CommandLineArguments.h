@@ -28,6 +28,8 @@ extern char * CommandLineArguments_getCfgFileName(CommandLineArgumentsObject_t o
 
 extern BOOL CommandLineArguments_getLogEnabled(CommandLineArgumentsObject_t obj);
 
+extern BOOL CommandLineArguments_getSimEnabled(CommandLineArgumentsObject_t obj);
+
 extern char * CommandLineArguments_getUsageStr(CommandLineArgumentsObject_t obj);
 
 #endif /* COMMANDLINEARGUMENTS_H_ */

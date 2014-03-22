@@ -66,7 +66,7 @@ static char * GetJsonTrasmitTelemetryMsg(int sequenceNumber, AVLTREE connections
 		  }
 	  }
 	  avlWalkAscending(connections, addConnectionToArray);
-	  json_object_object_add(jobj,"availip", jarray);
+	  json_object_object_add(jobj,"passiveip", jarray);
 	  char *pJsonStr = strdup(json_object_to_json_string(jobj));
 	  json_object_put(jobj);
 	  return pJsonStr;

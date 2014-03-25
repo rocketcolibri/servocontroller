@@ -108,6 +108,11 @@ BOOL CommandLineArguments_getSimEnabled(CommandLineArgumentsObject_t obj)
 	return ((CommandLineArguments_t*)obj)->simEnabled;
 }
 
+BOOL CommandLineArguments_getExecUnitTests(CommandLineArgumentsObject_t obj)
+{
+	return ((CommandLineArguments_t*)obj)->execUnitTests;
+}
+
 
 char * CommandLineArguments_getUsageStr(CommandLineArgumentsObject_t obj)
 {

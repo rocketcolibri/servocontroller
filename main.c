@@ -19,6 +19,8 @@
 
 #include "CommandLineArguments.h"
 #include "Connection.h"
+#include "ConnectionStateMachine.h"
+#include "SystemStateMachine.h"
 #include "ConnectionContainer.h"
 #include "ControlCommandRxSocket.h"
 #include "TransmitTelemetryTimerHandler.h"
@@ -26,11 +28,8 @@
 #include "ServoDriverRPi.h"
 #include "ServoDriverMock.h"
 
-
-
 int main(int argc, char**argv)
 {
-
 	CommandLineArgumentsObject_t args = NewCommandLineArguments(argc, argv);
 	if(CommandLineArguments_getParseError(args))
 	{
@@ -39,6 +38,13 @@ int main(int argc, char**argv)
 	}
 	else
 	{
+		if(CommandLineArguments_getExecUnitTests(args))
+		{
+			ConnectionStateMachineTest();
+			SystemStateMachineTest();
+			exit(1);
+		}
+
 		DBG_Init();
 		Reactor_Init();
 		TRC_Init();

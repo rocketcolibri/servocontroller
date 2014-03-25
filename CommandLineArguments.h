@@ -30,6 +30,8 @@ extern BOOL CommandLineArguments_getLogEnabled(CommandLineArgumentsObject_t obj)
 
 extern BOOL CommandLineArguments_getSimEnabled(CommandLineArgumentsObject_t obj);
 
+BOOL CommandLineArguments_getExecUnitTests(CommandLineArgumentsObject_t obj);
+
 extern char * CommandLineArguments_getUsageStr(CommandLineArgumentsObject_t obj);
 
 #endif /* COMMANDLINEARGUMENTS_H_ */

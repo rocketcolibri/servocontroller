@@ -7,11 +7,15 @@ C_SRCS += \
 ../CommandLineArguments.c \
 ../Connection.c \
 ../ConnectionContainer.c \
+../ConnectionStateMachine.c \
+../ConnectionStateMachineTest.c \
 ../ControlCommandRxSocket.c \
 ../MessageSinkCdc.c \
 ../ServoDriver.c \
 ../ServoDriverMock.c \
 ../ServoDriverRPi.c \
+../SystemStateMachine.c \
+../SystemStateMachineTest.c \
 ../TransmitTelemetryTimerHandler.c \
 ../main.c 
 
@@ -19,11 +23,15 @@ OBJS += \
 ./CommandLineArguments.o \
 ./Connection.o \
 ./ConnectionContainer.o \
+./ConnectionStateMachine.o \
+./ConnectionStateMachineTest.o \
 ./ControlCommandRxSocket.o \
 ./MessageSinkCdc.o \
 ./ServoDriver.o \
 ./ServoDriverMock.o \
 ./ServoDriverRPi.o \
+./SystemStateMachine.o \
+./SystemStateMachineTest.o \
 ./TransmitTelemetryTimerHandler.o \
 ./main.o 
 
@@ -31,11 +39,15 @@ C_DEPS += \
 ./CommandLineArguments.d \
 ./Connection.d \
 ./ConnectionContainer.d \
+./ConnectionStateMachine.d \
+./ConnectionStateMachineTest.d \
 ./ControlCommandRxSocket.d \
 ./MessageSinkCdc.d \
 ./ServoDriver.d \
 ./ServoDriverMock.d \
 ./ServoDriverRPi.d \
+./SystemStateMachine.d \
+./SystemStateMachineTest.d \
 ./TransmitTelemetryTimerHandler.d \
 ./main.d 
 

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="12.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <type>com.umlet.element.custom.Node</type>
+    <coordinates>
+      <x>30</x>
+      <y>220</y>
+      <w>330</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>center:RocketColibriApp
+ 
+center: Smartphone oder Tablet</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Node</type>
+    <coordinates>
+      <x>520</x>
+      <y>220</y>
+      <w>330</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>center:ServoController
+ 
+center:auf dem ferngesteuerten Modell
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>330</x>
+      <y>220</y>
+      <w>210</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=-
+Wifi Link</panel_attributes>
+    <additional_attributes>30;50;190;50</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Systemborder</type>
+    <coordinates>
+      <x>0</x>
+      <y>160</y>
+      <w>900</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>topcenter:RocketColibri 
+Remote Control System
+bg=default</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

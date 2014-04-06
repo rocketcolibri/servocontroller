@@ -4,154 +4,294 @@
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>260</x>
-      <y>170</y>
-      <w>560</w>
-      <h>190</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.
-&lt;&lt;register handler&gt;&gt;</panel_attributes>
-    <additional_attributes>30;30;30;100;540;100;540;170</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>300</x>
-      <y>50</y>
-      <w>190</w>
+      <x>730</x>
+      <y>40</y>
+      <w>170</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m1=0..*</panel_attributes>
-    <additional_attributes>170;30;30;30</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>170</x>
-      <y>170</y>
-      <w>340</w>
-      <h>190</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.
-&lt;&lt;register handler&gt;&gt;</panel_attributes>
-    <additional_attributes>30;30;30;120;320;120;320;170</additional_attributes>
+    <additional_attributes>150;30;30;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>470</x>
-      <y>20</y>
+      <x>880</x>
+      <y>0</y>
       <w>410</w>
       <h>140</h>
     </coordinates>
     <panel_attributes>/Dispatch Handler/
 --
-+ void* CallbackFunction(int fd, void *pData)
++ void* Reactor_CallbackFunction(int fd, void *handlerObj)
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>710</x>
-      <y>130</y>
-      <w>240</w>
-      <h>230</h>
+      <x>1050</x>
+      <y>110</y>
+      <w>234</w>
+      <h>370</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
-&lt;&lt;implements&gt;&gt;</panel_attributes>
-    <additional_attributes>30;30;220;210</additional_attributes>
+&lt;&lt;implements&gt;&gt;
+Handler for 100ms Timer</panel_attributes>
+    <additional_attributes>120;30;120;350</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>530</x>
-      <y>130</y>
-      <w>186</w>
-      <h>230</h>
+      <x>830</x>
+      <y>110</y>
+      <w>210</w>
+      <h>200</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
-&lt;&lt;implements&gt;&gt;</panel_attributes>
-    <additional_attributes>110;30;80;210</additional_attributes>
+&lt;&lt;implements&gt;&gt;
+Handler for Rx Socket
+and Timeout Timer</panel_attributes>
+    <additional_attributes>110;30;110;180</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>470</x>
-      <y>340</y>
-      <w>290</w>
-      <h>170</h>
+      <x>380</x>
+      <y>300</y>
+      <w>420</w>
+      <h>280</h>
     </coordinates>
-    <panel_attributes>Timer_100ms
+    <panel_attributes>ConnectionContainer
 --
++ConnectionContainerFindConnection(ip)
+: Connection
+ 
++ConnectionContainerAddConnection(Connection, ip)
+ 
++ConnectionContainerRemoveConnection(Connection, ip);
+ 
++ConnectionContainerGetAllConnections()
+:List&lt;Connections&gt;;
+ 
++ConnectionContainerGetActiveConnection()
+:Connection;
+ 
++ConnectionContainerSetActiveConnection(Connection);
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>120</x>
-      <y>340</y>
-      <w>290</w>
-      <h>170</h>
-    </coordinates>
-    <panel_attributes>Timer_20ms
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>20</x>
-      <y>170</y>
-      <w>216</w>
-      <h>190</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;.
-&lt;&lt;register handler&gt;&gt;</panel_attributes>
-    <additional_attributes>110;30;110;170</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Class</type>
-    <coordinates>
-      <x>60</x>
-      <y>20</y>
-      <w>270</w>
-      <h>180</h>
+      <x>460</x>
+      <y>0</y>
+      <w>300</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>bt=*
-POLL
+Reactor
 --
 +Reactor_Dispatch
 +Reactor_AddReadFd
-+</panel_attributes>
++Reactor_RemoveReadFd</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>1040</x>
+      <y>460</y>
+      <w>270</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>TransmitTelemetryTimerHandler
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>840</x>
+      <y>290</y>
+      <w>240</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>ControlCommandRxSocket
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>450</x>
+      <y>640</y>
+      <w>290</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Connection
+--
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>220</x>
-      <y>130</y>
-      <w>350</w>
-      <h>230</h>
+      <x>470</x>
+      <y>550</y>
+      <w>110</w>
+      <h>110</h>
     </coordinates>
-    <panel_attributes>lt=&lt;&lt;.
-&lt;&lt;implements&gt;&gt;</panel_attributes>
-    <additional_attributes>330;30;30;210</additional_attributes>
+    <panel_attributes>lt=&lt;-
+m1=0..n
+passive
+</panel_attributes>
+    <additional_attributes>60;90;60;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>630</x>
+      <y>550</y>
+      <w>50</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>30;30;30;90</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>770</x>
+      <y>500</y>
+      <w>290</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>30;30;270;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>770</x>
+      <y>320</y>
+      <w>90</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+</panel_attributes>
+    <additional_attributes>30;30;70;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>780</x>
-      <y>340</y>
+      <x>40</x>
+      <y>630</y>
       <w>290</w>
-      <h>170</h>
+      <h>120</h>
     </coordinates>
-    <panel_attributes>ReceiveChannelDataCommand
+    <panel_attributes>ConnectionStateMachine
 --
 </panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>300</x>
+      <y>670</y>
+      <w>170</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>150;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>40</x>
+      <y>300</y>
+      <w>290</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>SystemStateMachine
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>300</x>
+      <y>320</y>
+      <w>100</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>80;30;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>30</x>
+      <y>120</y>
+      <w>300</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>ServoDriver
+--
+GetIn stance()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>80</x>
+      <y>180</y>
+      <w>172</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;call&gt;&gt;&gt;
+ActionFunction
+setServoPassive
+</panel_attributes>
+    <additional_attributes>90;30;90;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>0</x>
+      <y>360</y>
+      <w>330</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;call&gt;&gt;
+ConnectionStateMachine ActionFunction
+-&gt; SystemStateMachine Events
+</panel_attributes>
+    <additional_attributes>170;30;170;270</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>550</x>
+      <y>550</y>
+      <w>90</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=1
+active
+</panel_attributes>
+    <additional_attributes>50;90;50;30</additional_attributes>
   </element>
 </diagram>

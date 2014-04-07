@@ -4,8 +4,8 @@
   <element>
     <type>com.umlet.element.custom.Component</type>
     <coordinates>
-      <x>20</x>
-      <y>20</y>
+      <x>180</x>
+      <y>90</y>
       <w>200</w>
       <h>60</h>
     </coordinates>
@@ -16,8 +16,8 @@
   <element>
     <type>com.umlet.element.custom.Component</type>
     <coordinates>
-      <x>230</x>
-      <y>20</y>
+      <x>390</x>
+      <y>90</y>
       <w>200</w>
       <h>60</h>
     </coordinates>
@@ -28,13 +28,24 @@
   <element>
     <type>com.umlet.element.custom.Component</type>
     <coordinates>
-      <x>440</x>
-      <y>20</y>
+      <x>600</x>
+      <y>90</y>
       <w>200</w>
       <h>60</h>
     </coordinates>
     <panel_attributes> 
 'Networking Services</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Component</type>
+    <coordinates>
+      <x>40</x>
+      <y>50</y>
+      <w>780</w>
+      <h>130</h>
+    </coordinates>
+    <panel_attributes>'ServoController</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

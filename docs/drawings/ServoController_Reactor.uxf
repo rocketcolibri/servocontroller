@@ -4,45 +4,45 @@
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>260</x>
-      <y>170</y>
-      <w>560</w>
+      <x>180</x>
+      <y>160</y>
+      <w>540</w>
       <h>190</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;register handler&gt;&gt;</panel_attributes>
-    <additional_attributes>30;30;30;100;540;100;540;170</additional_attributes>
+    <additional_attributes>30;30;30;120;520;120;520;170</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>300</x>
-      <y>50</y>
-      <w>190</w>
+      <x>210</x>
+      <y>40</y>
+      <w>110</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 m1=0..*</panel_attributes>
-    <additional_attributes>170;30;30;30</additional_attributes>
+    <additional_attributes>90;30;30;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>170</x>
-      <y>170</y>
-      <w>340</w>
+      <x>160</x>
+      <y>160</y>
+      <w>290</w>
       <h>190</h>
     </coordinates>
     <panel_attributes>lt=&lt;.
 &lt;&lt;register handler&gt;&gt;</panel_attributes>
-    <additional_attributes>30;30;30;120;320;120;320;170</additional_attributes>
+    <additional_attributes>30;30;30;140;270;140;270;170</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>470</x>
-      <y>20</y>
-      <w>410</w>
+      <x>300</x>
+      <y>10</y>
+      <w>860</w>
       <h>140</h>
     </coordinates>
     <panel_attributes>/Dispatch Handler/
@@ -54,58 +54,60 @@ m1=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>710</x>
-      <y>130</y>
-      <w>240</w>
-      <h>230</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.
-&lt;&lt;implements&gt;&gt;</panel_attributes>
-    <additional_attributes>30;30;220;210</additional_attributes>
-  </element>
-  <element>
-    <type>com.umlet.element.Relation</type>
-    <coordinates>
-      <x>530</x>
-      <y>130</y>
+      <x>730</x>
+      <y>120</y>
       <w>186</w>
       <h>230</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;implements&gt;&gt;</panel_attributes>
-    <additional_attributes>110;30;80;210</additional_attributes>
+    <additional_attributes>100;30;100;210</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>450</x>
+      <y>120</y>
+      <w>186</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.
+&lt;&lt;implements&gt;&gt;</panel_attributes>
+    <additional_attributes>100;30;100;210</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>470</x>
-      <y>340</y>
-      <w>290</w>
+      <x>410</x>
+      <y>330</y>
+      <w>250</w>
       <h>170</h>
     </coordinates>
-    <panel_attributes>Fd_Event
+    <panel_attributes>Connection
 --
+Timeout timer event handler
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>120</x>
-      <y>340</y>
-      <w>290</w>
+      <x>140</x>
+      <y>330</y>
+      <w>250</w>
       <h>170</h>
     </coordinates>
-    <panel_attributes>Fd_Timer
+    <panel_attributes>Transmit Telemetriy
 --
+100ms Timer event handler
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>20</x>
-      <y>170</y>
+      <x>60</x>
+      <y>160</y>
       <w>216</w>
       <h>190</h>
     </coordinates>
@@ -116,9 +118,9 @@ m1=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>60</x>
-      <y>20</y>
-      <w>270</w>
+      <x>30</x>
+      <y>10</y>
+      <w>210</w>
       <h>180</h>
     </coordinates>
     <panel_attributes>bt=*
@@ -126,32 +128,73 @@ Reactor
 --
 +Reactor_Dispatch
 +Reactor_AddReadFd
-++Reactor_RemoveReadFd</panel_attributes>
++Reactor_RemoveReadFd
+
+</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>220</x>
-      <y>130</y>
-      <w>350</w>
+      <x>260</x>
+      <y>120</y>
+      <w>186</w>
       <h>230</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;implements&gt;&gt;</panel_attributes>
-    <additional_attributes>330;30;30;210</additional_attributes>
+    <additional_attributes>100;30;100;210</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>780</x>
-      <y>340</y>
-      <w>290</w>
+      <x>680</x>
+      <y>330</y>
+      <w>230</w>
       <h>170</h>
     </coordinates>
-    <panel_attributes>ReceiveChannelDataCommand
+    <panel_attributes>MessageReceiver
 --
+Implements Receive Socket 
+event handler</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>930</x>
+      <y>330</y>
+      <w>230</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>Debug Monitor
+--
+Implements stdin event handler
 </panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>970</x>
+      <y>120</y>
+      <w>186</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.
+&lt;&lt;implements&gt;&gt;</panel_attributes>
+    <additional_attributes>100;30;100;210</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>200</x>
+      <y>160</y>
+      <w>830</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;register handler&gt;&gt;</panel_attributes>
+    <additional_attributes>30;30;30;100;810;100;810;170</additional_attributes>
   </element>
 </diagram>

@@ -1,5 +1,5 @@
 /*
- * ConnectionStateMachine.c
+ * ConnectionFsm.c
  *
  *  Created on: 23.03.2014
  *      Author: lorenz
@@ -29,7 +29,7 @@
 #include "base/AD.h"
 #include "base/DBG.h"
 
-#include "ConnectionStateMachine.h"
+#include "ConnectionFsm.h"
 
 #define SYS_NOF_ACTION 2
 
@@ -58,7 +58,7 @@ typedef enum
 /** connection event action */
 typedef struct
 {
-	ConnectionStateMachine_ActionFn_t action[SYS_NOF_ACTION + 1]; // +1 for NULL termination
+	ConnectionFsm_ActionFn_t action[SYS_NOF_ACTION + 1]; // +1 for NULL termination
 	Connection_State_t nextState;
 } Connection_EventAction_t;
 
@@ -66,23 +66,23 @@ typedef struct
 {
 	Connection_State_t state;
 	ConnectionObject_t connection;
-	Connection_EventAction_t ConnectionStateMachine[CONN_NOF_STATE][CONN_NOF_EVENT];
-} ConnectionStateMachine_t;
+	Connection_EventAction_t ConnectionFsm[CONN_NOF_STATE][CONN_NOF_EVENT];
+} ConnectionFsm_t;
 
 
 
-ConnectionStateMachineObject_t NewConnectionStateMachine(
+ConnectionFsmObject_t NewConnectionFsm(
 		ConnectionObject_t connection,
-		ConnectionStateMachine_ActionFn_t A1_ActionFunctionSendToActive,
-		ConnectionStateMachine_ActionFn_t A2_ActionFunctionSendToPassive,
-		ConnectionStateMachine_ActionFn_t A3_ActionDeleteConnection)
+		ConnectionFsm_ActionFn_t A1_ActionFunctionSendToActive,
+		ConnectionFsm_ActionFn_t A2_ActionFunctionSendToPassive,
+		ConnectionFsm_ActionFn_t A3_ActionDeleteConnection)
 {
-	ConnectionStateMachine_t * this = malloc(sizeof(ConnectionStateMachine_t));
-	bzero(this, sizeof(ConnectionStateMachine_t));
+	ConnectionFsm_t * this = malloc(sizeof(ConnectionFsm_t));
+	bzero(this, sizeof(ConnectionFsm_t));
 	this->state = CONN_IDENTIFIED; // initial is CONN_IDENTIFIED because the state machine starts as soon as a hello command has been received!
 	this->connection = connection;
 
-    Connection_EventAction_t ConnectionStateMachine[CONN_NOF_STATE][CONN_NOF_EVENT] =
+    Connection_EventAction_t ConnectionFsm[CONN_NOF_STATE][CONN_NOF_EVENT] =
 	{
 	  /* state: CONN_IDENTIFIED */
 	{ /* events                              actions0                        actions1                  actions2     next state */
@@ -98,34 +98,27 @@ ConnectionStateMachineObject_t NewConnectionStateMachine(
 	  /* CONN_EVENT_TIMEOUT*/             {{ A2_ActionFunctionSendToPassive, A3_ActionDeleteConnection,NULL },     	CONN_IDENTIFIED },
 	}
 	};
-    memcpy(&this->ConnectionStateMachine , &ConnectionStateMachine, sizeof(ConnectionStateMachine));
-	return (ConnectionStateMachineObject_t) this;
+    memcpy(&this->ConnectionFsm , &ConnectionFsm, sizeof(ConnectionFsm));
+	return (ConnectionFsmObject_t) this;
 }
 
-void DeleteConnectionStateMachine(ConnectionStateMachineObject_t obj)
+void DeleteConnectionFsm(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	free(obj);
 }
-
-
-
-/**
- * @short Master State Machine
- */
-// !!! the first NULL in an event line terminates the action list !!!
 
 /**
  * Execute state machine event
  * @param pArpingInst
  * @param event
  */
-static void ExecuteEvent(ConnectionStateMachineObject_t obj,
+static void ExecuteEvent(ConnectionFsmObject_t obj,
     Connection_Event_t event)
 {
 	DBG_ASSERT(event < CONN_NOF_EVENT);
 	DBG_ASSERT(obj);
-	ConnectionStateMachine_t *this = (ConnectionStateMachine_t *)obj;
+	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
 
 	static const char* statesStr[] = { "CONN_IDENTIFIED", "CONN_ACTIVE" };
 	static const char* eventsStr[] = { "RECV_HELLO_CMD", "RECV_CDC_CMD", "TIMEOUT"};
@@ -133,13 +126,13 @@ static void ExecuteEvent(ConnectionStateMachineObject_t obj,
 	Connection_State_t currentState = this->state;
 
 	// get new state
-	Connection_State_t newState = this->ConnectionStateMachine[currentState][event].nextState;
+	Connection_State_t newState = this->ConnectionFsm[currentState][event].nextState;
 
 	// execute actions
 	UINT32 action = 0;
-	while (this->ConnectionStateMachine[currentState][event].action[action])
+	while (this->ConnectionFsm[currentState][event].action[action])
 	{
-		this->ConnectionStateMachine[currentState][event].action[action](this->connection);
+		this->ConnectionFsm[currentState][event].action[action](this->connection);
 		action++;
 	}
 
@@ -150,33 +143,33 @@ static void ExecuteEvent(ConnectionStateMachineObject_t obj,
 	}
 }
 
-BOOL ConnectionStateMachineIs_CONN_IDENTIFIED(ConnectionStateMachineObject_t obj)
+BOOL ConnectionFsmIs_CONN_IDENTIFIED(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
-	ConnectionStateMachine_t *this = (ConnectionStateMachine_t *)obj;
+	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
 	return CONN_IDENTIFIED == this->state;
 }
 
-BOOL ConnectionStateMachineIs_CONN_ACTIVE(ConnectionStateMachineObject_t obj)
+BOOL ConnectionFsmIs_CONN_ACTIVE(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
-	ConnectionStateMachine_t *this = (ConnectionStateMachine_t *)obj;
+	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
 	return CONN_ACTIVE == this->state;
 }
 
-void ConnectionStateMachineEventRecvHelloCmd(ConnectionStateMachineObject_t obj)
+void ConnectionFsmEventRecvHelloCmd(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	ExecuteEvent(obj, CONN_EVENT_HELLO_CMD_RECV);
 }
 
-void ConnectionStateMachineEventRecvCdcCmd(ConnectionStateMachineObject_t obj)
+void ConnectionFsmEventRecvCdcCmd(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	ExecuteEvent(obj, CONN_EVENT_CDC_CMD_RECV);
 }
 
-void ConnectionStateMachineEventTimeout(ConnectionStateMachineObject_t obj)
+void ConnectionFsmEventTimeout(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	ExecuteEvent(obj, CONN_EVENT_TIMEOUT);

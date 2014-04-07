@@ -23,7 +23,7 @@
 
 #include "Connection.h"
 #include "ConnectionContainer.h"
-#include "ControlCommandRxSocket.h"
+#include "MessageReceiver.h"
 
 #define BUFLEN 512
 #define NPACK 10
@@ -82,11 +82,11 @@ static int GetControlCmdSocket()
  * @param socketfd socket file descriptor
  * @param socketObj this
  */
-static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketObject_t socketObj)
+static void MessageReceiverHandler(int socketfd, MessageReceiverObject_t socketObj)
 {
-	getControlCommandRx_t *pControlCommandRxSocket=(getControlCommandRx_t *)socketObj;
+	getControlCommandRx_t *pMessageReceiver=(getControlCommandRx_t *)socketObj;
 
-	DBG_ASSERT(pControlCommandRxSocket);
+	DBG_ASSERT(pMessageReceiver);
 	struct sockaddr_in srcAddr;
 	socklen_t srcAddrLen =  sizeof(srcAddr);
 	char buffer[1500];
@@ -94,40 +94,40 @@ static void ControlCommandRxSocketHandler(int socketfd, ControlCommandRxSocketOb
 	if(0 < (rxLen=recvfrom(socketfd, buffer, sizeof(buffer), MSG_DONTWAIT,
 			(struct sockaddr*)&srcAddr, &srcAddrLen)))
 	{
-		ConnectionObject_t pConn=ConnectionContainerFindConnection(pControlCommandRxSocket->connectionContainer, &srcAddr);
+		ConnectionObject_t pConn=ConnectionContainerFindConnection(pMessageReceiver->connectionContainer, &srcAddr);
 
 		if (!pConn)
 		{
-			pConn = NewConnection(pControlCommandRxSocket->connectionContainer, &srcAddr, socketfd, pControlCommandRxSocket->hTrc);
-			ConnectionContainerAddConnection(pControlCommandRxSocket->connectionContainer, pConn, &srcAddr);
+			pConn = NewConnection(pMessageReceiver->connectionContainer, &srcAddr, socketfd, pMessageReceiver->hTrc);
+			ConnectionContainerAddConnection(pMessageReceiver->connectionContainer, pConn, &srcAddr);
 			TRC_Log_Print(TRC_log, "%s: new connection created:%s",__PRETTY_FUNCTION__, inet_ntoa(srcAddr.sin_addr));
 		}
 		else
 		{
-			TRC_INFO(pControlCommandRxSocket->hTrc, "connection found:%s",inet_ntoa(srcAddr.sin_addr));
+			TRC_INFO(pMessageReceiver->hTrc, "connection found:%s",inet_ntoa(srcAddr.sin_addr));
 		}
 
 		buffer[rxLen]=0;
 		HandleJsonMessage(pConn, buffer);
   		// TODO set every connection to the currently active, this must be changed
-		ConnectionContainerSetActiveConnection(pControlCommandRxSocket->connectionContainer, pConn);
+		ConnectionContainerSetActiveConnection(pMessageReceiver->connectionContainer, pConn);
 
-		TRC_INFO(pControlCommandRxSocket->hTrc, "received %d bytes containing:%s from %s",rxLen, buffer, inet_ntoa(srcAddr.sin_addr));
+		TRC_INFO(pMessageReceiver->hTrc, "received %d bytes containing:%s from %s",rxLen, buffer, inet_ntoa(srcAddr.sin_addr));
 	}
 }
 
-ControlCommandRxSocketObject_t NewControlCommandRxSocket(ConnectionContainerObject_t pConnectionContainerObject)
+MessageReceiverObject_t NewMessageReceiver(ConnectionContainerObject_t pConnectionContainerObject)
 {
 	getControlCommandRx_t *pControlCommandRx = malloc(sizeof(getControlCommandRx_t));
 	bzero(pControlCommandRx, sizeof(pControlCommandRx));
 	pControlCommandRx->connectionContainer = pConnectionContainerObject;
 	pControlCommandRx->hControlCmdRxPoll = Reactor_AddReadFd(GetControlCmdSocket(),
-			ControlCommandRxSocketHandler, pControlCommandRx, "ControlCmdRx");
+			MessageReceiverHandler, pControlCommandRx, "ControlCmdRx");
 	pControlCommandRx->hTrc = TRC_AddTraceGroup("rxSocket");
-	return (ControlCommandRxSocketObject_t)pControlCommandRx;
+	return (MessageReceiverObject_t)pControlCommandRx;
 }
 
-void DeleteControlCommandRxSocket(ControlCommandRxSocketObject_t controlCommandRxHandlerObject)
+void DeleteMessageReceiver(MessageReceiverObject_t controlCommandRxHandlerObject)
 {
   getControlCommandRx_t *pControlCommandRx =
 			(getControlCommandRx_t *) controlCommandRxHandlerObject;

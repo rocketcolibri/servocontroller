@@ -1,5 +1,5 @@
 /**
- * TransmitTelemetryTimerHandler.c
+ * TransmitTelemetry.c
  *
  *  Created on: 14.10.2013
  *      Author: lorenz
@@ -24,7 +24,7 @@
 
 #include "Connection.h"
 #include "ConnectionContainer.h"
-#include "TransmitTelemetryTimerHandler.h"
+#include "TransmitTelemetry.h"
 
 /** data structure of a TransmitTelemetryTimerHanlder object */
 typedef struct
@@ -33,7 +33,7 @@ typedef struct
 	UINT8 hTrc;
 	ConnectionContainerObject_t connectionContainerObject;
 	void *hTransmitTelemetryTimerPoll;
-} TransmitTelemetryTimerHandler_t;
+} TransmitTelemetry_t;
 
 static struct json_object* GetJsonUserAndIp(const char *pUser, struct sockaddr_in* ipAddress)
 {
@@ -72,7 +72,7 @@ static char * GetJsonTrasmitTelemetryMsg(int sequenceNumber, AVLTREE connections
 	  return pJsonStr;
 }
 
-static void SendToAll(TransmitTelemetryTimerHandler_t *this, AVLTREE connections, const char *pJsonMsg)
+static void SendToAll(TransmitTelemetry_t *this, AVLTREE connections, const char *pJsonMsg)
 {
   TRC_INFO(this->hTrc, "%s", pJsonMsg);
   void addConnectionToArray(ConnectionObject_t connection)
@@ -88,9 +88,9 @@ static void SendToAll(TransmitTelemetryTimerHandler_t *this, AVLTREE connections
  * @param socketfd
  * @param connectionContainerObject this
  */
-static void TransmitTelemetryTimerHandler(int socketfd, TransmitTelemetryTimerHandlerObject_t transmitTelemetryTimerHandlerObject)
+static void TransmitTelemetry(int socketfd, TransmitTelemetryObject_t TransmitTelemetryObject)
 {
-	TransmitTelemetryTimerHandler_t *this =(TransmitTelemetryTimerHandler_t *)transmitTelemetryTimerHandlerObject;
+	TransmitTelemetry_t *this =(TransmitTelemetry_t *)TransmitTelemetryObject;
 	DBG_ASSERT(this);
 
 	char *pJsonMsg = GetJsonTrasmitTelemetryMsg(
@@ -104,20 +104,20 @@ static void TransmitTelemetryTimerHandler(int socketfd, TransmitTelemetryTimerHa
 	TIMERFD_Read(socketfd);
 }
 
-TransmitTelemetryTimerHandlerObject_t NewTransmitTelemetryTimerHandler(ConnectionContainerObject_t connectionContainerObject)
+TransmitTelemetryObject_t NewTransmitTelemetry(ConnectionContainerObject_t connectionContainerObject)
 {
-	TransmitTelemetryTimerHandler_t *this = malloc(sizeof(TransmitTelemetryTimerHandler_t));
+	TransmitTelemetry_t *this = malloc(sizeof(TransmitTelemetry_t));
 	bzero(this, sizeof(this));
 	this->connectionContainerObject = connectionContainerObject;
 	this->hTrc = TRC_AddTraceGroup("TelementryCmd");
 	this->hTransmitTelemetryTimerPoll
-		= Reactor_AddReadFd(TIMERFD_Create(1000*1000), TransmitTelemetryTimerHandler, this, "TransmitTelemetryHanlder");
-	return (TransmitTelemetryTimerHandlerObject_t)this;
+		= Reactor_AddReadFd(TIMERFD_Create(1000*1000), TransmitTelemetry, this, "TransmitTelemetryHanlder");
+	return (TransmitTelemetryObject_t)this;
 }
 
-void DeleteTransmitTelemetryTimerHandler(TransmitTelemetryTimerHandlerObject_t deleteTransmitTelemetryHandlerObject)
+void DeleteTransmitTelemetry(TransmitTelemetryObject_t deleteTransmitTelemetryHandlerObject)
 {
-	TransmitTelemetryTimerHandler_t *this = (TransmitTelemetryTimerHandler_t *)deleteTransmitTelemetryHandlerObject;
+	TransmitTelemetry_t *this = (TransmitTelemetry_t *)deleteTransmitTelemetryHandlerObject;
 	Reactor_RemoveFdAndClose(this->hTransmitTelemetryTimerPoll);
 	free(this);
 }

@@ -19,11 +19,11 @@
 
 #include "CommandLineArguments.h"
 #include "Connection.h"
-#include "ConnectionStateMachine.h"
-#include "SystemStateMachine.h"
+#include "ConnectionFsm.h"
+#include "SystemFsm.h"
 #include "ConnectionContainer.h"
-#include "ControlCommandRxSocket.h"
-#include "TransmitTelemetryTimerHandler.h"
+#include "MessageReceiver.h"
+#include "TransmitTelemetry.h"
 #include "ServoDriver.h"
 #include "ServoDriverRPi.h"
 #include "ServoDriverMock.h"
@@ -40,8 +40,8 @@ int main(int argc, char**argv)
 	{
 		if(CommandLineArguments_getExecUnitTests(args))
 		{
-			ConnectionStateMachineTest();
-			SystemStateMachineTest();
+			ConnectionFsmTest();
+			SystemFsmTest();
 			exit(1);
 		}
 
@@ -70,14 +70,14 @@ int main(int argc, char**argv)
 		}
 
 		ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();
-		ControlCommandRxSocketObject_t controlCommandRxSocketObject = NewControlCommandRxSocket(connectionContainerObject);
-		TransmitTelemetryTimerHandlerObject_t tranmitTelemetryTimerHandlerObject = NewTransmitTelemetryTimerHandler(connectionContainerObject);
+		MessageReceiverObject_t MessageReceiverObject = NewMessageReceiver(connectionContainerObject);
+		TransmitTelemetryObject_t tranmitTelemetryObject = NewTransmitTelemetry(connectionContainerObject);
 
 		// main loop
 		Reactor_Dispatch();
 
-		DeleteControlCommandRxSocket(controlCommandRxSocketObject);
-		DeleteTransmitTelemetryTimerHandler(tranmitTelemetryTimerHandlerObject);
+		DeleteMessageReceiver(MessageReceiverObject);
+		DeleteTransmitTelemetry(tranmitTelemetryObject);
 		DeleteConnectionContainer(connectionContainerObject);
 		return 0;
 	}

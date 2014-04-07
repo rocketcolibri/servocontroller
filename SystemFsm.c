@@ -13,7 +13,7 @@
 #include "base/TRC.h"
 #include "base/AD.h"
 #include "base/DBG.h"
-#include "SystemStateMachine.h"
+#include "SystemFsm.h"
 
 #define SYS_NOF_ACTION 2
 
@@ -40,20 +40,20 @@ typedef enum
 /** connection event action */
 typedef struct
 {
-  SystemStateMachine_ActionFn_t action[SYS_NOF_ACTION + 1]; // +1 for NULL termination
+  SystemFsm_ActionFn_t action[SYS_NOF_ACTION + 1]; // +1 for NULL termination
   System_State_t nextState;
 } System_EventAction_t;
 
 typedef struct
 {
 	void *pActionObj;
-	System_EventAction_t systemStateMachine[SYS_NOF_STATE][SYS_NOF_EVENT];
+	System_EventAction_t SystemFsm[SYS_NOF_STATE][SYS_NOF_EVENT];
 	System_State_t state;
 } System_t;
 
-SystemStateMachineObject_t NewSystemStateMachine(
+SystemFsmObject_t NewSystemFsm(
 		void *actionObj,
-		SystemStateMachine_ActionFn_t A1_ActionSetServoPassive)
+		SystemFsm_ActionFn_t A1_ActionSetServoPassive)
 {
 	System_t * this = malloc(sizeof(System_t));
 	bzero(this, sizeof(System_t));
@@ -61,7 +61,7 @@ SystemStateMachineObject_t NewSystemStateMachine(
 
 	this->pActionObj = actionObj;
 
-	System_EventAction_t systemStateMachine[SYS_NOF_STATE][SYS_NOF_EVENT] =
+	System_EventAction_t SystemFsm[SYS_NOF_STATE][SYS_NOF_EVENT] =
 	{
 	  /* state: SYS_IDLE */
 	{ /* events                              actions0                  actions1       actions2          next state */
@@ -75,11 +75,11 @@ SystemStateMachineObject_t NewSystemStateMachine(
 	  /* SYS_EVENT_CONNECTION_TRANS_PASSIV*/ {{ A1_ActionSetServoPassive,NULL,          NULL },           SYS_IDLE },
 	}
 	};
-	memcpy(&this->systemStateMachine , &systemStateMachine, sizeof(systemStateMachine));
-	return (SystemStateMachineObject_t) this;
+	memcpy(&this->SystemFsm , &SystemFsm, sizeof(SystemFsm));
+	return (SystemFsmObject_t) this;
 }
 
-void DeleteSystemStateMachine(SystemStateMachineObject_t obj)
+void DeleteSystemFsm(SystemFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	free(obj);
@@ -90,7 +90,7 @@ void DeleteSystemStateMachine(SystemStateMachineObject_t obj)
  * @param pArpingInst
  * @param event
  */
-static void ExecuteEvent(SystemStateMachineObject_t obj,
+static void ExecuteEvent(SystemFsmObject_t obj,
     System_Event_t event)
 {
 	DBG_ASSERT(event < SYS_NOF_EVENT);
@@ -103,14 +103,14 @@ static void ExecuteEvent(SystemStateMachineObject_t obj,
 	System_State_t currentState = this->state;
 
 	// get new state
-	System_State_t newState = this->systemStateMachine[currentState][event].nextState;
+	System_State_t newState = this->SystemFsm[currentState][event].nextState;
 
 
 	// execute actions
 	UINT32 action = 0;
-	while (this->systemStateMachine[currentState][event].action[action])
+	while (this->SystemFsm[currentState][event].action[action])
 	{
-		this->systemStateMachine[currentState][event].action[action](this);
+		this->SystemFsm[currentState][event].action[action](this);
 		action++;
 	}
 
@@ -121,27 +121,27 @@ static void ExecuteEvent(SystemStateMachineObject_t obj,
 	}
 }
 
-BOOL SystemStateMachineIs_SYS_IDLE(SystemStateMachineObject_t obj)
+BOOL SystemFsmIs_SYS_IDLE(SystemFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	System_t *this = (System_t *)obj;
 	return SYS_IDLE == this->state;
 }
 
-BOOL SystemStateMachineIs_SYS_CONTROLLING(SystemStateMachineObject_t obj)
+BOOL SystemFsmIs_SYS_CONTROLLING(SystemFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	System_t *this = (System_t *)obj;
 	return SYS_CONTROLLING == this->state;
 }
 
-void SystemStateMachineEventTransitionToActive(SystemStateMachineObject_t obj)
+void SystemFsmEventTransitionToActive(SystemFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	ExecuteEvent(obj, SYS_EVENT_CONNECTION_TRANS_ACTIV);
 }
 
-void SystemStateMachineEventTransitionToPassive(SystemStateMachineObject_t obj)
+void SystemFsmEventTransitionToPassive(SystemFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	ExecuteEvent(obj, SYS_EVENT_CONNECTION_TRANS_PASSIV);

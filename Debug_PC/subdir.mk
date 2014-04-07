@@ -7,48 +7,48 @@ C_SRCS += \
 ../CommandLineArguments.c \
 ../Connection.c \
 ../ConnectionContainer.c \
-../ConnectionStateMachine.c \
-../ConnectionStateMachineTest.c \
-../ControlCommandRxSocket.c \
+../ConnectionFsm.c \
+../ConnectionFsmTest.c \
+../MessageReceiver.c \
 ../MessageSinkCdc.c \
 ../ServoDriver.c \
 ../ServoDriverMock.c \
 ../ServoDriverRPi.c \
-../SystemStateMachine.c \
-../SystemStateMachineTest.c \
-../TransmitTelemetryTimerHandler.c \
+../SystemFsm.c \
+../SystemFsmTest.c \
+../TransmitTelemetry.c \
 ../main.c 
 
 OBJS += \
 ./CommandLineArguments.o \
 ./Connection.o \
 ./ConnectionContainer.o \
-./ConnectionStateMachine.o \
-./ConnectionStateMachineTest.o \
-./ControlCommandRxSocket.o \
+./ConnectionFsm.o \
+./ConnectionFsmTest.o \
+./MessageReceiver.o \
 ./MessageSinkCdc.o \
 ./ServoDriver.o \
 ./ServoDriverMock.o \
 ./ServoDriverRPi.o \
-./SystemStateMachine.o \
-./SystemStateMachineTest.o \
-./TransmitTelemetryTimerHandler.o \
+./SystemFsm.o \
+./SystemFsmTest.o \
+./TransmitTelemetry.o \
 ./main.o 
 
 C_DEPS += \
 ./CommandLineArguments.d \
 ./Connection.d \
 ./ConnectionContainer.d \
-./ConnectionStateMachine.d \
-./ConnectionStateMachineTest.d \
-./ControlCommandRxSocket.d \
+./ConnectionFsm.d \
+./ConnectionFsmTest.d \
+./MessageReceiver.d \
 ./MessageSinkCdc.d \
 ./ServoDriver.d \
 ./ServoDriverMock.d \
 ./ServoDriverRPi.d \
-./SystemStateMachine.d \
-./SystemStateMachineTest.d \
-./TransmitTelemetryTimerHandler.d \
+./SystemFsm.d \
+./SystemFsmTest.d \
+./TransmitTelemetry.d \
 ./main.d 
 
 

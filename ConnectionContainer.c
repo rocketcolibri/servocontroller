@@ -23,7 +23,7 @@
 
 #include "Connection.h"
 #include "ConnectionContainer.h"
-
+#include "SystemFsm.h"
 /** compare function for the AVLTREE, used IP addresses as the key (4 bytes) */
 static int IpCmp(DSKEY ip1, DSKEY ip2)
 {
@@ -42,13 +42,20 @@ typedef struct ConnectionContainer
 {
   ConnectionObject_t activeConnectionObject; // reference to the currently active connection
   AVLTREE hAllConnections; // storage for the connection objects
+  SystemFsmObject_t sysSm;
 } ConnectionContainer_t;
+
+void SYS_Action_1_SetServosToPassiveMode(ConnectionContainerObject_t this)
+{
+
+}
 
 ConnectionContainerObject_t NewConnectionContainer()
 {
 	ConnectionContainer_t *this = malloc(sizeof(ConnectionContainer_t));
 	bzero(this, sizeof(ConnectionContainer_t));
 	this->hAllConnections = avlNewTree(IpCmp, sizeof(UINT32), 0);
+	this->sysSm = NewSystemFsm(this, SYS_Action_1_SetServosToPassiveMode);
 	return (ConnectionContainerObject_t) this;
 }
 

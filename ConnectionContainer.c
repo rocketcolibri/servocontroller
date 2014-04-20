@@ -18,6 +18,7 @@
 #include "base/GEN.h"
 #include "base/TRC.h"
 #include "base/DBG.h"
+#include "base/MON.h"
 #include "base/Reactor.h"
 #include "base/AD.h"
 
@@ -50,12 +51,31 @@ void SYS_Action_1_SetServosToPassiveMode(ConnectionContainerObject_t this)
 
 }
 
+/** monitor command called from in BKGR main init function */
+static BOOL ConnectionContainer_MonCmd(ConnectionContainerObject_t obj, char * cmdLine)
+{
+	ConnectionContainer_t *this = (ConnectionContainer_t*)obj;
+	if(this->activeConnectionObject)
+		MON_WriteInfof("\nactiveip: %s", ConnectionGetUserName(this->activeConnectionObject));
+	else
+		MON_WriteInfof("\nactiveip: -");
+
+	void monPrintConnectionToArray(ConnectionObject_t connection)
+	{
+		if(this->activeConnectionObject != connection)
+			MON_WriteInfof("\npassive: %s", ConnectionGetUserName(connection));
+	}
+	avlWalkAscending(this->hAllConnections, monPrintConnectionToArray);
+	return TRUE;
+}
+
 ConnectionContainerObject_t NewConnectionContainer()
 {
 	ConnectionContainer_t *this = malloc(sizeof(ConnectionContainer_t));
 	bzero(this, sizeof(ConnectionContainer_t));
 	this->hAllConnections = avlNewTree(IpCmp, sizeof(UINT32), 0);
 	this->sysSm = NewSystemFsm(this, SYS_Action_1_SetServosToPassiveMode);
+	MON_AddMonCmd("cc", ConnectionContainer_MonCmd, this );
 	return (ConnectionContainerObject_t) this;
 }
 
@@ -132,6 +152,5 @@ void ConnectionContainerSetActiveConnection(
 				inet_ntoa(ConnectionGetAddress(newActiveConnection)->sin_addr));
 		this->activeConnectionObject = newActiveConnection;
 	}
-
-
 }
+

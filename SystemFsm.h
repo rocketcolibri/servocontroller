@@ -13,7 +13,7 @@
 /** system state machine object */
 typedef  void* SystemFsmObject_t;
 
-/** state machine action function signaure */
+/** state machine action function signature */
 typedef void (*SystemFsm_ActionFn_t)(void* obj);
 
 

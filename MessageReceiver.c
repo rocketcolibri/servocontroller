@@ -94,6 +94,7 @@ static void MessageReceiverHandler(int socketfd, MessageReceiverObject_t socketO
 	if(0 < (rxLen=recvfrom(socketfd, buffer, sizeof(buffer), MSG_DONTWAIT,
 			(struct sockaddr*)&srcAddr, &srcAddrLen)))
 	{
+
 		ConnectionObject_t pConn=ConnectionContainerFindConnection(pMessageReceiver->connectionContainer, &srcAddr);
 
 		if (!pConn)

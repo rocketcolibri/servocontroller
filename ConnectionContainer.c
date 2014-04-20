@@ -56,14 +56,14 @@ static BOOL ConnectionContainer_MonCmd(ConnectionContainerObject_t obj, char * c
 {
 	ConnectionContainer_t *this = (ConnectionContainer_t*)obj;
 	if(this->activeConnectionObject)
-		MON_WriteInfof("\nactiveip: %s", ConnectionGetUserName(this->activeConnectionObject));
+		MON_WriteInfof("\nactiveip: %s (%s)", ConnectionGetUserName(this->activeConnectionObject), inet_ntoa(ConnectionGetAddress(this->activeConnectionObject)->sin_addr));
 	else
 		MON_WriteInfof("\nactiveip: -");
 
 	void monPrintConnectionToArray(ConnectionObject_t connection)
 	{
 		if(this->activeConnectionObject != connection)
-			MON_WriteInfof("\npassive: %s", ConnectionGetUserName(connection));
+			MON_WriteInfof("\npassive: %s (%s)", ConnectionGetUserName(connection), inet_ntoa(ConnectionGetAddress(connection)->sin_addr));
 	}
 	avlWalkAscending(this->hAllConnections, monPrintConnectionToArray);
 	return TRUE;

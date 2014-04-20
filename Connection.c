@@ -86,66 +86,6 @@ typedef struct
   Connection_State_t nextState;
 } Connection_EventAction_t;
 
-#if 0
-void Connection_DummyFn(Connection_t *pArpingInst)
-{
-
-}
-
-/**
- * @short Master State Machine
- */
-// !!! the first NULL in an event line terminates the action list !!!
-static const Connection_EventAction_t connectionStateMachine[CONNECTION_NOF_STATE][CONNECTION_NOF_EVENT] =
-{ /* state 0: CONNECTION_STATE_DISABLED */
-{ /* events                      actions 0               actions 1                 next state */
-  /* CONNECTION_IDLE*/        {{ Connection_DummyFn,     NULL, NULL },             CONNECTION_IDLE },
-  /* CONNECTION_IDENTIFIED*/  {{ NULL, NULL, NULL },                               CONNECTION_IDLE },
-  /* CONNECTION_UP */         {{ NULL, NULL, NULL },                               CONNECTION_IDLE },
-  /* CONNECTION_DEGRADED_1 */ {{ NULL, NULL, NULL },                               CONNECTION_IDLE },
-  /* CONNECTION_DEGRADED_2 */ {{ NULL, NULL, NULL },                               CONNECTION_IDLE },
-  /* CONNECTION_DEGRADED_3 */ {{ NULL, NULL, NULL },                               CONNECTION_IDLE }
-} };
-
-/**
- * Execute state machine event
- * @param pArpingInst
- * @param event
- */
-static void Connection_ExecuteEvent(Connection_t *pArpingInst,
-    Connection_Event_t event)
-{
-  static const char* statesStr[] =
-  { "DISABLED", "RESOLVING", "FAIL_1", "FAIL_2", "FAIL_3", "RESOLVED" };
-
-  static const char* eventsStr[] =
-  { "START", "OK", "FAIL", "STOP" };
-
-  DBG_ASSERT(event < CONNECTION_NOF_EVENT);
-  DBG_ASSERT(pArpingInst);
-
-  Connection_State_t currentState = pArpingInst->state;
-
-  // get new state
-  Connection_State_t newState =
-      connectionStateMachine[currentState][event].nextState;
-
-  TRC_INFO(pArpingInst->hTrc,
-      "0x%x\t Event:%s %s -> %s", pArpingInst, eventsStr[event], statesStr[currentState], statesStr[newState]);
-  // execute actions
-  UINT32 action = 0;
-  while (connectionStateMachine[currentState][event].action[action])
-  {
-    connectionStateMachine[currentState][event].action[action](pArpingInst);
-    action++;
-  }
-
-  pArpingInst->state = newState;
-}
-
-#endif
-
-
 void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonString)
 {
   Connection_t *this = (Connection_t*) connectionObject;

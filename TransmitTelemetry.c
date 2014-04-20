@@ -6,6 +6,7 @@
  */
 
 #include <arpa/inet.h>
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <sys/types.h>
@@ -77,8 +78,12 @@ static void SendToAll(TransmitTelemetry_t *this, AVLTREE connections, const char
   TRC_INFO(this->hTrc, "%s", pJsonMsg);
   void addConnectionToArray(ConnectionObject_t connection)
   {
+	  struct sockaddr_in dest;
+	  memcpy(&dest, ConnectionGetAddress(connection), sizeof(struct sockaddr_in));
+	  dest.sin_port = htons(30001);
+	  TRC_INFO(this->hTrc, "\nactiveip: %s (%s): %s", ConnectionGetUserName(connection), inet_ntoa(ConnectionGetAddress(connection)->sin_addr), pJsonMsg);
 	  sendto(ConnectionGetSocket(connection), pJsonMsg, strlen(pJsonMsg), 0,
-			  (struct sockaddr*)ConnectionGetAddress(connection) , sizeof(struct sockaddr_in));
+			  (struct sockaddr*)&dest, sizeof(struct sockaddr_in));
   }
   avlWalkAscending(ConnectionContainerGetAllConnections(this->connectionContainerObject), addConnectionToArray);
 }

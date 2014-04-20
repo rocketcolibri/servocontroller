@@ -30,6 +30,7 @@
 
 int main(int argc, char**argv)
 {
+
 	CommandLineArgumentsObject_t args = NewCommandLineArguments(argc, argv);
 	if(CommandLineArguments_getParseError(args))
 	{

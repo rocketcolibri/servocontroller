@@ -44,8 +44,9 @@ extern void ConnectionContainerAddConnection(ConnectionContainerObject_t connect
  * Remove a connection from the connection container.
  * @param connectionContainerObject, this
  * @param pSrcAddr, connection to be removed.
-extern void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr);
  */
+extern void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject);
+
 
 /**
  * Add a connection to the connection container.

@@ -28,6 +28,8 @@
 
 #include "MessageSinkCdc.h"
 
+#define MAX_TIMEOUT_TIME 3
+
 typedef enum { CONN_IDLE, CONN_IDENTIFIED, CONN_UP, CONN_DEGRADED_1, CONN_DEGRADED_2, CONN_DEGRADED_3 } connectionState_t;
 
 typedef struct ConnectionContainer ConnectionContainer_t;
@@ -39,6 +41,7 @@ typedef struct Connection
   char *pUserName;
   connectionState_t state;
   UINT32 lastSequence;
+  UINT32 timeout;
   void *hConnectionTimeoutPoll;
   ConnectionContainerObject_t connectionContainer;
   UINT8 hTrc; // trace handle
@@ -176,12 +179,19 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
   json_tokener_free(tok);
 }
 
-  static void ConnectionTimeoutHandler(int timerfd20ms, void *pData)
+  static void ConnectionTimeoutHandler(int timerfd, void *pData)
   {
     Connection_t *this = (Connection_t *) pData;
     DBG_ASSERT(this);
-    //fprintf(stderr, "C");
-    TIMERFD_Read(timerfd20ms);
+    TIMERFD_Read(timerfd);
+    if (this->timeout > MAX_TIMEOUT_TIME)
+    {
+    	 TRC_ERROR(this->hTrc, "timeout expired %s", this->pUserName);
+    	ConnectionContainerRemoveConnection(this->connectionContainer, pData);
+    	DeleteConnection(this);
+    }
+    else
+    	this->timeout++;
   }
 
   ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnectionObject,
@@ -196,12 +206,18 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
     this->socketFd = socketFd;
     this->state = CONN_IDLE;
     this->hTrc = hTrcSocket; // inherits the trace handle from the socket
-    this->hConnectionTimeoutPoll = Reactor_AddReadFd(TIMERFD_Create(40 * 1000),
+    this->hConnectionTimeoutPoll = Reactor_AddReadFd(TIMERFD_Create(1000 * 1000),
         ConnectionTimeoutHandler, this, "ConnectionTimeoutRx");
 
     return (ConnectionObject_t)this;
   }
 
+ void DeleteConnection(ConnectionObject_t *pConn)
+ {
+	 Connection_t *this = (Connection_t *) pConn;
+	 Reactor_RemoveFd(this->hConnectionTimeoutPoll);
+	 free(pConn);
+ }
   // getter
   struct sockaddr_in* ConnectionGetAddress(ConnectionObject_t connectionObject)
   {

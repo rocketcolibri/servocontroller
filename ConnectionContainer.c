@@ -117,12 +117,17 @@ void ConnectionContainerAddConnection(ConnectionContainerObject_t connectionCont
 	avlInsert(this->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr, connectionObject);
 }
 
-void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr)
+void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject)
 {
-  ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(this);
 	DBG_ASSERT(connectionObject);
-	avlRemoveByKey(this->hAllConnections, (DSKEY)pSrcAddr->sin_addr.s_addr);
+	if(this->activeConnectionObject == connectionObject)
+	{
+		this->activeConnectionObject = NULL;
+	}
+	struct sockaddr_in*  key = ConnectionGetAddress(connectionObject);
+	avlRemoveByKey(this->hAllConnections, (DSKEY)key->sin_addr.s_addr);
 }
 
 AVLTREE ConnectionContainerGetAllConnections(ConnectionContainerObject_t connectionContainerObject)

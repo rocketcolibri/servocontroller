@@ -91,7 +91,9 @@ typedef struct
 
 void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonString)
 {
+  DBG_ASSERT(connectionObject);
   Connection_t *this = (Connection_t*) connectionObject;
+  this->timeout = 0; // reset timeout counter
   struct json_tokener *tok = json_tokener_new();
   struct json_object * jobj = json_tokener_parse_ex(tok, pJsonString, strlen(pJsonString));
   if (!jobj)
@@ -179,16 +181,16 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
   json_tokener_free(tok);
 }
 
-  static void ConnectionTimeoutHandler(int timerfd, void *pData)
+  static void ConnectionTimeoutHandler(int timerfd, void *obj)
   {
-    Connection_t *this = (Connection_t *) pData;
+    Connection_t *this = (Connection_t *) obj;
     DBG_ASSERT(this);
     TIMERFD_Read(timerfd);
     if (this->timeout > MAX_TIMEOUT_TIME)
     {
     	 TRC_ERROR(this->hTrc, "timeout expired %s", this->pUserName);
-    	ConnectionContainerRemoveConnection(this->connectionContainer, pData);
-    	DeleteConnection(this);
+    	ConnectionContainerRemoveConnection(this->connectionContainer, obj);
+    	DeleteConnection(obj);
     }
     else
     	this->timeout++;

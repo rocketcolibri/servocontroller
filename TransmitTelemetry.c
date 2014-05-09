@@ -23,6 +23,7 @@
 #include "base/DBG.h"
 #include "base/Reactor.h"
 
+#include "SystemFsm.h"
 #include "Connection.h"
 #include "ConnectionContainer.h"
 #include "TransmitTelemetry.h"

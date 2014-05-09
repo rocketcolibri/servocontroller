@@ -21,6 +21,7 @@
 #include "base/AD.h"
 #include "base/TRC.h"
 
+#include "SystemFsm.h"
 #include "Connection.h"
 #include "ConnectionContainer.h"
 #include "MessageReceiver.h"
@@ -110,8 +111,6 @@ static void MessageReceiverHandler(int socketfd, MessageReceiverObject_t socketO
 
 		buffer[rxLen]=0;
 		HandleJsonMessage(pConn, buffer);
-  		// TODO set every connection to the currently active, this must be changed
-		ConnectionContainerSetActiveConnection(pMessageReceiver->connectionContainer, pConn);
 
 		TRC_INFO(pMessageReceiver->hTrc, "received %d bytes containing:%s from %s",rxLen, buffer, inet_ntoa(srcAddr.sin_addr));
 	}

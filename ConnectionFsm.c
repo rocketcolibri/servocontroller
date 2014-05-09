@@ -132,13 +132,13 @@ static void ExecuteEvent(ConnectionFsmObject_t obj,
 	UINT32 action = 0;
 	while (this->ConnectionFsm[currentState][event].action[action])
 	{
-		this->ConnectionFsm[currentState][event].action[action](this->connection);
+		this->ConnectionFsm[currentState][event].action[action](this);
 		action++;
 	}
 
 	if(this->state != newState)
 	{
-		TRC_Log_Print(TRC_log, "System State machine: event %s initiates state change from %s to %s", eventsStr[event], statesStr[this->state], statesStr[newState]);
+		//TRC_Log_Print(TRC_log, "System State machine: event %s initiates state change from %s to %s", eventsStr[event], statesStr[this->state], statesStr[newState]);
 		this->state = newState;
 	}
 }
@@ -173,4 +173,10 @@ void ConnectionFsmEventTimeout(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	ExecuteEvent(obj, CONN_EVENT_TIMEOUT);
+}
+
+ConnectionObject_t ConnectionFsmGetConnection(ConnectionFsmObject_t obj)
+{
+	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
+	return this->connection;
 }

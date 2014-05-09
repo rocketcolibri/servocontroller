@@ -39,6 +39,8 @@ extern void ConnectionFsmEventRecvCdcCmd(ConnectionFsmObject_t obj);
 
 extern void ConnectionFsmEventTimeout(ConnectionFsmObject_t obj);
 
+extern ConnectionObject_t ConnectionFsmGetConnection(ConnectionFsmObject_t obj);
+
 /** unit tests */
 extern void ConnectionFsmTest();
 

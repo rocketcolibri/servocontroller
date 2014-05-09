@@ -60,4 +60,8 @@ extern ConnectionContainerObject_t ConnectionContainerGetActiveConnection(Connec
 // setter
 extern void ConnectionContainerSetActiveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t newActiveConnection);
 
+
+// getter
+extern SystemFsmObject_t ConnectionContainerGetSystemFsm(ConnectionContainerObject_t connectionContainerObject);
+
 #endif /* CONNECTIONCONTAINER_H_ */

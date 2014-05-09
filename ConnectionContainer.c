@@ -22,9 +22,10 @@
 #include "base/Reactor.h"
 #include "base/AD.h"
 
+#include "SystemFsm.h"
 #include "Connection.h"
 #include "ConnectionContainer.h"
-#include "SystemFsm.h"
+
 /** compare function for the AVLTREE, used IP addresses as the key (4 bytes) */
 static int IpCmp(DSKEY ip1, DSKEY ip2)
 {
@@ -150,12 +151,16 @@ void ConnectionContainerSetActiveConnection(
 {
 	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
 	DBG_ASSERT(this);
-	DBG_ASSERT(newActiveConnection);
 	if(this->activeConnectionObject != newActiveConnection)
 	{
-		TRC_Log_Print(TRC_log, "%s: set new active connection %s ",__PRETTY_FUNCTION__,
-				inet_ntoa(ConnectionGetAddress(newActiveConnection)->sin_addr));
+		//TRC_Log_Print(TRC_log, "%s: set new active connection %s ",__PRETTY_FUNCTION__,
+				//inet_ntoa(ConnectionGetAddress(newActiveConnection)->sin_addr));
 		this->activeConnectionObject = newActiveConnection;
 	}
 }
 
+SystemFsmObject_t ConnectionContainerGetSystemFsm(ConnectionContainerObject_t connectionContainerObject)
+{
+	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	return this->sysSm;
+}

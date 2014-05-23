@@ -16,6 +16,7 @@ C_SRCS += \
 ../ServoDriverRPi.c \
 ../SystemFsm.c \
 ../SystemFsmTest.c \
+../TelemetrySourceVideoStream.c \
 ../TransmitTelemetry.c \
 ../main.c 
 
@@ -32,6 +33,7 @@ OBJS += \
 ./ServoDriverRPi.o \
 ./SystemFsm.o \
 ./SystemFsmTest.o \
+./TelemetrySourceVideoStream.o \
 ./TransmitTelemetry.o \
 ./main.o 
 
@@ -48,6 +50,7 @@ C_DEPS += \
 ./ServoDriverRPi.d \
 ./SystemFsm.d \
 ./SystemFsmTest.d \
+./TelemetrySourceVideoStream.d \
 ./TransmitTelemetry.d \
 ./main.d 
 

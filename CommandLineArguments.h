@@ -10,6 +10,8 @@
 
 typedef void *CommandLineArgumentsObject_t;
 
+extern CommandLineArgumentsObject_t args;
+
 /**
    * Creates a new CommandLineArgument object
    *

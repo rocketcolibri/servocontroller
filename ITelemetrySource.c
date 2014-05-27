@@ -16,23 +16,24 @@
 #include <fcntl.h>
 #include <json-c/json.h>
 
+#include "base/GEN.h"
 #include "ITelemetrySource.h"
 
 BOOL ITelemetrySourceIsAvailable(ITelemetrySourceObject_t obj)
 {
-	ITelemetrySource_t *this = (ITelemetrySource_t)obj;
+	ITelemetrySource_t *this = (ITelemetrySource_t*)obj;
 	return this->fnIsAvailable(this->obj);
 }
 
 json_object * ITelemetrySourceGetJsonObj(ITelemetrySourceObject_t obj)
 {
-	ITelemetrySource_t *this = (ITelemetrySource_t)obj;
+	ITelemetrySource_t *this = (ITelemetrySource_t*)obj;
 	return this->fnGetJsonObj(this->obj);
 }
 
 void ITelemetrySourceDelete(ITelemetrySourceObject_t obj)
 {
-	ITelemetrySource_t *this = (ITelemetrySource_t)obj;
+	ITelemetrySource_t *this = (ITelemetrySource_t*)obj;
 	return this->fnDelete(this->obj);
 	free(this);
 }

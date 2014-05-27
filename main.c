@@ -28,10 +28,11 @@
 #include "ServoDriverRPi.h"
 #include "ServoDriverMock.h"
 
+CommandLineArgumentsObject_t args;
+
 int main(int argc, char**argv)
 {
-
-	CommandLineArgumentsObject_t args = NewCommandLineArguments(argc, argv);
+	args = NewCommandLineArguments(argc, argv);
 	if(CommandLineArguments_getParseError(args))
 	{
 		fprintf(stderr, "%s\n", CommandLineArguments_getUsageStr(args));

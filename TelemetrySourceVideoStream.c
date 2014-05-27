@@ -17,6 +17,7 @@
 #include "base/Reactor.h"
 #include <json-c/json.h>
 
+#include "CommandLineArguments.h"
 #include "ITelemetrySource.h"
 
 typedef void *TelemetrySourceVideoStreamObject_t;
@@ -29,7 +30,10 @@ static BOOL TelemetrySourceVideoStreamIsAvailable(TelemetrySourceVideoStreamObje
 {
 	DBG_ASSERT(obj);
 	TelemetrySourceVideoStream_t *this = (TelemetrySourceVideoStream_t*)obj;
-	this->isAvailable = system("/opt/vc/bin/vcgencmd get_camera | egrep supported=1.+grep detected=1");
+	if(CommandLineArguments_getSimEnabled(args))
+		this->isAvailable = 0 == system("echo 'supported=1 detected=1' | egrep supported=1.+detected=1");
+	else
+		this->isAvailable = 0 == system("/opt/vc/bin/vcgencmd get_camera | egrep supported=1.+detected=1");
 	return this->isAvailable;
 }
 
@@ -56,12 +60,10 @@ ITelemetrySourceObject_t NewTelemetrySourceVideoStream()
 	ITelemetrySource_t *Ithis = malloc(sizeof(ITelemetrySource_t));
 	bzero(Ithis, sizeof(ITelemetrySource_t));
 	Ithis->obj = malloc(sizeof(TelemetrySourceVideoStream_t));
-
 	bzero(Ithis->obj, sizeof(TelemetrySourceVideoStream_t));
 	Ithis->fnIsAvailable = TelemetrySourceVideoStreamIsAvailable;
 	Ithis->fnGetJsonObj = TelemetrySourceVideoStreamGetJsonObj;
 	Ithis->fnDelete = DeleteTelemetrySourceVideoStream;
-
 	return Ithis;
 }
 

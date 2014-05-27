@@ -27,6 +27,8 @@
 #include "Connection.h"
 #include "ConnectionContainer.h"
 #include "TransmitTelemetry.h"
+#include "ITelemetrySource.h"
+#include "TelemetrySourceVideoStream.h"
 
 /** data structure of a TransmitTelemetryTimerHanlder object */
 typedef struct
@@ -35,6 +37,7 @@ typedef struct
 	UINT8 hTrc;
 	ConnectionContainerObject_t connectionContainerObject;
 	void *hTransmitTelemetryTimerPoll;
+	LINKLIST *hTelemetrySource;
 } TransmitTelemetry_t;
 
 static struct json_object* GetJsonUserAndIp(const char *pUser, struct sockaddr_in* ipAddress)
@@ -45,7 +48,7 @@ static struct json_object* GetJsonUserAndIp(const char *pUser, struct sockaddr_i
 	return jobj;
 }
 
-static char * GetJsonTrasmitTelemetryMsg(int sequenceNumber, AVLTREE connections, ConnectionObject_t activeConnection)
+static char * GetJsonTrasmitTelemetryMsg(TransmitTelemetry_t *this, int sequenceNumber, AVLTREE connections, ConnectionObject_t activeConnection)
 {
 	 json_object * jobj = json_object_new_object();
 	 json_object_object_add(jobj, "v", json_object_new_int(1));
@@ -69,6 +72,16 @@ static char * GetJsonTrasmitTelemetryMsg(int sequenceNumber, AVLTREE connections
 	  }
 	  avlWalkAscending(connections, addConnectionToArray);
 	  json_object_object_add(jobj,"passiveip", jarray);
+
+	  AD_BOOLEAN AddTelemetrySourceToArray (ITelemetrySourceObject_t obj, void *telemetryarray)
+	  {
+		json_object_array_add((json_object *)telemetryarray, ITelemetrySourceGetJsonObj(obj));
+		return AD_TRUE;
+	  }
+	  json_object *telemetryarray = json_object_new_array();
+	  ll_traverse (this->hTelemetrySource, AddTelemetrySourceToArray, (void*)telemetryarray);
+	  json_object_object_add(jobj,"telemetry", telemetryarray);
+
 	  char *pJsonStr = strdup(json_object_to_json_string(jobj));
 	  json_object_put(jobj);
 	  return pJsonStr;
@@ -100,6 +113,7 @@ static void TransmitTelemetry(int socketfd, TransmitTelemetryObject_t TransmitTe
 	DBG_ASSERT(this);
 
 	char *pJsonMsg = GetJsonTrasmitTelemetryMsg(
+			this,
 			this->sequenceNumber++,
 			ConnectionContainerGetAllConnections(this->connectionContainerObject),
 			ConnectionContainerGetActiveConnection(this->connectionContainerObject));
@@ -110,6 +124,17 @@ static void TransmitTelemetry(int socketfd, TransmitTelemetryObject_t TransmitTe
 	TIMERFD_Read(socketfd);
 }
 
+static void TransmitTelemetryAddSources(TransmitTelemetry_t *this)
+{
+	ITelemetrySourceObject_t ts = NewTelemetrySourceVideoStream();
+	if (ITelemetrySourceIsAvailable(ts))
+		ll_append(this->hTelemetrySource, ts);
+	else
+		ITelemetrySourceDelete(ts);
+
+	// add more telemetry sources here
+}
+
 TransmitTelemetryObject_t NewTransmitTelemetry(ConnectionContainerObject_t connectionContainerObject)
 {
 	TransmitTelemetry_t *this = malloc(sizeof(TransmitTelemetry_t));
@@ -118,6 +143,10 @@ TransmitTelemetryObject_t NewTransmitTelemetry(ConnectionContainerObject_t conne
 	this->hTrc = TRC_AddTraceGroup("TelementryCmd");
 	this->hTransmitTelemetryTimerPoll
 		= Reactor_AddReadFd(TIMERFD_Create(1000*1000), TransmitTelemetry, this, "TransmitTelemetryHanlder");
+	this->hTelemetrySource = ll_init();
+
+	TransmitTelemetryAddSources(this);
+
 	return (TransmitTelemetryObject_t)this;
 }
 
@@ -125,5 +154,12 @@ void DeleteTransmitTelemetry(TransmitTelemetryObject_t deleteTransmitTelemetryHa
 {
 	TransmitTelemetry_t *this = (TransmitTelemetry_t *)deleteTransmitTelemetryHandlerObject;
 	Reactor_RemoveFdAndClose(this->hTransmitTelemetryTimerPoll);
+
+	AD_BOOLEAN DeleteTelemetrySource (ITelemetrySourceObject_t obj, void *param)
+	{
+		ITelemetrySourceDelete(obj);
+		return AD_TRUE;
+	}
+	ll_traverse (this->hTelemetrySource, DeleteTelemetrySource, NULL);
 	free(this);
 }

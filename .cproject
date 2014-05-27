@@ -107,8 +107,11 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="cdt.managedbuild.config.gnu.exe.debug.1938801221.1526445679.314116459" name="ITelemetrySource.c" rcbsApplicability="disable" resourcePath="ITelemetrySource.c" toolsToInvoke="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1978074277.1918052527">
+						<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1978074277.1918052527" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1978074277"/>
+					</fileInfo>
 					<sourceEntries>
-						<entry excluding="ITelemetrySource.c|Tools/|RtspServer/|ServoBlaster/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name=""/>
+						<entry excluding="Tools/|RtspServer/|ServoBlaster/" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -186,6 +189,7 @@
 		<configuration configurationName="Debug_PC">
 			<resource resourceType="PROJECT" workspacePath="/ServoController"/>
 		</configuration>
+		<configuration configurationName="Release_Rpi"/>
 		<configuration configurationName="Debug_Rpi">
 			<resource resourceType="PROJECT" workspacePath="/ServoController"/>
 		</configuration>

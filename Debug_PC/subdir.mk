@@ -9,6 +9,7 @@ C_SRCS += \
 ../ConnectionContainer.c \
 ../ConnectionFsm.c \
 ../ConnectionFsmTest.c \
+../ITelemetrySource.c \
 ../MessageReceiver.c \
 ../MessageSinkCdc.c \
 ../ServoDriver.c \
@@ -26,6 +27,7 @@ OBJS += \
 ./ConnectionContainer.o \
 ./ConnectionFsm.o \
 ./ConnectionFsmTest.o \
+./ITelemetrySource.o \
 ./MessageReceiver.o \
 ./MessageSinkCdc.o \
 ./ServoDriver.o \
@@ -43,6 +45,7 @@ C_DEPS += \
 ./ConnectionContainer.d \
 ./ConnectionFsm.d \
 ./ConnectionFsmTest.d \
+./ITelemetrySource.d \
 ./MessageReceiver.d \
 ./MessageSinkCdc.d \
 ./ServoDriver.d \

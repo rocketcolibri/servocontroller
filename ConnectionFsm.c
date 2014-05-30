@@ -120,8 +120,8 @@ static void ExecuteEvent(ConnectionFsmObject_t obj,
 	DBG_ASSERT(obj);
 	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
 
-	static const char* statesStr[] = { "CONN_IDENTIFIED", "CONN_ACTIVE" };
-	static const char* eventsStr[] = { "RECV_HELLO_CMD", "RECV_CDC_CMD", "TIMEOUT"};
+	//static const char* statesStr[] = { "CONN_IDENTIFIED", "CONN_ACTIVE" };
+	//static const char* eventsStr[] = { "RECV_HELLO_CMD", "RECV_CDC_CMD", "TIMEOUT"};
 
 	Connection_State_t currentState = this->state;
 

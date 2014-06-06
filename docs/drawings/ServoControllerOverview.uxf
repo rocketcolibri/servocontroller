@@ -299,12 +299,15 @@ active
     <coordinates>
       <x>840</x>
       <y>392</y>
-      <w>144</w>
+      <w>272</w>
       <h>64</h>
     </coordinates>
     <panel_attributes>/ITelemetrySource/
 --
-GetJsonObject() : jsonc_obj</panel_attributes>
+
++ITelemetrySourceIsAvailable()
+
+ITelemetrySourceGetJsonObj() : jsonc_obj</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -323,30 +326,28 @@ m1=0..*
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>832</x>
-      <y>528</y>
-      <w>152</w>
+      <x>608</x>
+      <y>632</y>
+      <w>200</w>
       <h>96</h>
     </coordinates>
-    <panel_attributes>SensorVideoStream
+    <panel_attributes>TelemetrySourceVideoStream
 --
- ITelemetrySourceIsAvailable(ITelemetrySourceObject_t obj);
-
-extern json_object * ITelemetrySourceGetJsonObj</panel_attributes>
+ </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>816</x>
+      <x>712</x>
       <y>432</y>
-      <w>146</w>
-      <h>112</h>
+      <w>264</w>
+      <h>216</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.
 &lt;&lt;implements&gt;&gt;
 </panel_attributes>
-    <additional_attributes>80;24;80;96</additional_attributes>
+    <additional_attributes>248;24;24;200</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
@@ -361,5 +362,31 @@ extern json_object * ITelemetrySourceGetJsonObj</panel_attributes>
 Handler for 
 Timeout Timer</panel_attributes>
     <additional_attributes>280;24;280;400;24;400</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>904</x>
+      <y>632</y>
+      <w>200</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>TelemetrySourceWifiSignal
+--
+ </panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>912</x>
+      <y>432</y>
+      <w>146</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.
+&lt;&lt;implements&gt;&gt;
+</panel_attributes>
+    <additional_attributes>80;24;80;200</additional_attributes>
   </element>
 </diagram>

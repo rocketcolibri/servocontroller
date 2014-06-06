@@ -4,8 +4,8 @@
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>816</x>
-      <y>72</y>
+      <x>552</x>
+      <y>32</y>
       <w>136</w>
       <h>40</h>
     </coordinates>
@@ -16,8 +16,8 @@ m1=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>936</x>
-      <y>40</y>
+      <x>672</x>
+      <y>0</y>
       <w>312</w>
       <h>112</h>
     </coordinates>
@@ -30,8 +30,8 @@ m1=0..*</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1072</x>
-      <y>128</y>
+      <x>808</x>
+      <y>88</y>
       <w>184</w>
       <h>192</h>
     </coordinates>
@@ -43,8 +43,8 @@ Handler for 100ms Timer</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>896</x>
-      <y>128</y>
+      <x>632</x>
+      <y>88</y>
       <w>166</w>
       <h>120</h>
     </coordinates>
@@ -57,8 +57,8 @@ and Timeout Timer</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>536</x>
-      <y>240</y>
+      <x>272</x>
+      <y>200</y>
       <w>336</w>
       <h>224</h>
     </coordinates>
@@ -84,8 +84,8 @@ and Timeout Timer</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>600</x>
-      <y>40</y>
+      <x>336</x>
+      <y>0</y>
       <w>240</w>
       <h>96</h>
     </coordinates>
@@ -100,8 +100,8 @@ Reactor
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1104</x>
-      <y>304</y>
+      <x>840</x>
+      <y>264</y>
       <w>144</w>
       <h>96</h>
     </coordinates>
@@ -113,8 +113,8 @@ Reactor
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>904</x>
-      <y>232</y>
+      <x>640</x>
+      <y>192</y>
       <w>160</w>
       <h>96</h>
     </coordinates>
@@ -126,8 +126,8 @@ Reactor
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>592</x>
-      <y>512</y>
+      <x>328</x>
+      <y>472</y>
       <w>232</w>
       <h>96</h>
     </coordinates>
@@ -139,8 +139,8 @@ Reactor
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>608</x>
-      <y>440</y>
+      <x>344</x>
+      <y>400</y>
       <w>86</w>
       <h>88</h>
     </coordinates>
@@ -153,8 +153,8 @@ passive
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>736</x>
-      <y>440</y>
+      <x>472</x>
+      <y>400</y>
       <w>40</w>
       <h>88</h>
     </coordinates>
@@ -166,8 +166,8 @@ m1=1
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>848</x>
-      <y>336</y>
+      <x>584</x>
+      <y>296</y>
       <w>272</w>
       <h>40</h>
     </coordinates>
@@ -179,8 +179,8 @@ m1=1
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>848</x>
-      <y>256</y>
+      <x>584</x>
+      <y>216</y>
       <w>72</w>
       <h>40</h>
     </coordinates>
@@ -192,8 +192,8 @@ m1=1
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>304</x>
-      <y>504</y>
+      <x>40</x>
+      <y>464</y>
       <w>192</w>
       <h>96</h>
     </coordinates>
@@ -205,8 +205,8 @@ m1=1
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>472</x>
-      <y>536</y>
+      <x>208</x>
+      <y>496</y>
       <w>136</w>
       <h>40</h>
     </coordinates>
@@ -216,8 +216,8 @@ m1=1
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>304</x>
-      <y>240</y>
+      <x>40</x>
+      <y>200</y>
       <w>192</w>
       <h>72</h>
     </coordinates>
@@ -229,8 +229,8 @@ m1=1
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>472</x>
-      <y>256</y>
+      <x>208</x>
+      <y>216</y>
       <w>80</w>
       <h>40</h>
     </coordinates>
@@ -240,8 +240,8 @@ m1=1
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>304</x>
-      <y>96</y>
+      <x>40</x>
+      <y>56</y>
       <w>192</w>
       <h>72</h>
     </coordinates>
@@ -253,8 +253,8 @@ GetIn stance()</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>328</x>
-      <y>144</y>
+      <x>64</x>
+      <y>104</y>
       <w>136</w>
       <h>112</h>
     </coordinates>
@@ -268,8 +268,8 @@ setServoPassive
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>264</x>
-      <y>288</y>
+      <x>0</x>
+      <y>248</y>
       <w>268</w>
       <h>232</h>
     </coordinates>
@@ -283,8 +283,8 @@ ConnectionStateMachine ActionFunction
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>672</x>
-      <y>440</y>
+      <x>408</x>
+      <y>400</y>
       <w>72</w>
       <h>88</h>
     </coordinates>
@@ -297,12 +297,12 @@ active
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1104</x>
-      <y>432</y>
+      <x>840</x>
+      <y>392</y>
       <w>144</w>
       <h>64</h>
     </coordinates>
-    <panel_attributes>/Sensor/
+    <panel_attributes>/ITelemetrySource/
 --
 GetJsonObject() : jsonc_obj</panel_attributes>
     <additional_attributes/>
@@ -310,8 +310,8 @@ GetJsonObject() : jsonc_obj</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1128</x>
-      <y>376</y>
+      <x>864</x>
+      <y>336</y>
       <w>40</w>
       <h>72</h>
     </coordinates>
@@ -323,21 +323,23 @@ m1=0..*
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>1096</x>
-      <y>568</y>
+      <x>832</x>
+      <y>528</y>
       <w>152</w>
       <h>96</h>
     </coordinates>
     <panel_attributes>SensorVideoStream
 --
-</panel_attributes>
+ ITelemetrySourceIsAvailable(ITelemetrySourceObject_t obj);
+
+extern json_object * ITelemetrySourceGetJsonObj</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>1080</x>
-      <y>472</y>
+      <x>816</x>
+      <y>432</y>
       <w>146</w>
       <h>112</h>
     </coordinates>
@@ -349,8 +351,8 @@ m1=0..*
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>800</x>
-      <y>128</y>
+      <x>536</x>
+      <y>88</y>
       <w>346</w>
       <h>444</h>
     </coordinates>

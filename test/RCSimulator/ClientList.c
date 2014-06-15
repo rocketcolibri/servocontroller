@@ -34,7 +34,20 @@ typedef struct
   AVLTREE hClients; // storage for the RCClient objects
 } ClientList_t;
 
+static BOOL ClientListMonCmd(ClientListObject_t obj, char * cmdLine)
+{
+	ClientList_t* this = (ClientList_t*)obj;
+	DBG_ASSERT(this);
 
+	void traversClients(RCClientObject_t client)
+	{
+		DBG_ASSERT(client);
+		MON_WriteInfof("\nrc:%s IP:%s", RCClientGetName(client), RCClientGetIpAddress(client));
+	}
+
+	avlWalkAscending(this->hClients, traversClients);
+	return TRUE;
+}
 
 ClientListObject_t NewClientList(struct json_object *pJsonObject)
 {
@@ -49,8 +62,9 @@ ClientListObject_t NewClientList(struct json_object *pJsonObject)
 	{
 		RCClientObject_t client = NewRcClient_FromJson(json_object_array_get_idx(pRcArray, i));
 		if(client)
-			avlInsert(this->hClients,(DSKEY)GetName(client), client);
+			avlInsert(this->hClients,(DSKEY)RCClientGetName(client), client);
 	}
+	MON_AddMonCmd("cl", ClientListMonCmd, this);
 	return this;
 }
 
@@ -66,8 +80,8 @@ void ClientListAddClient(ClientListObject_t obj, RCClientObject_t rcclient)
 	ClientList_t* this = (ClientList_t*)obj;
 	DBG_ASSERT(this);
 	DBG_ASSERT(rcclient);
-	DBG_ASSERT(NULL == avlFind(this->hClients, (DSKEY)GetName(rcclient)));
-	avlInsert(this->hClients, (DSKEY)GetName(rcclient), rcclient);
+	DBG_ASSERT(NULL == avlFind(this->hClients, (DSKEY)RCClientGetName(rcclient)));
+	avlInsert(this->hClients, (DSKEY)RCClientGetName(rcclient), rcclient);
 }
 
 void ClientListRemoveClient(ClientListObject_t obj, const char *pClientName)

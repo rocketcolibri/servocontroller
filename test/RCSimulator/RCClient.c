@@ -221,13 +221,13 @@ void RCClientSendExpectedPassive(RCClientObject_t obj, const char *pPassiveClien
 
 }
 
-char * GetName(RCClientObject_t obj)
+char * RCClientGetName(RCClientObject_t obj)
 {
 	RCClient_t *this = (RCClient_t *)obj;
 	return this->pName;
 }
 
-char *GetIpAddress(RCClientObject_t obj)
+char *RCClientGetIpAddress(RCClientObject_t obj)
 {
 	RCClient_t *this = (RCClient_t *)obj;
 	return this->pIpAddress;

@@ -25,6 +25,8 @@
 #include "base/Reactor.h"
 #include <json-c/json.h>
 
+#include "RCClient.h"
+
 #define BUFLEN 512
 #define NPACK 10
 #define CONTROL_CMD_PORT 30001
@@ -91,6 +93,17 @@ static char * GetJsonTrasmitHelloMsg(RCClient_t *this)
 static void HandleReactorSocketReceiveMsg(int socketfd, RCClientObject_t obj)
 {
 
+
+
+
+}
+
+
+RCClientObject_t NewRcClient_FromJson(struct json_object* pJsonObj)
+{
+	return NewRcClient(
+			json_object_get_string( json_object_object_get(pJsonObj,"name")),
+			json_object_get_string( json_object_object_get(pJsonObj,"ipaddress")));
 }
 
 RCClientObject_t NewRcClient(const char *pName, const char *pSrcIpAddress)
@@ -110,8 +123,8 @@ void DeleteRCClient(RCClientObject_t obj)
 	RCClient_t *this = (RCClient_t *)obj;
 	Reactor_RemoveFdAndClose(this->hReactorReceiveMsg);
 	Reactor_RemoveFdAndClose(this->hSendTimer);
-	free(this->pIpAddress);
-	free(this->pName);
+	free((char*)this->pIpAddress);
+	free((char*)this->pName);
 	free(this);
 }
 
@@ -124,9 +137,9 @@ static void HandleReactorTimerFdSendHello(int socketfd, RCClientObject_t obj)
 {
 	RCClient_t *this = (RCClient_t *)obj;
 	DBG_ASSERT(this);
-	char *pJsonMsg = GetJsonTrasmitHelloMsg(this);
-	SendToServoController(this);
-	free(pJsonMsg);
+// TODO
+//	char *pJsonMsg = GetJsonTrasmitHelloMsg(this);
+//	SendToServoController(this);
 	TIMERFD_Read(socketfd);
 }
 
@@ -168,7 +181,8 @@ static void HandleReactorTimerFdSendCdc(int socketfd, RCClientObject_t obj)
 	RCClient_t *this = (RCClient_t *)obj;
 	DBG_ASSERT(this);
 	char *pJsonMsg = GetJsonTrasmitCdcMsg(this);
-	SendToServoController(this);
+	// TODO
+	//SendToServoController(this);
 	free(pJsonMsg);
 	TIMERFD_Read(socketfd);
 }
@@ -207,5 +221,16 @@ void RCClientSendExpectedPassive(RCClientObject_t obj, const char *pPassiveClien
 
 }
 
+char * GetName(RCClientObject_t obj)
+{
+	RCClient_t *this = (RCClient_t *)obj;
+	return this->pName;
+}
+
+char *GetIpAddress(RCClientObject_t obj)
+{
+	RCClient_t *this = (RCClient_t *)obj;
+	return this->pIpAddress;
+}
 
 

@@ -17,6 +17,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <json-c/json.h>
+
 #include "base/GEN.h"
 #include "base/AD.h"
 #include "base/MON.h"
@@ -25,11 +27,22 @@
 #include "base/TRC.h"
 
 #include "CommandLineArguments.h"
+#include "ServoControllerData.h"
+#include "ProcedureList.h"
+#include "RCClient.h"
+#include "ClientList.h"
+#include "RCClientFactoryFromCfgFile.h"
+
 
 CommandLineArgumentsObject_t args;
 
 int main(int argc, char**argv)
 {
+
+	ClientListObject_t clientList;
+	ProcedureListObject_t procedureList;
+	ServoControllerObject_t servoController;
+
 	args = NewCommandLineArguments(argc, argv);
 	if(CommandLineArguments_getParseError(args))
 	{
@@ -37,10 +50,10 @@ int main(int argc, char**argv)
 		exit(1);
 	}
 
-	const char *pCfgFile = CommandLineArguments_getCfgFileName(args);
+	const char *pCfgFile = CommandLineArguments_getBatchFileName(args);
 	if(pCfgFile)
 	{
-
+		RCClientFactoryFromCfgFile(pCfgFile, &clientList, &procedureList, &servoController);
 	}
 
 	DBG_Init();

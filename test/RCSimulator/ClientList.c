@@ -49,22 +49,31 @@ static BOOL ClientListMonCmd(ClientListObject_t obj, char * cmdLine)
 	return TRUE;
 }
 
-ClientListObject_t NewClientList(struct json_object *pJsonObject)
+ClientListObject_t NewClientList()
 {
 	ClientList_t *this = malloc(sizeof(ClientList_t));
 	bzero(this, sizeof(ClientList_t));
 	this->hClients = avlNewTree(NULL, sizeof(UINT32), 0);
+	return this;
+}
 
-	struct json_object *pRcArray = json_object_object_get(pJsonObject, "rocketcolibri" );
-	int arrayLen = json_object_array_length(pRcArray);
-	int i;
-	for (i=0; i < arrayLen; i++)
+
+ClientListObject_t NewClientListJson(struct json_object *pJsonObject)
+{
+	ClientList_t *this = (ClientList_t *)NewClientList();
+	if(pJsonObject)
 	{
-		RCClientObject_t client = NewRcClient_FromJson(json_object_array_get_idx(pRcArray, i));
-		if(client)
-			avlInsert(this->hClients,(DSKEY)RCClientGetName(client), client);
+		struct json_object *pRcArray = json_object_object_get(pJsonObject, "rocketcolibri" );
+		int arrayLen = json_object_array_length(pRcArray);
+		int i;
+		for (i=0; i < arrayLen; i++)
+		{
+			RCClientObject_t client = NewRcClientJson(json_object_array_get_idx(pRcArray, i));
+			if(client)
+				avlInsert(this->hClients,(DSKEY)RCClientGetName(client), client);
+		}
+		MON_AddMonCmd("cl", ClientListMonCmd, this);
 	}
-	MON_AddMonCmd("cl", ClientListMonCmd, this);
 	return this;
 }
 
@@ -84,12 +93,12 @@ void ClientListAddClient(ClientListObject_t obj, RCClientObject_t rcclient)
 	avlInsert(this->hClients, (DSKEY)RCClientGetName(rcclient), rcclient);
 }
 
-void ClientListRemoveClient(ClientListObject_t obj, const char *pClientName)
+RCClientObject_t ClientListRemoveClient(ClientListObject_t obj, const char *pClientName)
 {
 	ClientList_t* this = (ClientList_t*)obj;
 	DBG_ASSERT(this);
 	DBG_ASSERT(pClientName);
-	avlRemoveByKey(this->hClients, (DSKEY)pClientName);
+	return (RCClientObject_t)avlRemoveByKey(this->hClients, (DSKEY)pClientName);
 
 }
 

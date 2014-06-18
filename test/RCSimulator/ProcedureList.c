@@ -28,10 +28,17 @@ typedef struct
 
 } ProcedureList_t;
 
-ProcedureListObject_t NewProcedureList(struct json_object *pJsonObject)
+ProcedureListObject_t NewProcedureList()
 {
 	ProcedureList_t *this = malloc(sizeof(ProcedureList_t));
 	bzero(this, sizeof(ProcedureList_t));
+	return this;
+}
+
+
+ProcedureListObject_t NewProcedureListJson(struct json_object *pJsonObject)
+{
+	ProcedureList_t *this = (ProcedureList_t *)NewProcedureList();
 	return this;
 }
 

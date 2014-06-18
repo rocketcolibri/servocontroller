@@ -13,7 +13,7 @@ typedef void *RCClientObject_t;
 
 extern RCClientObject_t NewRcClient(const char *pName, const char *pIpAddress);
 
-extern RCClientObject_t NewRcClient_FromJson(struct json_object* pJsonObj);
+extern RCClientObject_t NewRcClientJson(struct json_object* pJsonObj);
 
 extern void DeleteRCClient(RCClientObject_t obj);
 

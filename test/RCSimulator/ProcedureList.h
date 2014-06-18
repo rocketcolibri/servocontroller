@@ -12,7 +12,8 @@
 typedef void* ProcedureListObject_t;
 
 
-extern ProcedureListObject_t NewProcedureList(struct json_object *pJsonObject);
+extern ProcedureListObject_t NewProcedureListJson(struct json_object *pJsonObject);
+extern ProcedureListObject_t NewProcedureList();
 
 extern void DeleteProcedureList(ProcedureListObject_t obj);
 

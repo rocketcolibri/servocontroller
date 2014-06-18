@@ -31,7 +31,7 @@
 #include "ProcedureList.h"
 #include "RCClient.h"
 #include "ClientList.h"
-#include "RCClientFactoryFromCfgFile.h"
+#include "RCClientFactory.h"
 
 
 CommandLineArgumentsObject_t args;
@@ -53,7 +53,11 @@ int main(int argc, char**argv)
 	const char *pCfgFile = CommandLineArguments_getBatchFileName(args);
 	if(pCfgFile)
 	{
-		RCClientFactoryFromCfgFile(pCfgFile, &clientList, &procedureList, &servoController);
+		RCClientFactoryFromCfgFile(&clientList, &procedureList, &servoController, pCfgFile);
+	}
+	else
+	{
+		RCClientFactoryInteractive(&clientList, &procedureList, &servoController);
 	}
 
 	DBG_Init();

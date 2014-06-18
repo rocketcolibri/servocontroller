@@ -13,7 +13,8 @@
 typedef void *ServoControllerObject_t;
 
 
-extern ServoControllerObject_t NewServoControllerData(struct json_object *pJsonObject);
+extern ServoControllerObject_t NewServoControllerDataJson(struct json_object *pJsonObject);
+extern ServoControllerObject_t NewServoControllerData();
 
 extern void DeleteServoControllerData(ServoControllerObject_t obj);
 

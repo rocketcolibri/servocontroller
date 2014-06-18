@@ -42,10 +42,16 @@ static const char *GetIpAddress(struct json_object *pJsonObject)
 }
 
 
-ServoControllerObject_t NewServoControllerData(struct json_object *pJsonObject)
+ServoControllerObject_t NewServoControllerData()
 {
 	ServoController_t *this = malloc(sizeof(ServoController_t));
 	bzero(this, sizeof(ServoController_t));
+	return this;
+}
+ServoControllerObject_t NewServoControllerDataJson(struct json_object *pJsonObject)
+{
+	DBG_ASSERT(pJsonObject);
+	ServoController_t *this = (ServoController_t *)NewServoControllerData()
 	this->pIpAddress = GetIpAddress(pJsonObject);
 	return this;
 }

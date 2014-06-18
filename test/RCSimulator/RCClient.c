@@ -77,6 +77,10 @@ static int OpenClientSocket(const char *pSrcIpAddress)
 	return sock;
 }
 
+void SendMsgToServoController(RCClient_t *this, const char*pJsonMsg)
+{
+
+}
 
 static char * GetJsonTrasmitHelloMsg(RCClient_t *this)
 {
@@ -94,12 +98,9 @@ static void HandleReactorSocketReceiveMsg(int socketfd, RCClientObject_t obj)
 {
 
 
-
-
 }
 
-
-RCClientObject_t NewRcClient_FromJson(struct json_object* pJsonObj)
+RCClientObject_t NewRcClientJson(struct json_object* pJsonObj)
 {
 	return NewRcClient(
 			json_object_get_string( json_object_object_get(pJsonObj,"name")),
@@ -137,9 +138,9 @@ static void HandleReactorTimerFdSendHello(int socketfd, RCClientObject_t obj)
 {
 	RCClient_t *this = (RCClient_t *)obj;
 	DBG_ASSERT(this);
-// TODO
-//	char *pJsonMsg = GetJsonTrasmitHelloMsg(this);
-//	SendToServoController(this);
+	char *pJsonMsg = GetJsonTrasmitHelloMsg(this);
+	SendMsgToServoController(this, pJsonMsg);
+	free(pJsonMsg);
 	TIMERFD_Read(socketfd);
 }
 
@@ -151,7 +152,7 @@ void RCClientSendHello(RCClientObject_t obj)
 		Reactor_RemoveFdAndClose(this->hSendTimer);
 		this->hSendTimer = NULL;
 	}
-	this->hSendTimer = Reactor_AddReadFd(TIMERFD_Create(1000*1000), HandleReactorTimerFdSendHello, this, "TransmitHello");
+	this->hSendTimer = Reactor_AddReadFd(TIMERFD_Create(100*1000), HandleReactorTimerFdSendHello, this, "TransmitHello");
 }
 
 static char * GetJsonTrasmitCdcMsg(RCClient_t *this)
@@ -181,8 +182,7 @@ static void HandleReactorTimerFdSendCdc(int socketfd, RCClientObject_t obj)
 	RCClient_t *this = (RCClient_t *)obj;
 	DBG_ASSERT(this);
 	char *pJsonMsg = GetJsonTrasmitCdcMsg(this);
-	// TODO
-	//SendToServoController(this);
+	SendMsgToServoController(this, pJsonMsg);
 	free(pJsonMsg);
 	TIMERFD_Read(socketfd);
 }
@@ -196,9 +196,7 @@ void RCClientSendCdc(RCClientObject_t obj)
 		Reactor_RemoveFdAndClose(this->hSendTimer);
 		this->hSendTimer = NULL;
 	}
-
-	this->hSendTimer
-			= Reactor_AddReadFd(TIMERFD_Create(1000*1000), HandleReactorTimerFdSendCdc, this, "TransmitCdc");
+	this->hSendTimer = Reactor_AddReadFd(TIMERFD_Create(20*1000), HandleReactorTimerFdSendCdc, this, "TransmitCdc");
 }
 
 void RCClientDisconnect(RCClientObject_t obj)
@@ -232,5 +230,3 @@ char *RCClientGetIpAddress(RCClientObject_t obj)
 	RCClient_t *this = (RCClient_t *)obj;
 	return this->pIpAddress;
 }
-
-

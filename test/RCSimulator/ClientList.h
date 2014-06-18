@@ -11,13 +11,14 @@
 typedef void* ClientListObject_t;
 
 
-extern ClientListObject_t NewClientList(struct json_object *pJsonObject);
+extern ClientListObject_t NewClientListJson(struct json_object *pJsonObject);
+extern ClientListObject_t NewClientList();
 
 extern void DeleteClientList(ClientListObject_t obj);
 
 extern void ClientListAddClient(ClientListObject_t obj, RCClientObject_t rcclient);
 
-extern void ClientListRemoveClient(ClientListObject_t obj, const char *pClientName);
+extern RCClientObject_t ClientListRemoveClient(ClientListObject_t obj, const char *pClientName);
 
 extern RCClientObject_t  ClientListFindClient(ClientListObject_t obj, const char *pClientName);
 

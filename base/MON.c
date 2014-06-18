@@ -168,7 +168,6 @@ static void HandleMonitorInput(char *rxBuffer)
   	execMonCmdEntry_t *pCmd = avlFind(mon.commands, (DSKEY)argv[0]);
 		if(pCmd)
 		{
-			fprintf(stderr, "\nfound MON command: %s", argv[0]);
 			pCmd->execMonCmdFn(pCmd->pObject, rxBuffer );
 		}
 		else

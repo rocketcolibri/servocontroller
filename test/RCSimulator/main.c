@@ -38,10 +38,14 @@ CommandLineArgumentsObject_t args;
 
 int main(int argc, char**argv)
 {
-
 	ClientListObject_t clientList;
 	ProcedureListObject_t procedureList;
 	ServoControllerObject_t servoController;
+
+	DBG_Init();
+	Reactor_Init();
+	TRC_Init();
+	MON_Init();
 
 	args = NewCommandLineArguments(argc, argv);
 	if(CommandLineArguments_getParseError(args))
@@ -60,11 +64,6 @@ int main(int argc, char**argv)
 		RCClientFactoryInteractive(&clientList, &procedureList, &servoController);
 	}
 
-	DBG_Init();
-	Reactor_Init();
-	TRC_Init();
-
-	MON_Init();
 	MON_AddMonCmd("poll", Reactor_MonCmd, 0 );
 	MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
 

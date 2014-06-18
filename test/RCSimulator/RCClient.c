@@ -79,7 +79,7 @@ static int OpenClientSocket(const char *pSrcIpAddress)
 
 void SendMsgToServoController(RCClient_t *this, const char*pJsonMsg)
 {
-
+	fprintf(stderr, ".");
 }
 
 static char * GetJsonTrasmitHelloMsg(RCClient_t *this)
@@ -123,7 +123,6 @@ void DeleteRCClient(RCClientObject_t obj)
 	RCClientDisconnect(obj);
 	RCClient_t *this = (RCClient_t *)obj;
 	Reactor_RemoveFdAndClose(this->hReactorReceiveMsg);
-	Reactor_RemoveFdAndClose(this->hSendTimer);
 	free((char*)this->pIpAddress);
 	free((char*)this->pName);
 	free(this);
@@ -219,13 +218,13 @@ void RCClientSendExpectedPassive(RCClientObject_t obj, const char *pPassiveClien
 
 }
 
-char * RCClientGetName(RCClientObject_t obj)
+const char * RCClientGetName(RCClientObject_t obj)
 {
 	RCClient_t *this = (RCClient_t *)obj;
 	return this->pName;
 }
 
-char *RCClientGetIpAddress(RCClientObject_t obj)
+const char *RCClientGetIpAddress(RCClientObject_t obj)
 {
 	RCClient_t *this = (RCClient_t *)obj;
 	return this->pIpAddress;

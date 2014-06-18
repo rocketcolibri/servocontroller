@@ -18,6 +18,7 @@
 #include <json-c/json.h>
 
 #include "base/GEN.h"
+#include "base/MON.h"
 #include "base/DBG.h"
 #include "base/Reactor.h"
 #include "base/AD.h"
@@ -81,9 +82,10 @@ static const char *pCmdClient = "client";
 static const char *pCmdClientAdd = "add";
 static const char *pCmdClientShow = "show";
 static const char *pCmdClientRemove = "remove";
+static const char *pCmdClientDisconnect = "disconnect";
 static const char *pCmdClientSendHello = "send-hello";
 static const char *pCmdClientSendCdc = "send-cdc";
-static BOOL ServoController_MonCmd(ClientListObject_t clientlist, char * cmdLine)
+static BOOL Client_MonCmd(ClientListObject_t clientlist, char * cmdLine)
 {
 	DBG_ASSERT(clientlist);
 	UINT8 argc;
@@ -99,6 +101,14 @@ static BOOL ServoController_MonCmd(ClientListObject_t clientlist, char * cmdLine
 		RCClientObject_t client = ClientListRemoveClient(clientlist, argv[2]);
 		if(client)
 			DeleteRCClient(client);
+		else
+			MON_WriteInfo("client not found");
+	}
+	else if ((argc == 3) && (0 == strcmp(argv[1], pCmdClientDisconnect)))
+	{
+		RCClientObject_t  client = ClientListFindClient(clientlist, argv[2]);
+		if(client)
+			RCClientDisconnect(client);
 		else
 			MON_WriteInfo("client not found");
 	}
@@ -136,7 +146,7 @@ static BOOL ServoController_MonCmd(ClientListObject_t clientlist, char * cmdLine
 
 static const char *pCmdServoController = "servocontroller";
 static const char *pCmdServoControllerSetIp = "set-ip";
-static BOOL Client_MonCmd(ClientListObject_t clientlist, char * cmdLine)
+static BOOL ServoController_MonCmd(ClientListObject_t clientlist, char * cmdLine)
 {
 	UINT8 argc;
 	char** argv;

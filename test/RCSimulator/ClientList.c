@@ -54,6 +54,7 @@ ClientListObject_t NewClientList()
 	ClientList_t *this = malloc(sizeof(ClientList_t));
 	bzero(this, sizeof(ClientList_t));
 	this->hClients = avlNewTree(NULL, sizeof(UINT32), 0);
+	MON_AddMonCmd("clientlist", ClientListMonCmd, this);
 	return this;
 }
 
@@ -72,7 +73,6 @@ ClientListObject_t NewClientListJson(struct json_object *pJsonObject)
 			if(client)
 				avlInsert(this->hClients,(DSKEY)RCClientGetName(client), client);
 		}
-		MON_AddMonCmd("cl", ClientListMonCmd, this);
 	}
 	return this;
 }

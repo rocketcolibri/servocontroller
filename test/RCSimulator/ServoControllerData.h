@@ -12,7 +12,7 @@
 
 typedef void *ServoControllerObject_t;
 
-
+extern ServoControllerObject_t NewServoControllerDataString(const char *pIpAddress);
 extern ServoControllerObject_t NewServoControllerDataJson(struct json_object *pJsonObject);
 extern ServoControllerObject_t NewServoControllerData();
 

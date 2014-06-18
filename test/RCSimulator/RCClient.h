@@ -27,7 +27,7 @@ extern void RCClientSendExpectedActive(RCClientObject_t obj, const char *pActive
 
 extern void RCClientSendExpectedPassive(RCClientObject_t obj, const char *pPassiveClientName[]);
 
-extern char * RCClientGetName(RCClientObject_t obj);
+extern const char * RCClientGetName(RCClientObject_t obj);
 
-extern char * RCClientGetIpAddress(RCClientObject_t obj);
+extern const char * RCClientGetIpAddress(RCClientObject_t obj);
 #endif /* RCCLIENT_H_ */

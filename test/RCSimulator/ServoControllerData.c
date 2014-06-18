@@ -51,10 +51,19 @@ ServoControllerObject_t NewServoControllerData()
 ServoControllerObject_t NewServoControllerDataJson(struct json_object *pJsonObject)
 {
 	DBG_ASSERT(pJsonObject);
-	ServoController_t *this = (ServoController_t *)NewServoControllerData()
+	ServoController_t *this = (ServoController_t *)NewServoControllerData();
 	this->pIpAddress = GetIpAddress(pJsonObject);
 	return this;
 }
+
+ServoControllerObject_t NewServoControllerDataString(const char *pIpAddress)
+{
+	DBG_ASSERT(pIpAddress);
+	ServoController_t *this = (ServoController_t *)NewServoControllerData();
+	this->pIpAddress = strdup(pIpAddress);
+	return this;
+}
+
 
 void DeleteServoControllerData(ServoControllerObject_t obj)
 {

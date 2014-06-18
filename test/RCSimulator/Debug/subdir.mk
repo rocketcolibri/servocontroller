@@ -8,7 +8,7 @@ C_SRCS += \
 ../CommandLineArguments.c \
 ../ProcedureList.c \
 ../RCClient.c \
-../RCClientFactoryFromCfgFile.c \
+../RCClientFactory.c \
 ../ServoControllerData.c \
 ../main.c 
 
@@ -17,7 +17,7 @@ OBJS += \
 ./CommandLineArguments.o \
 ./ProcedureList.o \
 ./RCClient.o \
-./RCClientFactoryFromCfgFile.o \
+./RCClientFactory.o \
 ./ServoControllerData.o \
 ./main.o 
 
@@ -26,7 +26,7 @@ C_DEPS += \
 ./CommandLineArguments.d \
 ./ProcedureList.d \
 ./RCClient.d \
-./RCClientFactoryFromCfgFile.d \
+./RCClientFactory.d \
 ./ServoControllerData.d \
 ./main.d 
 

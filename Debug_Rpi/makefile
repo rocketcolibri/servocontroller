@@ -8,6 +8,9 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include test/RCSimulator/Debug/base/subdir.mk
+-include test/RCSimulator/Debug/subdir.mk
+-include test/RCSimulator/subdir.mk
 -include base/subdir.mk
 -include subdir.mk
 -include objects.mk

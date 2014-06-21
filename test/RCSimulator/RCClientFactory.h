@@ -9,8 +9,8 @@
 #define RCCLIENTFACTORY_H_
 
 
-extern void RCClientFactoryFromCfgFile(ClientListObject_t *pClientList, ProcedureListObject_t *pProcedureList, ServoControllerObject_t *pServoController, const char *pConfigFileName);
+extern void RCClientFactoryFromCfgFile(ClientListObject_t *pClientList, ProcedureListObject_t *pProcedureList, const char *pConfigFileName);
 
-extern void RCClientFactoryInteractive(ClientListObject_t *pClientList, ProcedureListObject_t *pProcedureList, ServoControllerObject_t *pServoControllerData);
+extern void RCClientFactoryInteractive(ClientListObject_t *pClientList, ProcedureListObject_t *pProcedureList);
 
 #endif /* RCCLIENTFACTORY_H_ */

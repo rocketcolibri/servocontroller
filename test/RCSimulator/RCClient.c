@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -26,10 +27,10 @@
 #include <json-c/json.h>
 
 #include "RCClient.h"
+#include "ServoControllerData.h"
 
 #define BUFLEN 512
 #define NPACK 10
-#define CONTROL_CMD_PORT 30001
 
 typedef struct
 {
@@ -46,40 +47,21 @@ typedef struct
  */
 static int OpenClientSocket(const char *pSrcIpAddress)
 {
-	int sock, flag = 1;
-	struct sockaddr_in sock_name;
-
-	/* Create a datagram socket*/
-	sock = socket(PF_INET, SOCK_DGRAM, 0);
-	/* Setting the socket to non blocking*/
-	fcntl(sock, F_SETFL, O_NONBLOCK);
-
-	if (sock < 0)
+	int s;
+	if((s = socket(AF_INET , SOCK_DGRAM , IPPROTO_UDP ) ) == -1)
 	{
-		perror("socket");
-		exit(EXIT_FAILURE);
-	}
-	/* Set the reuse flag. */
-	if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &flag, sizeof(flag)) < 0)
-	{
-		perror("setsockopt(SOL_SOCKET, SO_REUSEADDR)");
 		DBG_MAKE_ENTRY(TRUE);
 	}
-	/* Give the socket a name. */
-	sock_name.sin_family = AF_INET;
-	sock_name.sin_port = htons(CONTROL_CMD_PORT);
-	sock_name.sin_addr.s_addr = htonl(INADDR_ANY );
-	if (bind(sock, (struct sockaddr *) &sock_name, sizeof(sock_name)) < 0)
-	{
-		perror("bind");
-		DBG_MAKE_ENTRY(TRUE);
-	}
-	return sock;
+	// TODO bind to pSrcIpAddress
+	return s;
 }
 
 void SendMsgToServoController(RCClient_t *this, const char*pJsonMsg)
 {
-	fprintf(stderr, ".");
+	if (-1 == sendto(this->fdSocket, pJsonMsg, strlen(pJsonMsg), 0,(const struct sockaddr *)ServoControllerDataGetSockAddr(), sizeof(struct sockaddr_in)))
+	{
+		DBG_MAKE_ENTRY_MSG(FALSE, strerror(errno));
+	}
 }
 
 static char * GetJsonTrasmitHelloMsg(RCClient_t *this)

@@ -33,6 +33,12 @@
 #include "ClientList.h"
 #include "RCClientFactory.h"
 
+/** monitor command called from in BKGR main init function */
+static BOOL Exit_MonCmd(void * dummy, char * cmdLine) {
+	MON_WriteInfo("terminate RCSimulator");
+	exit(0);
+	return TRUE;
+}
 
 CommandLineArgumentsObject_t args;
 
@@ -40,7 +46,7 @@ int main(int argc, char**argv)
 {
 	ClientListObject_t clientList;
 	ProcedureListObject_t procedureList;
-	ServoControllerObject_t servoController;
+
 
 	DBG_Init();
 	Reactor_Init();
@@ -57,15 +63,16 @@ int main(int argc, char**argv)
 	const char *pCfgFile = CommandLineArguments_getBatchFileName(args);
 	if(pCfgFile)
 	{
-		RCClientFactoryFromCfgFile(&clientList, &procedureList, &servoController, pCfgFile);
+		RCClientFactoryFromCfgFile(&clientList, &procedureList, pCfgFile);
 	}
 	else
 	{
-		RCClientFactoryInteractive(&clientList, &procedureList, &servoController);
+		RCClientFactoryInteractive(&clientList, &procedureList);
 	}
 
 	MON_AddMonCmd("poll", Reactor_MonCmd, 0 );
 	MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
+	MON_AddMonCmd("exit",Exit_MonCmd, 0);
 
 	// main loop
 	Reactor_Dispatch();

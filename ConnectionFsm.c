@@ -6,6 +6,7 @@
  */
 
 /*
+		ConnectionFsm_ActionFn_t A2_CCSetActiveConnection,
  * SystemState.c
  *
  *  Created on: 23.03.2014
@@ -163,6 +164,14 @@ static void ExecuteEvent(ConnectionFsmObject_t obj,
 		this->state = newState;
 	}
 }
+
+BOOL ConnectionFsmIs_CONN_IDLE(ConnectionFsmObject_t obj)
+{
+	DBG_ASSERT(obj);
+	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
+	return CONN_IDLE == this->state;
+}
+
 
 BOOL ConnectionFsmIs_CONN_IDENTIFIED(ConnectionFsmObject_t obj)
 {

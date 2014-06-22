@@ -59,50 +59,140 @@ static void test_teardown()
 	DeleteConnectionFsm(out);
 }
 
-MU_TEST(testConnectionFsmAll)
+MU_TEST(testConnectionFsm_State_Idle)
 {
-	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check initial state: Must be in CONN_IDENTIFIED");
-
+	mu_assert(ConnectionFsmIs_CONN_IDLE(out), "check initial state: Must be in CONN_IDLE");
 	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
+	mu_assert(!action[0], "!A1");
+	mu_assert(!action[1], "!A2");
+	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
+	ResetActionResult();
+	ConnectionFsmEventTimeout(out); // event Timeout
+	mu_assert(ConnectionFsmIs_CONN_IDLE(out), "check CONN_IDLE");
+	mu_assert(!action[0], "!A1");
+	mu_assert(!action[1], "!A2");
+	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
+	ResetActionResult();
+
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check CONN_IDENTIFIED");
 	mu_assert(action[0], "A1");
 	mu_assert(!action[1], "!A2");
 	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
 	ResetActionResult();
-	mu_assert(ConnectionFsmIs_CONN_ACTIVE(out), "check transition to CONN_ACTIVE");
+}
+
+MU_TEST(testConnectionFsm_State_Identified)
+{
+
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check CONN_IDENTIFIED");
+	ResetActionResult();
+
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check transition to CONN_IDENTIFIED");
+	mu_assert(!action[0], "!A1");
+	mu_assert(!action[1], "!A2");
+	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
+	ResetActionResult();
+
 
 	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
 	mu_assert(ConnectionFsmIs_CONN_ACTIVE(out), "remain in state CONN_ACTIVE");
 	mu_assert(!action[0], "!A1");
-	mu_assert(!action[1], "!A2");
-	mu_assert(!action[2], "!A3");
-	ResetActionResult();
-
-	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
-	mu_assert(!action[0], "!A1");
 	mu_assert(action[1], "A2");
 	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
 	ResetActionResult();
-	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check transition back be CONN_IDENTIFIED");
+}
 
+MU_TEST(testConnectionFsm_State_Identified_Event_Timeout)
+{
 	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check CONN_IDENTIFIED");
+	ResetActionResult();
+
+	ConnectionFsmEventTimeout(out); // event Timeout
+	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check transition to CONN_IDENTIFIED");
 	mu_assert(!action[0], "!A1");
 	mu_assert(!action[1], "!A2");
 	mu_assert(!action[2], "!A3");
+	mu_assert(action[3], "A4");
+	mu_assert(action[4], "A5");
 	ResetActionResult();
-	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "remain in state CONN_IDENTIFIED");
+}
+
+
+MU_TEST(testConnectionFsm_State_Active_Event_RecvCdc)
+{
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
+	mu_assert(ConnectionFsmIs_CONN_ACTIVE(out), "check CONN_ACTIV");
+	ResetActionResult();
 
 	ConnectionFsmEventTimeout(out); // event Timeout
 	mu_assert(!action[0], "!A1");
-	mu_assert(action[1], "A2");
+	mu_assert(!action[1], "!A2");
 	mu_assert(action[2], "A3");
+	mu_assert(action[3], "A4");
+	mu_assert(action[4], "A5");
+	ResetActionResult();
+}
+
+MU_TEST(testConnectionFsm_State_Active_Event_RecvHello)
+{
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
+	mu_assert(ConnectionFsmIs_CONN_ACTIVE(out), "check CONN_ACTIV");
+	ResetActionResult();
+
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	mu_assert(ConnectionFsmIs_CONN_IDENTIFIED(out), "check CONN_ACTIV");
+	mu_assert(!action[0], "!A1");
+	mu_assert(!action[1], "!A2");
+	mu_assert(action[2], "A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
+	ResetActionResult();
+}
+
+MU_TEST(testConnectionFsm_State_Active_Event_RecvTimeout)
+{
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
+	mu_assert(ConnectionFsmIs_CONN_ACTIVE(out), "check CONN_ACTIV");
+	ResetActionResult();
+
+	ConnectionFsmEventTimeout(out); // event Timeout
+	mu_assert(!action[0], "!A1");
+	mu_assert(!action[1], "!A2");
+	mu_assert(action[2], "A3");
+	mu_assert(action[3], "A4");
+	mu_assert(action[4], "A5");
+	ResetActionResult();
 }
 
 
 MU_TEST_SUITE(testConnectionFsm) {
 	MU_SUITE_CONFIGURE(&test_setup, &test_teardown);
 
-	MU_RUN_TEST(testConnectionFsmAll);
+	MU_RUN_TEST(testConnectionFsm_State_Idle);
 
+	MU_RUN_TEST(testConnectionFsm_State_Identified);
+	MU_RUN_TEST(testConnectionFsm_State_Identified_Event_Timeout);
+
+	MU_RUN_TEST(testConnectionFsm_State_Active_Event_RecvCdc);
+	MU_RUN_TEST(testConnectionFsm_State_Active_Event_RecvHello);
+	MU_RUN_TEST(testConnectionFsm_State_Active_Event_RecvTimeout);
 }
 
 void ConnectionFsmTest()

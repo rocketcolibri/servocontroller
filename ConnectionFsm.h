@@ -31,6 +31,8 @@ extern ConnectionFsmObject_t NewConnectionFsm(
 /** delete a system state object */
 extern void DeleteConnectionFsm(ConnectionFsmObject_t systemObj);
 
+extern BOOL ConnectionFsmIs_CONN_IDLE(ConnectionFsmObject_t obj);
+
 extern BOOL ConnectionFsmIs_CONN_IDENTIFIED(ConnectionFsmObject_t obj);
 
 extern BOOL ConnectionFsmIs_CONN_ACTIVE(ConnectionFsmObject_t obj);

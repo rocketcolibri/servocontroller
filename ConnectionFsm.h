@@ -22,9 +22,11 @@ typedef void (*ConnectionFsm_ActionFn_t)(ConnectionFsmObject_t obj);
 /** create a system state machine object */
 extern ConnectionFsmObject_t NewConnectionFsm(
 		ConnectionObject_t connection,
-		ConnectionFsm_ActionFn_t A1_ActionFunctionSendToActive,
-		ConnectionFsm_ActionFn_t A2_ActionFunctionSendToPassive,
-		ConnectionFsm_ActionFn_t A3_ActionDeleteConnection);
+		ConnectionFsm_ActionFn_t A1_CCAddConnection,
+		ConnectionFsm_ActionFn_t A2_CCSetActiveConnection,
+		ConnectionFsm_ActionFn_t A3_CCSetBackToPassivConnection,
+		ConnectionFsm_ActionFn_t A4_CCRemoveConnection,
+		ConnectionFsm_ActionFn_t A5_ActionDeleteConnection);
 
 /** delete a system state object */
 extern void DeleteConnectionFsm(ConnectionFsmObject_t systemObj);

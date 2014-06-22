@@ -131,7 +131,10 @@ void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionC
 		this->activeConnectionObject = NULL;
 	}
 	struct sockaddr_in*  key = ConnectionGetAddress(connectionObject);
-	DBG_ASSERT(avlRemoveByKey(this->hAllConnections, (DSKEY)key->sin_addr.s_addr));
+	if(NULL ==avlRemoveByKey(this->hAllConnections, (DSKEY)key->sin_addr.s_addr))
+	{
+		DBG_MAKE_ENTRY_MSG(FALSE,ConnectionGetUserName(connectionObject) );
+	}
 }
 
 AVLTREE ConnectionContainerGetAllConnections(ConnectionContainerObject_t connectionContainerObject)

@@ -30,20 +30,28 @@
 #include "ConnectionFsm.h"
 
 static ConnectionFsmObject_t *out;
-BOOL action[3];
+BOOL action[5];
 
 static void ResetActionResult()
 {
 	bzero(action, sizeof(action));
 }
-static void A1_ActionFunctionSendToActive(ConnectionObject_t obj) { action[0]=TRUE; }
-static void A2_ActionFunctionSendToPassive(ConnectionObject_t obj) { action[1]=TRUE; }
-static void A3_ActionDeleteConnection(ConnectionObject_t obj) { action[2]=TRUE; }
+static void A1_ActionFunctionCCAddConnection(ConnectionObject_t obj) { action[0]=TRUE; }
+static void A2_ActionFunctionCCSetActiveConnection(ConnectionObject_t obj) { action[1]=TRUE; }
+static void A3_ActionFunctionCCSetBackToPassivConnection(ConnectionObject_t obj) { action[2]=TRUE; }
+static void A4_ActionFunctionCCRemoveConnection(ConnectionObject_t obj) { action[3]=TRUE; }
+static void A5_ActionFunctionActionDeleteConnection(ConnectionObject_t obj) { action[4]=TRUE; }
+
 
 static void test_setup()
 {
 	ResetActionResult();
-	out = NewConnectionFsm(NULL, A1_ActionFunctionSendToActive, A2_ActionFunctionSendToPassive, A3_ActionDeleteConnection);
+	out = NewConnectionFsm(NULL,
+			A1_ActionFunctionCCAddConnection,
+			A2_ActionFunctionCCSetActiveConnection,
+			A3_ActionFunctionCCSetBackToPassivConnection,
+			A4_ActionFunctionCCRemoveConnection,
+			A5_ActionFunctionActionDeleteConnection);
 }
 
 static void test_teardown()

@@ -31,7 +31,7 @@
 
 #include "ConnectionFsm.h"
 
-#define SYS_NOF_ACTION 2
+#define SYS_NOF_ACTION 3
 
 
 /**
@@ -39,7 +39,8 @@
  */
 typedef enum
 {
-  CONN_IDENTIFIED, // not active
+  CONN_IDLE, // not active
+  CONN_IDENTIFIED,
   CONN_ACTIVE, //
   CONN_NOF_STATE
 } Connection_State_t;
@@ -74,32 +75,41 @@ typedef struct
 
 ConnectionFsmObject_t NewConnectionFsm(
 		ConnectionObject_t connection,
-		ConnectionFsm_ActionFn_t A1_ActionFunctionSendToActive,
-		ConnectionFsm_ActionFn_t A2_ActionFunctionSendToPassive,
-		ConnectionFsm_ActionFn_t A3_ActionDeleteConnection)
+		ConnectionFsm_ActionFn_t A1_CCAddConnection,
+		ConnectionFsm_ActionFn_t A2_CCSetActiveConnection,
+		ConnectionFsm_ActionFn_t A3_CCSetBackToPassivConnection,
+		ConnectionFsm_ActionFn_t A4_CCRemoveConnection,
+		ConnectionFsm_ActionFn_t A5_ActionDeleteConnection)
 {
 	ConnectionFsm_t * this = malloc(sizeof(ConnectionFsm_t));
 	bzero(this, sizeof(ConnectionFsm_t));
-	this->state = CONN_IDENTIFIED; // initial is CONN_IDENTIFIED because the state machine starts as soon as a hello command has been received!
+	this->state = CONN_IDLE;
 	this->connection = connection;
 
 	// after this action has been called the FSM object is deleted!
-	this->terminateAfterThisAction = A3_ActionDeleteConnection;
+	this->terminateAfterThisAction = A5_ActionDeleteConnection;
 
     Connection_EventAction_t ConnectionFsm[CONN_NOF_STATE][CONN_NOF_EVENT] =
 	{
+	  /* state: CONN_IDLE */
+	{ /* events                              actions0                        actions1                  actions2     		next state */
+	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A1_CCAddConnection, 			 NULL,                     NULL,					NULL },      CONN_IDENTIFIED },
+	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ NULL,						  	 NULL,                     NULL,					NULL },      CONN_IDLE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ NULL,      					 NULL,					   NULL,					NULL },      CONN_IDLE },
+	},
+
 	  /* state: CONN_IDENTIFIED */
-	{ /* events                              actions0                        actions1                  actions2     next state */
-	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ NULL,                           NULL,                     NULL },      CONN_IDENTIFIED },
-	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ A1_ActionFunctionSendToActive,  NULL,                     NULL },      CONN_ACTIVE },
-	  /* CONN_EVENT_TIMEOUT*/             {{ A2_ActionFunctionSendToPassive, A3_ActionDeleteConnection,NULL },      CONN_IDENTIFIED },
+	{ /* events                              actions0                       actions1                  actions2     							next state */
+	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ NULL,                          NULL,                     NULL,						NULL },      CONN_IDENTIFIED },
+	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ A2_CCSetActiveConnection,  	NULL,                     NULL,						NULL },      CONN_ACTIVE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ A4_CCRemoveConnection, 		A5_ActionDeleteConnection,NULL,						NULL },      CONN_IDLE },
 	},
 
 	/* state: CONN_ACTIVE */
-	{ /* events                              actions0                        actions1                  actions2     next state */
-	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A2_ActionFunctionSendToPassive, NULL,                     NULL },      CONN_IDENTIFIED },
-	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ NULL,                           NULL,                     NULL },      CONN_ACTIVE },
-	  /* CONN_EVENT_TIMEOUT*/             {{ A2_ActionFunctionSendToPassive, A3_ActionDeleteConnection,NULL },     	CONN_IDENTIFIED },
+	{ /* events                              actions0                        actions1                  actions2     							next state */
+	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A3_CCSetBackToPassivConnection, NULL,                     NULL,					 NULL },      CONN_IDENTIFIED },
+	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ NULL,                           NULL,                     NULL,					 NULL },      CONN_ACTIVE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ A3_CCSetBackToPassivConnection, A4_CCRemoveConnection,	   A5_ActionDeleteConnection,NULL },     	CONN_IDLE },
 	}
 	};
     memcpy(&this->ConnectionFsm , &ConnectionFsm, sizeof(ConnectionFsm));

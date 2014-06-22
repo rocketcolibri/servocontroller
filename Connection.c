@@ -170,27 +170,39 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
     }
   }
 
-static void A1_ActionFunctionSendToActive(ConnectionFsmObject_t obj)
+
+static void A1_CCAddConnection(ConnectionFsmObject_t obj)
+{
+  	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
+  	ConnectionContainerAddConnection(pConnection->connectionContainer, pConnection,&pConnection->srcAddress);
+}
+
+
+
+static void A2_CCSetActiveConnection(ConnectionFsmObject_t obj)
 {
 	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
 	ConnectionContainerSetActiveConnection(pConnection->connectionContainer, pConnection);
 	SystemFsmEventTransitionToActive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
 }
 
-static void A2_ActionFunctionSendToPassive(ConnectionFsmObject_t obj)
+static void A3_CCSetBackToPassivConnection(ConnectionFsmObject_t obj)
 {
 	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
-	if(ConnectionContainerIsActiveConnection(pConnection->connectionContainer, ConnectionFsmGetConnection(obj)))
-	{
-		ConnectionContainerSetActiveConnection(pConnection->connectionContainer, NULL);
-		SystemFsmEventTransitionToPassive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
-	}
+
+	ConnectionContainerSetActiveConnection(pConnection->connectionContainer, NULL);
+	SystemFsmEventTransitionToPassive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
 }
 
-static void A3_ActionDeleteConnection(ConnectionFsmObject_t obj)
+static void A4_CCRemoveConnection(ConnectionFsmObject_t obj)
 {
 	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
 	ConnectionContainerRemoveConnection(pConnection->connectionContainer, pConnection);
+}
+
+static void A5_ActionDeleteConnection(ConnectionFsmObject_t obj)
+{
+	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
 	DeleteConnection((ConnectionObject_t)pConnection);
 }
 
@@ -210,9 +222,11 @@ static void A3_ActionDeleteConnection(ConnectionFsmObject_t obj)
 
     this->connectionFsm = NewConnectionFsm(
 		this,
-    	A1_ActionFunctionSendToActive,
-    	A2_ActionFunctionSendToPassive,
-    	A3_ActionDeleteConnection);
+		A1_CCAddConnection,
+		A2_CCSetActiveConnection,
+		A3_CCSetBackToPassivConnection,
+		A4_CCRemoveConnection,
+		A5_ActionDeleteConnection);
 
     return (ConnectionObject_t)this;
   }

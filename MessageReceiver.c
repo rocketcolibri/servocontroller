@@ -101,7 +101,6 @@ static void MessageReceiverHandler(int socketfd, MessageReceiverObject_t socketO
 		if (!pConn)
 		{
 			pConn = NewConnection(pMessageReceiver->connectionContainer, &srcAddr, socketfd, pMessageReceiver->hTrc);
-			ConnectionContainerAddConnection(pMessageReceiver->connectionContainer, pConn, &srcAddr);
 			TRC_Log_Print(TRC_log, "%s: new connection created:%s",__PRETTY_FUNCTION__, inet_ntoa(srcAddr.sin_addr));
 		}
 		else

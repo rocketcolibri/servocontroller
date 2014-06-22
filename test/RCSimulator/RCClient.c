@@ -52,7 +52,28 @@ static int OpenClientSocket(const char *pSrcIpAddress)
 	{
 		DBG_MAKE_ENTRY(TRUE);
 	}
-	// TODO bind to pSrcIpAddress
+	// bind to pSrcIpAddress
+	/* bind to an arbitrary return address */
+	/* because this is the client side, we don't care about the address */
+	/* since no application will initiate communication here - it will */
+	/* just send responses */
+	/* INADDR_ANY is the IP address and 0 is the socket */
+	/* htonl converts a long integer (e.g. address) to a network representation */
+	/* htons converts a short integer (e.g. port) to a network representation */
+	struct sockaddr_in myaddr;
+	bzero((char *)&myaddr, sizeof(myaddr));
+	myaddr.sin_family = AF_INET;
+	if (0== inet_aton(pSrcIpAddress, &myaddr.sin_addr))
+	{
+		DBG_MAKE_ENTRY(FALSE);
+
+	}
+	const int trueValue = 1;
+	setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &trueValue, sizeof(trueValue));
+	myaddr.sin_port = htons(SERVOCONTROLLER_PORT);
+	if (bind(s, (struct sockaddr *)&myaddr, sizeof(myaddr)) < 0) {
+		DBG_MAKE_ENTRY_FMT(FALSE, "bind failed (%s)", strerror(errno));
+	}
 	return s;
 }
 

@@ -56,6 +56,9 @@ void SYS_Action_1_SetServosToPassiveMode(ConnectionContainerObject_t this)
 static BOOL ConnectionContainer_MonCmd(ConnectionContainerObject_t obj, char * cmdLine)
 {
 	ConnectionContainer_t *this = (ConnectionContainer_t*)obj;
+
+	MON_WriteInfof("\nSystem State: ", SystemFsmIs_SYS_CONTROLLING(this->sysSm) ? "ACTIVE" : "IDLE");
+
 	if(this->activeConnectionObject)
 		MON_WriteInfof("\nactiveip: %s (%s)", ConnectionGetUserName(this->activeConnectionObject), inet_ntoa(ConnectionGetAddress(this->activeConnectionObject)->sin_addr));
 	else
@@ -128,7 +131,7 @@ void ConnectionContainerRemoveConnection(ConnectionContainerObject_t connectionC
 		this->activeConnectionObject = NULL;
 	}
 	struct sockaddr_in*  key = ConnectionGetAddress(connectionObject);
-	avlRemoveByKey(this->hAllConnections, (DSKEY)key->sin_addr.s_addr);
+	DBG_ASSERT(avlRemoveByKey(this->hAllConnections, (DSKEY)key->sin_addr.s_addr));
 }
 
 AVLTREE ConnectionContainerGetAllConnections(ConnectionContainerObject_t connectionContainerObject)
@@ -144,6 +147,16 @@ ConnectionObject_t ConnectionContainerGetActiveConnection(ConnectionContainerObj
 	DBG_ASSERT(this);
 	return this->activeConnectionObject;
 }
+
+BOOL ConnectionContainerIsActiveConnection(
+		ConnectionContainerObject_t connectionContainerObject,
+		ConnectionObject_t connection)
+{
+	ConnectionContainer_t* this = (ConnectionContainer_t*)connectionContainerObject;
+	DBG_ASSERT(this);
+	return (this->activeConnectionObject == connection);
+}
+
 
 void ConnectionContainerSetActiveConnection(
 		ConnectionContainerObject_t connectionContainerObject,

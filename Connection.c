@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <errno.h>
 #include <strings.h>
 #include <memory.h>
 #include <unistd.h>
@@ -179,15 +180,18 @@ static void A1_ActionFunctionSendToActive(ConnectionFsmObject_t obj)
 static void A2_ActionFunctionSendToPassive(ConnectionFsmObject_t obj)
 {
 	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
-	ConnectionContainerSetActiveConnection(pConnection->connectionContainer, NULL);
-	SystemFsmEventTransitionToPassive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
+	if(ConnectionContainerIsActiveConnection(pConnection->connectionContainer, ConnectionFsmGetConnection(obj)))
+	{
+		ConnectionContainerSetActiveConnection(pConnection->connectionContainer, NULL);
+		SystemFsmEventTransitionToPassive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
+	}
 }
 
 static void A3_ActionDeleteConnection(ConnectionFsmObject_t obj)
 {
 	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
 	ConnectionContainerRemoveConnection(pConnection->connectionContainer, pConnection);
-	DeleteConnection(pConnection);
+	DeleteConnection((ConnectionObject_t)pConnection);
 }
 
   ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnectionObject,

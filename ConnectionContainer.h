@@ -57,6 +57,10 @@ extern AVLTREE ConnectionContainerGetAllConnections(ConnectionContainerObject_t 
 
 extern ConnectionContainerObject_t ConnectionContainerGetActiveConnection(ConnectionContainerObject_t connectionContainerObject);
 
+extern BOOL ConnectionContainerIsActiveConnection(
+		ConnectionContainerObject_t connectionContainerObject,
+		ConnectionObject_t connection);
+
 // setter
 extern void ConnectionContainerSetActiveConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t newActiveConnection);
 

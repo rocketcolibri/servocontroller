@@ -67,6 +67,7 @@ typedef struct
 	Connection_State_t state;
 	ConnectionObject_t connection;
 	Connection_EventAction_t ConnectionFsm[CONN_NOF_STATE][CONN_NOF_EVENT];
+	ConnectionFsm_ActionFn_t terminateAfterThisAction;
 } ConnectionFsm_t;
 
 
@@ -81,6 +82,9 @@ ConnectionFsmObject_t NewConnectionFsm(
 	bzero(this, sizeof(ConnectionFsm_t));
 	this->state = CONN_IDENTIFIED; // initial is CONN_IDENTIFIED because the state machine starts as soon as a hello command has been received!
 	this->connection = connection;
+
+	// after this action has been called the FSM object is deleted!
+	this->terminateAfterThisAction = A3_ActionDeleteConnection;
 
     Connection_EventAction_t ConnectionFsm[CONN_NOF_STATE][CONN_NOF_EVENT] =
 	{
@@ -132,7 +136,14 @@ static void ExecuteEvent(ConnectionFsmObject_t obj,
 	UINT32 action = 0;
 	while (this->ConnectionFsm[currentState][event].action[action])
 	{
-		this->ConnectionFsm[currentState][event].action[action](this);
+		if(this->terminateAfterThisAction == this->ConnectionFsm[currentState][event].action[action])
+		{
+			this->ConnectionFsm[currentState][event].action[action](this);
+			return;
+		}
+		else
+			this->ConnectionFsm[currentState][event].action[action](this);
+
 		action++;
 	}
 

@@ -98,7 +98,11 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
             if (0 == strcmp(json_object_get_string(command), "cdc"))
             {
               TRC_INFO(this->hTrc, "cdc: user:%s sequence:%d", this->pUserName, this->lastSequence);
-              ConnectionFsmEventRecvCdcCmd(this->connectionFsm);
+              if(SystemFsmIs_SYS_IDLE(ConnectionContainerGetSystemFsm(this->connectionContainer)))
+              {
+                ConnectionFsmEventRecvCdcCmd(this->connectionFsm);
+              }
+
               if(ConnectionFsmIs_CONN_ACTIVE(this->connectionFsm))
               {
                 ServoDriver_t *pServoDriver = ServoDriverGetInstance();

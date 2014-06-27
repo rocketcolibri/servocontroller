@@ -108,7 +108,7 @@ void Reactor_RemoveFd(void *pPollDataHandle)
     // close pipe
   if(pPollData->fd)
   {
-    epoll_ctl(reactor.epollfd, EPOLL_CTL_DEL, pPollData->fd, NULL);
+    DBG_ASSERT_NO_RES(0==epoll_ctl(reactor.epollfd, EPOLL_CTL_DEL, pPollData->fd, NULL));
   }
 
   free(pPollData);

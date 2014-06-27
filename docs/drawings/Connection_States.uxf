@@ -88,17 +88,17 @@ CONN_A3
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>380</x>
+      <x>340</x>
       <y>450</y>
-      <w>124</w>
+      <w>204</w>
       <h>162</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
-CONN_E3
+CONN_E3 | CONN_E4
 CONN_A3
 CONN_A4
 CONN_A5</panel_attributes>
-    <additional_attributes>70;140;70;30</additional_attributes>
+    <additional_attributes>110;140;110;30</additional_attributes>
   </element>
   <element>
     <type>com.umlet.element.custom.FinalState</type>
@@ -116,11 +116,11 @@ CONN_A5</panel_attributes>
     <coordinates>
       <x>430</x>
       <y>260</y>
-      <w>264</w>
+      <w>304</w>
       <h>360</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
-CONN_E3
+CONN_E3 | CONN_E4
 CONN_A4
 CONN_A5</panel_attributes>
     <additional_attributes>30;340;210;340;210;30;100;30</additional_attributes>
@@ -152,6 +152,7 @@ CONN_E1: reception of a hello message
 CONN_E2 reception of a channel data command message and System State machine is in SYS_IDLE state
 
 CONN_E3 Timeout occured (no valie message received during a certain period of time)
+CONN_E4 received message is invalid (sequence number, version, JSON error)
 
 Actions
 
@@ -196,14 +197,15 @@ CONN_A1</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>500</x>
-      <y>80</y>
-      <w>144</w>
-      <h>84</h>
+      <x>430</x>
+      <y>60</y>
+      <w>374</w>
+      <h>560</h>
     </coordinates>
     <panel_attributes>lt=&lt;-
 CONN_E2
-CONN_E3</panel_attributes>
-    <additional_attributes>30;60;90;60;90;30;30;30</additional_attributes>
+CONN_E3
+CONN_E4</panel_attributes>
+    <additional_attributes>30;540;320;540;320;50;160;50;100;50</additional_attributes>
   </element>
 </diagram>

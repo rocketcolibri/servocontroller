@@ -54,6 +54,7 @@ typedef enum
   CONN_EVENT_HELLO_CMD_RECV, // start state machine
   CONN_EVENT_CDC_CMD_RECV, //
   CONN_EVENT_TIMEOUT,
+  CONN_EVENT_PROTO_IVALID_CMD,
   CONN_NOF_EVENT
 } Connection_Event_t;
 
@@ -94,16 +95,18 @@ ConnectionFsmObject_t NewConnectionFsm(
 	{
 	  /* state: CONN_IDLE */
 	{ /* events                              actions0                        actions1                  actions2     		next state */
-	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A1_CCAddConnection, 			 NULL,                     NULL,					NULL },      CONN_IDENTIFIED },
-	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ NULL,						  	 NULL,                     NULL,					NULL },      CONN_IDLE },
-	  /* CONN_EVENT_TIMEOUT*/             {{ NULL,      					 NULL,					   NULL,					NULL },      CONN_IDLE },
+	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A1_CCAddConnection, 			       NULL,                     NULL,					NULL },      CONN_IDENTIFIED },
+	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ A5_ActionDeleteConnection,      NULL,                     NULL,					NULL },      CONN_IDLE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ A5_ActionDeleteConnection,      NULL,					           NULL,					NULL },      CONN_IDLE },
+	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A5_ActionDeleteConnection,      NULL,					           NULL,					NULL },      CONN_IDLE },
 	},
 
 	  /* state: CONN_IDENTIFIED */
 	{ /* events                              actions0                       actions1                  actions2     							next state */
 	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ NULL,                          NULL,                     NULL,						NULL },      CONN_IDENTIFIED },
-	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ A2_CCSetActiveConnection,  	NULL,                     NULL,						NULL },      CONN_ACTIVE },
-	  /* CONN_EVENT_TIMEOUT*/             {{ A4_CCRemoveConnection, 		A5_ActionDeleteConnection,NULL,						NULL },      CONN_IDLE },
+	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ A2_CCSetActiveConnection,  	  NULL,                     NULL,						NULL },      CONN_ACTIVE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ A4_CCRemoveConnection, 		    A5_ActionDeleteConnection,NULL,						NULL },      CONN_IDLE },
+	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A4_CCRemoveConnection,   		  A5_ActionDeleteConnection,NULL, 					NULL },      CONN_IDLE },
 	},
 
 	/* state: CONN_ACTIVE */
@@ -111,6 +114,7 @@ ConnectionFsmObject_t NewConnectionFsm(
 	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A3_CCSetBackToPassivConnection, NULL,                     NULL,					 NULL },      CONN_IDENTIFIED },
 	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ NULL,                           NULL,                     NULL,					 NULL },      CONN_ACTIVE },
 	  /* CONN_EVENT_TIMEOUT*/             {{ A3_CCSetBackToPassivConnection, A4_CCRemoveConnection,	   A5_ActionDeleteConnection,NULL },     	CONN_IDLE },
+	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A4_CCRemoveConnection,      	  A5_ActionDeleteConnection, NULL,					NULL },      CONN_IDLE },
 	}
 	};
     memcpy(&this->ConnectionFsm , &ConnectionFsm, sizeof(ConnectionFsm));
@@ -203,6 +207,12 @@ void ConnectionFsmEventTimeout(ConnectionFsmObject_t obj)
 {
 	DBG_ASSERT(obj);
 	ExecuteEvent(obj, CONN_EVENT_TIMEOUT);
+}
+
+void ConnectionFsmEventInvalidCmd(ConnectionFsmObject_t obj)
+{
+	DBG_ASSERT(obj);
+	ExecuteEvent(obj, CONN_EVENT_PROTO_IVALID_CMD);
 }
 
 ConnectionObject_t ConnectionFsmGetConnection(ConnectionFsmObject_t obj)

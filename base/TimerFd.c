@@ -36,6 +36,10 @@
 int TIMERFD_Create(UINT32 us)
 {
 	int fd = timerfd_create(CLOCK_MONOTONIC, 0);
+	if(fd == -1)
+	{
+	  DBG_MAKE_ENTRY_MSG(FALSE, strerror(errno));
+	}
 	struct itimerspec newValue;
 	struct itimerspec oldValue;
 	bzero(&newValue,sizeof(newValue));

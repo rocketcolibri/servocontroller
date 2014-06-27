@@ -81,74 +81,74 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
         DBG_ASSERT_NO_RES(
             0==strcmp(this->pUserName, json_object_get_string(pUserObj)));
       }
-      json_object_put(pUserObj);
-    }
 
-    json_object *seqObj = json_object_object_get(jobj, "sequence");
-    if (seqObj)
-    {
-      int sequence = json_object_get_int(seqObj);
-      if (this->lastSequence < sequence)
+
+      json_object *seqObj = json_object_object_get(jobj, "sequence");
+      if (seqObj)
       {
-        // here comes the interesting part, parsing the command and call the command process function
-
-        // here comes the interesting part, parsing the command and call the command process function
-        json_object *command = json_object_object_get(jobj, "cmd");
-        if (command)
+        int sequence = json_object_get_int(seqObj);
+        if (this->lastSequence < sequence)
         {
-          if (0 == strcmp(json_object_get_string(command), "cdc"))
+          json_object *command = json_object_object_get(jobj, "cmd");
+          if (command)
           {
+            this->lastSequence = sequence;
+            this->timeout = 0; // reset timeout counter
 
-        	this->lastSequence = sequence;
-          	TRC_INFO(this->hTrc, "cdc: user:%s sequence:%d", this->pUserName, this->lastSequence);
-
-            if(SystemFsmIs_SYS_IDLE(ConnectionContainerGetSystemFsm(this->connectionContainer)))
+            if (0 == strcmp(json_object_get_string(command), "cdc"))
             {
-            	ConnectionFsmEventRecvCdcCmd(this->connectionFsm);
-            }
-            else if (SystemFsmIs_SYS_CONTROLLING(ConnectionContainerGetSystemFsm(this->connectionContainer)))
-			{
-              	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
+              TRC_INFO(this->hTrc, "cdc: user:%s sequence:%d", this->pUserName, this->lastSequence);
+              ConnectionFsmEventRecvCdcCmd(this->connectionFsm);
+              if(ConnectionFsmIs_CONN_ACTIVE(this->connectionFsm))
+              {
+                ServoDriver_t *pServoDriver = ServoDriverGetInstance();
                 MessageSinkCdc_t *pMsgCdc = NewMessageSinkCdc(jobj);
                 pServoDriver->SetServos(GetNofChannel(pMsgCdc), GetChannelVector(pMsgCdc));
                 DeleteMessageSinkCdc(pMsgCdc);
-                this->timeout = 0; // reset timeout counter
-			}
+              }
+            }
+            else if (0 == strcmp(json_object_get_string(command), "hello"))
+            {
+              ConnectionFsmEventRecvHelloCmd(this->connectionFsm);
+            }
             else
             {
-            	DBG_MAKE_ENTRY(FALSE);
+              TRC_ERROR(this->hTrc, "JSON unknown command: %s", json_object_get_string(command));
             }
-          }
-          else if (0 == strcmp(json_object_get_string(command), "hello"))
-          {
-        	  ConnectionFsmEventRecvHelloCmd(this->connectionFsm);
-        	  this->timeout = 0; // reset timeout counter
+            json_object_put(command);
           }
           else
           {
-            TRC_ERROR(this->hTrc,
-                "JSON unknown command: %s", json_object_get_string(command));
-            return;
+            ConnectionFsmEventInvalidCmd(this->connectionFsm);
+            TRC_ERROR(this->hTrc, "JSON cmd not found");
           }
-          json_object_put(command);
         }
+        else
+        {
+          ConnectionFsmEventInvalidCmd(this->connectionFsm);
+          TRC_ERROR(this->hTrc, "JSON invalid sequence number last:%d current:%d", this->lastSequence, sequence);
+        }
+        json_object_put(seqObj);
       }
       else
       {
-        TRC_ERROR(this->hTrc,
-            "JSON invalid sequence number last:%d current:%d", this->lastSequence, sequence);
+        ConnectionFsmEventInvalidCmd(this->connectionFsm);
+        TRC_ERROR(this->hTrc, "JSON sequence not found");
       }
-      json_object_put(seqObj);
+      json_object_put(pUserObj);
     }
     else
-    {
-    	DBG_MAKE_ENTRY(FALSE);
+    {	// missing user
+    	ConnectionFsmEventInvalidCmd(this->connectionFsm);
+    	TRC_ERROR(this->hTrc, "JSON user not found");
     }
     json_object_put(jobj);
   }
   else
   {
-   	DBG_MAKE_ENTRY(FALSE);
+    // user not found
+  	ConnectionFsmEventInvalidCmd(this->connectionFsm);
+  	TRC_ERROR(this->hTrc, "JSON parsing error");
   }
   json_tokener_free(tok);
 }
@@ -158,7 +158,7 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
     Connection_t *this = (Connection_t *) obj;
     DBG_ASSERT(this);
     TIMERFD_Read(timerfd);
-    if (this->timeout > MAX_TIMEOUT_TIME)
+    if (this->timeout == MAX_TIMEOUT_TIME)
     {
     	ConnectionFsmEventTimeout(this->connectionFsm);
     	TRC_ERROR(this->hTrc, "timeout expired %s", this->pUserName);
@@ -234,7 +234,7 @@ static void A5_ActionDeleteConnection(ConnectionFsmObject_t obj)
  void DeleteConnection(ConnectionObject_t *pConn)
  {
 	 Connection_t *this = (Connection_t *) pConn;
-	 Reactor_RemoveFd(this->hConnectionTimeoutPoll);
+	 Reactor_RemoveFdAndClose(this->hConnectionTimeoutPoll);
 	 DeleteConnectionFsm(this->connectionFsm);
 	 free(pConn);
  }

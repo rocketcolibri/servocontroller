@@ -53,9 +53,23 @@ static void SetServo(UINT32 s, UINT32 pos)
 	}
 }
 
+static void PrintServoStates()
+{
+	DBG_ASSERT(MAX_SERVOS == 8);
+	FILE *f = fopen("/tmp/servostates", "w");
+	if(f)
+	{
+		fprintf(f, "0:%d; 1:%d; 2:%d; 3:%d; 4:%d; 5:%d; 6:%d; 7:%d\n",
+			oldChannels[0], oldChannels[1], oldChannels[2], oldChannels[3],
+			oldChannels[4], oldChannels[5], oldChannels[6], oldChannels[7]);
+		fclose(f);
+	}
+}
+
 void ServoDriverRPiSetServos(UINT32 servoc, UINT32 *servov)
 {
 	UINT s=0;
+	BOOL servoChanged = FALSE;
 	for(s=0; s < MAX_SERVOS; s++)
 	{
 		if(s < servoc )
@@ -64,6 +78,7 @@ void ServoDriverRPiSetServos(UINT32 servoc, UINT32 *servov)
 			{
 				SetServo(s, servov[s]);
 				oldChannels[s] = servov[s];
+				servoChanged = TRUE;
 			}
 		}
 		else
@@ -72,7 +87,10 @@ void ServoDriverRPiSetServos(UINT32 servoc, UINT32 *servov)
 			{
 				SetServo(s, 0);
 				oldChannels[s] = 0;
+				servoChanged = TRUE;
 			}
 		}
 	}
+	if(servoChanged)
+		PrintServoStates();
 }

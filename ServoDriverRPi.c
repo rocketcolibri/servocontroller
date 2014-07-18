@@ -59,7 +59,7 @@ static void PrintServoStates()
 	FILE *f = fopen("/tmp/servostates", "w");
 	if(f)
 	{
-		fprintf(f, "0:%d; 1:%d; 2:%d; 3:%d; 4:%d; 5:%d; 6:%d; 7:%d\n",
+		fprintf(f, "{\"channels\":[%d, %d, %d, %d, %d, %d, %d, %d]}\n",
 			oldChannels[0], oldChannels[1], oldChannels[2], oldChannels[3],
 			oldChannels[4], oldChannels[5], oldChannels[6], oldChannels[7]);
 		fclose(f);

@@ -98,10 +98,10 @@ void ServoDriverRPiSetServos(UINT32 servoc, UINT32 *servov)
 
 void ServoDriverRPiStoreFailsafePosition(UINT32 servoc, UINT32 *servov)
 {
-  memcpy(failsafe, servov, sizeof(UINT32)*servoc);
+  memcpy(failsafe, servov, servoc * sizeof(UINT32));
 }
 
 void ServoDriverRPiSetFailsafe()
 {
-  ServoDriverRPiSetServos(failsafe, MAX_SERVOS);
+  ServoDriverRPiSetServos(MAX_SERVOS, failsafe);
 }

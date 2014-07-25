@@ -10,5 +10,7 @@
 
 
 extern void ServoDriverRPiSetServos(UINT32 servoc, UINT32 *servov);
+extern void ServoDriverRPiStoreFailsafePosition(UINT32 servoc, UINT32 *servov);
+extern void ServoDriverRPiSetFailsafe();
 
 #endif /* SERVODRIVERRPI_H_ */

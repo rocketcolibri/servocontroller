@@ -10,5 +10,7 @@
 
 
 extern void ServoDriverMockSetServos(UINT32 servoc, UINT32 *servov);
+extern void ServoDriverMockStoreFailsafePosition(UINT32 servoc, UINT32 *servov);
+extern void ServoDriverMockSetFailsafe();
 
 #endif /* SERVODRIVERMOCK_H_ */

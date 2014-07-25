@@ -38,6 +38,7 @@ static UINT32 ConvertChannelToServoHw(UINT32 channelPosition)
 }
 
 static UINT32 oldChannels[MAX_SERVOS] = { 0,0,0,0,0,0,0,0};
+static UINT32 failsafe[MAX_SERVOS] = { 0,0,0,0,0,0,0,0};
 
 static void SetServo(UINT32 s, UINT32 pos)
 {
@@ -93,4 +94,14 @@ void ServoDriverRPiSetServos(UINT32 servoc, UINT32 *servov)
 	}
 	if(servoChanged)
 		PrintServoStates();
+}
+
+void ServoDriverRPiStoreFailsafePosition(UINT32 servoc, UINT32 *servov)
+{
+  memcpy(failsafe, servov, sizeof(UINT32)*servoc);
+}
+
+void ServoDriverRPiSetFailsafe()
+{
+  ServoDriverRPiSetServos(failsafe, MAX_SERVOS);
 }

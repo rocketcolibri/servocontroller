@@ -39,6 +39,7 @@ typedef struct Connection
   struct sockaddr_in srcAddress;
   int socketFd;
   char *pUserName;
+  BOOL failsafeSet;
   UINT32 lastSequence;
   UINT32 timeout;
   void *hConnectionTimeoutPoll;
@@ -108,6 +109,11 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
                 ServoDriver_t *pServoDriver = ServoDriverGetInstance();
                 MessageSinkCdc_t *pMsgCdc = NewMessageSinkCdc(jobj);
                 pServoDriver->SetServos(GetNofChannel(pMsgCdc), GetChannelVector(pMsgCdc));
+                if(!this->failsafeSet)
+                {
+                  pServoDriver->StoreFailsafePosition(GetNofChannel(pMsgCdc), GetChannelVector(pMsgCdc));
+                  this->failsafeSet = TRUE;
+                }
                 DeleteMessageSinkCdc(pMsgCdc);
               }
             }
@@ -196,6 +202,10 @@ static void A3_CCSetBackToPassivConnection(ConnectionFsmObject_t obj)
 
 	ConnectionContainerSetActiveConnection(pConnection->connectionContainer, NULL);
 	SystemFsmEventTransitionToPassive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
+
+	// set failsafe settings
+	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
+	pServoDriver->SetFailsafe();
 }
 
 static void A4_CCRemoveConnection(ConnectionFsmObject_t obj)
@@ -231,7 +241,7 @@ static void A5_ActionDeleteConnection(ConnectionFsmObject_t obj)
 		A3_CCSetBackToPassivConnection,
 		A4_CCRemoveConnection,
 		A5_ActionDeleteConnection);
-
+    this->failsafeSet = FALSE;
     return (ConnectionObject_t)this;
   }
 

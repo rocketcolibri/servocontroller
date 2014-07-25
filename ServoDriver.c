@@ -52,10 +52,16 @@ ServoDriver_t *ServoDriverGetInstance()
 }
 
 
-void ServoDriverRegister(void (* SetServos)(UINT32, UINT32 *), void *pServoDriverObject)
+void ServoDriverRegister(
+    void (* SetServos)(UINT32, UINT32 *),
+    void (* StoreFailsafePosition)(UINT32, UINT32 *),
+    void (* SetFailsafe)(),
+    void *pServoDriverObject)
 {
 	ServoDriver_t *this = ServoDriverGetInstance();
 	TRC_INFO(this->hTrc, "Servo driver registered");
 	this->SetServos = SetServos;
+	this->StoreFailsafePosition = StoreFailsafePosition;
+	this->SetFailsafe = SetFailsafe;
 	this->pServoDriverObject = pServoDriverObject;
 }

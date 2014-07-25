@@ -63,12 +63,16 @@ int main(int argc, char**argv)
 		if(CommandLineArguments_getSimEnabled(args))
 		{
 			TRC_Log_Print(TRC_log, "Register mock servo driver");
-			ServoDriverRegister(ServoDriverMockSetServos, NULL);
+			ServoDriverRegister(ServoDriverMockSetServos,
+			    ServoDriverMockStoreFailsafePosition,
+			    ServoDriverMockSetFailsafe,NULL);
 		}
 		else
 		{
 			TRC_Log_Print(TRC_log, "Register RPi servo driver");
-			ServoDriverRegister(ServoDriverRPiSetServos, NULL);
+			ServoDriverRegister(ServoDriverRPiSetServos,
+			    ServoDriverRPiStoreFailsafePosition,
+			    ServoDriverRPiSetFailsafe,NULL);
 		}
 
 		ConnectionContainerObject_t connectionContainerObject = NewConnectionContainer();

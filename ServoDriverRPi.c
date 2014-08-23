@@ -71,11 +71,13 @@ void ServoDriverRPiSetServos(UINT32 servoc, UINT32 *servov)
 {
 	UINT s=0;
 	BOOL servoChanged = FALSE;
+	static UINT count;
+  UINT update = (count++ % 100);
 	for(s=0; s < MAX_SERVOS; s++)
 	{
 		if(s < servoc )
 		{
-			if(oldChannels[s] != servov[s])
+			if((oldChannels[s] != servov[s]) || (update == s))
 			{
 				SetServo(s, servov[s]);
 				oldChannels[s] = servov[s];

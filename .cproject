@@ -50,16 +50,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<folderInfo id="cdt.managedbuild.config.gnu.exe.release.1659558126.134804342" name="/" resourcePath="test/RCSimulator">
-						<toolChain id="cdt.managedbuild.toolchain.gnu.exe.release.1417482068" name="Linux GCC" superClass="cdt.managedbuild.toolchain.gnu.exe.release" unusedChildren="">
-							<tool id="cdt.managedbuild.tool.gnu.archiver.base.804384396" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base.1543524995"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.345172431" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1246035802"/>
-							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.release.355758077" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.release.2109377611"/>
-							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.release.1576969701" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.release.1725595948"/>
-							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.1895450402" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.release.7639576"/>
-							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.1778878938" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release.315415460"/>
-						</toolChain>
-					</folderInfo>
 					<sourceEntries>
 						<entry excluding="test/RCSimulator" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>

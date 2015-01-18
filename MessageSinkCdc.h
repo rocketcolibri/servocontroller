@@ -13,6 +13,8 @@ typedef struct
 {
 	UINT32 nofChannel;
 	UINT32 *channelData;
+  UINT32 nofFailsafe;
+  UINT32 *failsafeData;
 } MessageSinkCdc_t;
 
 /**
@@ -33,6 +35,20 @@ extern UINT32 GetNofChannel(MessageSinkCdc_t *pMsgCdc);
  * @return channel vector
  */
 extern UINT32* GetChannelVector(MessageSinkCdc_t *pMsgCdc);
+
+/**
+ * Getter for the number of failsafe settings received in the message
+ * @param MessageSindCdc object
+ * @return number of failsafe settings
+ */
+extern UINT32 GetNofFailsafe(MessageSinkCdc_t *pMsgCdc);
+
+/**
+ * Getter for the failsafe vector
+ * @param MessageSinkCdc object
+ * @return failsafe vector
+ */
+extern UINT32* GetFailsafeVector(MessageSinkCdc_t *pMsgCdc);
 
 /**
  * Deletes the MessageSindCdc object

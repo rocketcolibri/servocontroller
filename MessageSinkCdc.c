@@ -93,5 +93,7 @@ void DeleteMessageSinkCdc(MessageSinkCdc_t *pMsgCdc )
 {
 	if(pMsgCdc->channelData)
 		free(pMsgCdc->channelData);
+	if(pMsgCdc->failsafeData)
+		free(pMsgCdc->failsafeData);
 	free(pMsgCdc);
 }

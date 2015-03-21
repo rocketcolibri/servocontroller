@@ -1,13 +1,16 @@
 Compiling servocontroller for OpenWrt/linino
 ============================================
 
-*** WARNING
-*** The Arduino-YUN / Liniono-ONE port of the servocontroller application is
-*** work in progress. I hope I'll have a working package soon!
+WARNING:
+------
+** The Arduino-YUN / Liniono-ONE port of the servocontroller application is work in progress. I hope I'll have a working package soon!
 
-Compile for target device Arduino-YUN or Linino-ONE.
+Linino-ONE is a small SBC with a AR9331 processor running OpenWrt and an Atmel AtMega32u4 microcontroller for the external interfaces 
+(GPIO, PWM, servo outputs ...)
 
-Must do this on a Linux box. And for the below, assume that the checkouts are going into the "~/projects/" directory.
+The small form factor ant the onborad Wifi makes the Linino-ONE to the perfect platform for the RocketColibri remote control system.
+
+This Makfile compiles for the target devices Linino-ONE and Arduino-YUN.
 
 * Install needed tools
 ```
@@ -58,8 +61,10 @@ Must do this on a Linux box. And for the below, assume that the checkouts are go
 
 -------------------
 
-Notes:
-------
+References:
+-----------
+- http://www.rocketcolibri.org
+- http://www.linino.org/
 - http://wiki.openwrt.org/doc/howtobuild/single.package
 - http://fibasile.github.io/arduino-yun-custom-buildroot.html
 - http://hanez.org/openwrt-building-software-packages.html

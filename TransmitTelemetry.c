@@ -4,11 +4,12 @@
  *  Created on: 14.10.2013
  *      Author: lorenz
  */
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <arpa/inet.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <strings.h>

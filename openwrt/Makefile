@@ -27,31 +27,33 @@ PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 #PKG_BUILD_PARALLEL:=1
 #PKG_INSTALL:=1
 
-PKG_MAINTAINER := Tod Kurt <tod@thingm.com>
+PKG_MAINTAINER := Lorenz Schelling lorenz.schelling@gmx.net
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/servocontroller
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+json-c
+  DEPENDS:=+json
   TITLE:=servocontroller
   URL:=http://rocketcolibri.org
 endef
-
+  
 define Build/Prepare
+	echo $(BUILD_DIR)
+	echo $(INCLUDE_DIR)
+	echo $(TOPDIR)
 	mkdir -p $(PKG_BUILD_DIR)
 	$(CP) ../* $(PKG_BUILD_DIR)/
 	mkdir -p $(PKG_BUILD_DIR)/base
 	$(CP) ../base/* $(PKG_BUILD_DIR)/base/
+	cp -f ../Raspian_Install/minunit.h $(INCLUDE_DIR)
 	
 endef
-
-define Build/Compile
-	 $(MAKE) USBLIB_TYPE=HIDDATA OS="wrt" servocontroller -C $(PKG_BUILD_DIR) \
-                $(TARGET_CONFIGURE_OPTS) \
-                COPT_FLAGS="$(TARGET_CFLAGS)"  \
-                LDOPT_FLAGS="$(TARGET_LDFLAGS) "
+ 
+define Build/Compile Build/Prepare
+	$(MAKE) -C $(PKG_BUILD_DIR) CC="$(TARGET_CROSS)gcc" NO_BACKTRACE CFLAGS="-I$(INCLUDE_DIR) -I$(BUILD_DIR)/json-c-0.9/ipkg-install/usr/include/json/json.h -L$(BUILD_DIR)/usr/lib"
+	cd ..
 endef
 
 define Package/servocontroller/install

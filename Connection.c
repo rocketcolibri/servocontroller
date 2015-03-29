@@ -7,6 +7,7 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <errno.h>
@@ -61,8 +62,8 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
   struct json_object * jobj = json_tokener_parse_ex(tok, pJsonString, strlen(pJsonString));
   if (!jobj)
   {
-    TRC_ERROR(this->hTrc,
-        "JSON error: %s %s", (char *)json_tokener_error_desc(json_tokener_get_error(tok)), (char *)pJsonString);
+//    TRC_ERROR(this->hTrc,
+//        "JSON error: %s %s", (char *)json_tokener_error_desc(json_tokener_get_error(tok)), (char *)pJsonString);
     return;
   }
   json_object * version = json_object_object_get(jobj, "v");

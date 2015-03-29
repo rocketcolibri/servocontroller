@@ -2,7 +2,6 @@
  * Debug modul contains error handling, assertions and singnal handler
  */
 
-#include <execinfo.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +11,9 @@
 #include <signal.h>
 #include <fcntl.h>
 #include <syslog.h>
+#ifdef NO_BACKTRACE
+#include <execinfo.h>
+#endif
 
 #include "GEN.h"
 #include "DBG.h"
@@ -19,6 +21,8 @@
 
 void DBG_PrintTraceToFile(void)
 {
+	// backtrace isn't working with uclibc
+#ifdef NO_BACKTRACE
 	int tracefile = open("/tmp/servocontroller.backtrace", O_WRONLY | O_CREAT | O_TRUNC);
 	if (tracefile)
 	{
@@ -27,6 +31,8 @@ void DBG_PrintTraceToFile(void)
 		backtrace_symbols_fd(array, size, tracefile);
 		close(tracefile);
 	}
+#endif
+
 }
 
 typedef void (*DBG_SigHandler_t)(int);

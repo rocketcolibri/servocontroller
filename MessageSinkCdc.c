@@ -7,6 +7,7 @@
 #include <strings.h>
 #include <memory.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <fcntl.h>
 #include <json-c/json.h>
 

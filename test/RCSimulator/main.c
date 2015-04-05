@@ -17,7 +17,8 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <json-c/json.h>
+
+#include "json-c/json.h"
 
 #include "base/GEN.h"
 #include "base/AD.h"

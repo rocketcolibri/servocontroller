@@ -19,7 +19,7 @@ typedef struct
 	BOOL monitorEnabled;
 	char *pConfigFile;
 	BOOL logEnabled;
-	BOOL simEnabled;
+	char *pServoDriver;
 	BOOL parseError;
 	BOOL execUnitTests;
 	char *pUsage;
@@ -36,17 +36,18 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 {
 	CommandLineArguments_t *this = malloc(sizeof(CommandLineArguments_t));
 	bzero(this, sizeof(CommandLineArguments_t));
-
 	char pTmp[1000];
-	snprintf(pTmp, sizeof(pTmp), "Usage: %s [-m] [-c <cfg-file>] \
-			\n\tm\tenable debug monitor \
+	snprintf(pTmp, sizeof(pTmp), "Usage: %s [-m] [-c <cfg-file>] -s [rpi | linino | simulate ]\
+			\n\ts\tservo driver rpi RaspberryPi, linino Linino OS, simulate for a mock servo driver\
 			\n\tc\tconfing file\
+			\n\tm\tenable debug monitor \
 			\n\tu\texecute unit tests\
-			\n\tl\tlogfile", argv[0]);
+			\n\tl\tlogfile"
+			, argv[0]);
 	this->pUsage = strdup(pTmp);
 
 	int c=0;
-	while ((c = getopt(argc, argv, "mulsc:")) != -1)
+	while ((c = getopt(argc, argv, "s:c:mulp")) != -1)
 	{
 		switch (c)
 		{
@@ -63,7 +64,7 @@ CommandLineArgumentsObject_t NewCommandLineArguments(int argc, char ** argv)
 			this->logEnabled = TRUE;
 			break;
 		case 's':
-			this->simEnabled = TRUE;
+			this->pServoDriver = strdup(optarg);
 			break;
 		case '?':
 		default:
@@ -103,9 +104,12 @@ BOOL CommandLineArguments_getLogEnabled(CommandLineArgumentsObject_t obj)
 	return ((CommandLineArguments_t*)obj)->logEnabled;
 }
 
-BOOL CommandLineArguments_getSimEnabled(CommandLineArgumentsObject_t obj)
+char * CommandLineArguments_getServoDriver(CommandLineArgumentsObject_t obj)
 {
-	return ((CommandLineArguments_t*)obj)->simEnabled;
+	if(!(((CommandLineArguments_t*)obj)->pServoDriver))
+		return "rpi";
+	else
+		return ((CommandLineArguments_t*)obj)->pServoDriver;
 }
 
 BOOL CommandLineArguments_getExecUnitTests(CommandLineArgumentsObject_t obj)

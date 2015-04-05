@@ -30,7 +30,7 @@ static BOOL TelemetrySourceVideoStreamIsAvailable(TelemetrySourceVideoStreamObje
 {
 	DBG_ASSERT(obj);
 	TelemetrySourceVideoStream_t *this = (TelemetrySourceVideoStream_t*)obj;
-	if(CommandLineArguments_getSimEnabled(args))
+	if(0==strcmp("simulate", CommandLineArguments_getServoDriver(args)))
 		this->isAvailable = 0 == system("echo 'supported=1 detected=1' | egrep supported=1.+detected=1");
 	else
 		this->isAvailable = 0 == system("/opt/vc/bin/vcgencmd get_camera | egrep supported=1.+detected=1");

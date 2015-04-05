@@ -26,6 +26,7 @@
 #include "TransmitTelemetry.h"
 #include "ServoDriver.h"
 #include "ServoDriverRPi.h"
+#include "ServoDriverLinino.h"
 #include "ServoDriverMock.h"
 
 CommandLineArgumentsObject_t args;
@@ -60,16 +61,23 @@ int main(int argc, char**argv)
 			MON_AddMonCmd("trc",TRC_ExecMonCmd, 0);
 		}
 
-		if(CommandLineArguments_getSimEnabled(args))
+		if(0==strcmp("simulate", CommandLineArguments_getServoDriver(args)))
 		{
 			TRC_Log_Print(TRC_log, "Register mock servo driver");
 			ServoDriverRegister(ServoDriverMockSetServos,
 			    ServoDriverMockStoreFailsafePosition,
 			    ServoDriverMockSetFailsafe,NULL);
 		}
-		else
+		else if(0==strcmp("linino", CommandLineArguments_getServoDriver(args)))
 		{
-			TRC_Log_Print(TRC_log, "Register RPi servo driver");
+			TRC_Log_Print(TRC_log, "Register Linino servo driver");
+			ServoDriverRegister(ServoDriverLininoSetServos,
+			    ServoDriverLininoStoreFailsafePosition,
+				ServoDriverLininoSetFailsafe,NULL);
+		}
+		else // rpi
+		{
+			TRC_Log_Print(TRC_log, "Register RasperryPi servo driver");
 			ServoDriverRegister(ServoDriverRPiSetServos,
 			    ServoDriverRPiStoreFailsafePosition,
 			    ServoDriverRPiSetFailsafe,NULL);

@@ -34,7 +34,6 @@ include $(INCLUDE_DIR)/package.mk
 define Package/servocontroller
   SECTION:=utils
   CATEGORY:=Utilities
-  DEPENDS:=+json
   TITLE:=servocontroller
   URL:=http://rocketcolibri.org
 endef
@@ -45,14 +44,15 @@ define Build/Prepare
 	echo $(TOPDIR)
 	mkdir -p $(PKG_BUILD_DIR)
 	$(CP) ../* $(PKG_BUILD_DIR)/
+	mkdir -p $(PKG_BUILD_DIR)/json-c
+	$(CP) ../json-c/* $(PKG_BUILD_DIR)/json-c/
 	mkdir -p $(PKG_BUILD_DIR)/base
 	$(CP) ../base/* $(PKG_BUILD_DIR)/base/
-	cp -f ../Raspian_Install/minunit.h $(INCLUDE_DIR)
 	
 endef
  
 define Build/Compile Build/Prepare
-	$(MAKE) -C $(PKG_BUILD_DIR) CC="$(TARGET_CROSS)gcc" NO_BACKTRACE CFLAGS="-I$(INCLUDE_DIR) -I$(BUILD_DIR)/json-c-0.9/ipkg-install/usr/include/json/json.h -L$(BUILD_DIR)/usr/lib"
+	$(MAKE) -C $(PKG_BUILD_DIR) CC="$(TARGET_CROSS)gcc" NO_BACKTRACE CFLAGS="-g"
 	cd ..
 endef
 

@@ -17,14 +17,14 @@
 #include <memory.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <json-c/json.h>
+
+#include "json-c/json.h"
 
 #include "base/GEN.h"
 #include "base/AD.h"
 #include "base/MON.h"
 #include "base/DBG.h"
 #include "base/Reactor.h"
-#include <json-c/json.h>
 
 #include "RCClient.h"
 #include "ServoControllerData.h"

@@ -14,7 +14,8 @@
 #include <memory.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <json-c/json.h>
+
+#include "json-c/json.h"
 
 #include "base/GEN.h"
 #include "base/MON.h"

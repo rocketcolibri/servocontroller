@@ -1,5 +1,9 @@
-LIBS  = -ljson
+
 CFLAGS = -Wall
+
+include json-c/Makefile
+
+all: servocontroller
 
 OBJ = CommandLineArguments.o \
       Connection.o \
@@ -12,6 +16,7 @@ OBJ = CommandLineArguments.o \
       MessageSinkCdc.o \
       ServoDriver.o \
       ServoDriverMock.o \
+      ServoDriverLinino.o \
       ServoDriverRPi.o \
       SystemFsm.o \
       SystemFsmTest.o \
@@ -35,5 +40,13 @@ OBJ = CommandLineArguments.o \
 %.o : %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-servocontroller: $(OBJ)
+servocontroller: $(OBJ) $(LIBJSON_C_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+
+	
+clean:
+	rm -f *.o
+	rm -f $(LIBJSON_C_DIR)/*.o
+	rm -f base/*.o
+	rm -f servocontroller
+

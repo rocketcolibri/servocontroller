@@ -32,4 +32,5 @@ extern BOOL CommandLineArguments_getLogEnabled(CommandLineArgumentsObject_t obj)
 
 extern char * CommandLineArguments_getUsageStr(CommandLineArgumentsObject_t obj);
 
+extern char * CommandLineArguments_getServoDriver(CommandLineArgumentsObject_t obj);
 #endif /* COMMANDLINEARGUMENTS_H_ */

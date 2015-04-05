@@ -7,7 +7,7 @@
  *      Author: lorenz
  */
 
-#include <minunit.h>
+#include "base/minunit.h"
 
 
 #include <arpa/inet.h>
@@ -19,8 +19,8 @@
 #include <memory.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <json-c/json.h>
 
+#include "json-c/json.h"
 
 #include "base/GEN.h"
 #include "base/TRC.h"

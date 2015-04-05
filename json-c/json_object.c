@@ -55,7 +55,7 @@ static struct json_object* json_object_new(enum json_type o_type);
 static json_object_to_json_string_fn json_object_object_to_json_string;
 static json_object_to_json_string_fn json_object_boolean_to_json_string;
 static json_object_to_json_string_fn json_object_int_to_json_string;
-static json_object_to_json_string_fn json_object_double_to_json_string;
+//static json_object_to_json_string_fn json_object_double_to_json_string;
 static json_object_to_json_string_fn json_object_string_to_json_string;
 static json_object_to_json_string_fn json_object_array_to_json_string;
 
@@ -247,7 +247,7 @@ void json_object_set_serializer(json_object *jso,
 			jso->_to_json_string = &json_object_boolean_to_json_string;
 			break;
 		case json_type_double:
-			jso->_to_json_string = &json_object_double_to_json_string;
+//			jso->_to_json_string = &json_object_double_to_json_string;
 			break;
 		case json_type_int:
 			jso->_to_json_string = &json_object_int_to_json_string;
@@ -588,7 +588,7 @@ int64_t json_object_get_int64(struct json_object *jso)
 
 
 /* json_object_double */
-
+#if 0
 static int json_object_double_to_json_string(struct json_object* jso,
 					     struct printbuf *pb,
 					     int level,
@@ -629,13 +629,13 @@ static int json_object_double_to_json_string(struct json_object* jso,
   printbuf_memappend(pb, buf, size);
   return size;
 }
-
+#endif
 struct json_object* json_object_new_double(double d)
 {
 	struct json_object *jso = json_object_new(json_type_double);
 	if (!jso)
 		return NULL;
-	jso->_to_json_string = &json_object_double_to_json_string;
+//	jso->_to_json_string = &json_object_double_to_json_string;
 	jso->o.c_double = d;
 	return jso;
 }

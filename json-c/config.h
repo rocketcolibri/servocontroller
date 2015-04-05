@@ -9,18 +9,18 @@
 
 /* Define to 1 if you have the declaration of `INFINITY', and to 0 if you
    don't. */
-#define HAVE_DECL_INFINITY 1
+#define HAVE_DECL_INFINITY 0
 
 /* Define to 1 if you have the declaration of `isinf', and to 0 if you don't.
    */
-#define HAVE_DECL_ISINF 1
+#define HAVE_DECL_ISINF 0
 
 /* Define to 1 if you have the declaration of `isnan', and to 0 if you don't.
    */
-#define HAVE_DECL_ISNAN 1
+#define HAVE_DECL_ISNAN 0
 
 /* Define to 1 if you have the declaration of `nan', and to 0 if you don't. */
-#define HAVE_DECL_NAN 1
+#define HAVE_DECL_NAN 0
 
 /* Define to 1 if you have the declaration of `_finite', and to 0 if you
    don't. */

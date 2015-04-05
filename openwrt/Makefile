@@ -37,7 +37,7 @@ define Package/servocontroller
   TITLE:=servocontroller
   URL:=http://rocketcolibri.org
 endef
-  
+
 define Build/Prepare
 	echo $(BUILD_DIR)
 	echo $(INCLUDE_DIR)
@@ -48,11 +48,12 @@ define Build/Prepare
 	$(CP) ../json-c/* $(PKG_BUILD_DIR)/json-c/
 	mkdir -p $(PKG_BUILD_DIR)/base
 	$(CP) ../base/* $(PKG_BUILD_DIR)/base/
-	
+	find -name "*.o" -type f -delete
 endef
- 
+  
 define Build/Compile Build/Prepare
-	$(MAKE) -C $(PKG_BUILD_DIR) CC="$(TARGET_CROSS)gcc" NO_BACKTRACE CFLAGS="-g"
+	$(MAKE) -C $(PKG_BUILD_DIR) clean
+	$(MAKE) -C $(PKG_BUILD_DIR) CC="$(TARGET_CROSS)gcc" NO_BACKTRACE CFLAGS="-g" LIBS="lm" all 
 	cd ..
 endef
 

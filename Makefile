@@ -1,6 +1,4 @@
 
-CFLAGS = -Wall
-
 include json-c/Makefile
 
 all: servocontroller
@@ -43,7 +41,6 @@ OBJ = CommandLineArguments.o \
 servocontroller: $(OBJ) $(LIBJSON_C_OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
 
-	
 clean:
 	rm -f *.o
 	rm -f $(LIBJSON_C_DIR)/*.o

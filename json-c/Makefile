@@ -1,4 +1,3 @@
-CFLAGS = -Wall -g
 LIBJSON_C_DIR = json-c
 LIBJSON_C_HEADERS = \
 	arraylist.h \

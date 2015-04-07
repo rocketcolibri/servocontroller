@@ -2,11 +2,12 @@ ServoControler servo deamon
 ========================================================================
 
 The ServoController is part of the RocketColibri Remote Control System.
+https://rocketcolibri.org
 
-The ServoController is the service running on the Raspberry Pi to control
-the servos connected to it.
+The ServoController is the service running on RC model to control
+the servos connected to it. 
 
-The ServoController application runs on a Raspberry Pi with Raspian OS.
+The ServoController currently supports the RaspberryPi, Linino-ONE and Arduino-YUN boards.
 
 The corresponding App for an Android tablet or smartphone can be found at:
 https://bitbucket.org/artvel/rocketcolibri

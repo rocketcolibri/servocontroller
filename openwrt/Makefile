@@ -58,9 +58,30 @@ define Build/Compile Build/Prepare
 endef
 
 define Package/servocontroller/install
+	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/servocontroller $(1)/usr/bin/
+	$(INSTALL_BIN) ./files/servocontroller.init $(1)/etc/init.d/servocontroller
+endef
 
+define Package/servocontroller/postinst
+#!/bin/sh
+# check if we are on real system
+if [ -z "$${IPKG_INSTROOT}" ]; then
+        echo "Enabling rc.d symlink for servocontroller"
+        /etc/init.d/servocontroller enable
+fi
+exit 0
+endef
+
+define Package/servocontroller/prerm
+#!/bin/sh
+# check if we are on real system
+if [ -z "$${IPKG_INSTROOT}" ]; then
+        echo "Removing rc.d symlink for servocontroller"
+        /etc/init.d/servocontroller disable
+fi
+exit 0
 endef
 
 $(eval $(call BuildPackage,servocontroller))

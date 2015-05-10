@@ -41,7 +41,7 @@ static void A2_ActionFunctionCCSetActiveConnection(ConnectionObject_t obj) { act
 static void A3_ActionFunctionCCSetBackToPassivConnection(ConnectionObject_t obj) { action[2]=TRUE; }
 static void A4_ActionFunctionCCRemoveConnection(ConnectionObject_t obj) { action[3]=TRUE; }
 static void A5_ActionFunctionActionDeleteConnection(ConnectionObject_t obj) { action[4]=TRUE; }
-
+static void A6_ActionFunctionSetFailsafe(ConnectionObject_t obj) { action[5]=TRUE; }
 
 static void test_setup()
 {
@@ -51,7 +51,8 @@ static void test_setup()
 			A2_ActionFunctionCCSetActiveConnection,
 			A3_ActionFunctionCCSetBackToPassivConnection,
 			A4_ActionFunctionCCRemoveConnection,
-			A5_ActionFunctionActionDeleteConnection);
+			A5_ActionFunctionActionDeleteConnection,
+			A6_ActionFunctionSetFailsafe);
 }
 
 static void test_teardown()
@@ -67,7 +68,8 @@ MU_TEST(testConnectionFsm_State_Idle)
 	mu_assert(!action[1], "!A2");
 	mu_assert(!action[2], "!A3");
 	mu_assert(!action[3], "!A4");
-	mu_assert(!action[4], "!A5");
+	mu_assert(action[4], "A5");
+	mu_assert(!action[5], "!A6");
 	ResetActionResult();
 	ConnectionFsmEventTimeout(out); // event Timeout
 	mu_assert(ConnectionFsmIs_CONN_IDLE(out), "check CONN_IDLE");
@@ -75,7 +77,8 @@ MU_TEST(testConnectionFsm_State_Idle)
 	mu_assert(!action[1], "!A2");
 	mu_assert(!action[2], "!A3");
 	mu_assert(!action[3], "!A4");
-	mu_assert(!action[4], "!A5");
+	mu_assert(action[4], "A5");
+	mu_assert(!action[5], "!A6");
 	ResetActionResult();
 
 	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
@@ -85,6 +88,7 @@ MU_TEST(testConnectionFsm_State_Idle)
 	mu_assert(!action[2], "!A3");
 	mu_assert(!action[3], "!A4");
 	mu_assert(!action[4], "!A5");
+	mu_assert(!action[5], "!A6");
 	ResetActionResult();
 }
 
@@ -102,6 +106,7 @@ MU_TEST(testConnectionFsm_State_Identified)
 	mu_assert(!action[2], "!A3");
 	mu_assert(!action[3], "!A4");
 	mu_assert(!action[4], "!A5");
+	mu_assert(!action[5], "!A6");
 	ResetActionResult();
 
 
@@ -112,6 +117,7 @@ MU_TEST(testConnectionFsm_State_Identified)
 	mu_assert(!action[2], "!A3");
 	mu_assert(!action[3], "!A4");
 	mu_assert(!action[4], "!A5");
+	mu_assert(!action[5], "!A6");
 	ResetActionResult();
 }
 
@@ -128,6 +134,7 @@ MU_TEST(testConnectionFsm_State_Identified_Event_Timeout)
 	mu_assert(!action[2], "!A3");
 	mu_assert(action[3], "A4");
 	mu_assert(action[4], "A5");
+	mu_assert(!action[5], "!A6");
 	ResetActionResult();
 }
 
@@ -142,9 +149,10 @@ MU_TEST(testConnectionFsm_State_Active_Event_RecvCdc)
 	ConnectionFsmEventTimeout(out); // event Timeout
 	mu_assert(!action[0], "!A1");
 	mu_assert(!action[1], "!A2");
-	mu_assert(action[2], "A3");
-	mu_assert(action[3], "A4");
-	mu_assert(action[4], "A5");
+	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
+	mu_assert(action[5], "A6");
 	ResetActionResult();
 }
 
@@ -162,6 +170,7 @@ MU_TEST(testConnectionFsm_State_Active_Event_RecvHello)
 	mu_assert(action[2], "A3");
 	mu_assert(!action[3], "!A4");
 	mu_assert(!action[4], "!A5");
+	mu_assert(action[5], "A6");
 	ResetActionResult();
 }
 
@@ -171,16 +180,32 @@ MU_TEST(testConnectionFsm_State_Active_Event_RecvTimeout)
 	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
 	mu_assert(ConnectionFsmIs_CONN_ACTIVE(out), "check CONN_ACTIV");
 	ResetActionResult();
-
 	ConnectionFsmEventTimeout(out); // event Timeout
 	mu_assert(!action[0], "!A1");
 	mu_assert(!action[1], "!A2");
-	mu_assert(action[2], "A3");
-	mu_assert(action[3], "A4");
-	mu_assert(action[4], "A5");
+	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
+	mu_assert(action[5], "A6");
 	ResetActionResult();
 }
 
+MU_TEST(testConnectionFsm_State_Filesafe_Recv_Hello)
+{
+	ConnectionFsmEventRecvHelloCmd(out); // event RecvHello
+	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
+	ConnectionFsmEventTimeout(out); // event Timeout
+	mu_assert(ConnectionFsmIs_CONN_FAILSAFE(out), "check CONN_FAILSAFE");
+	ResetActionResult();
+	ConnectionFsmEventRecvCdcCmd(out); // event RecvCdc
+	mu_assert(!action[0], "!A1");
+	mu_assert(!action[1], "!A2");
+	mu_assert(!action[2], "!A3");
+	mu_assert(!action[3], "!A4");
+	mu_assert(!action[4], "!A5");
+	mu_assert(action[5], "!A6");
+	ResetActionResult();
+}
 
 MU_TEST_SUITE(testConnectionFsm) {
 	MU_SUITE_CONFIGURE(&test_setup, &test_teardown);
@@ -193,6 +218,9 @@ MU_TEST_SUITE(testConnectionFsm) {
 	MU_RUN_TEST(testConnectionFsm_State_Active_Event_RecvCdc);
 	MU_RUN_TEST(testConnectionFsm_State_Active_Event_RecvHello);
 	MU_RUN_TEST(testConnectionFsm_State_Active_Event_RecvTimeout);
+	MU_RUN_TEST(testConnectionFsm_State_Filesafe_Recv_Hello);
+
+
 }
 
 void ConnectionFsmTest()

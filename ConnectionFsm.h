@@ -26,7 +26,8 @@ extern ConnectionFsmObject_t NewConnectionFsm(
 		ConnectionFsm_ActionFn_t A2_CCSetActiveConnection,
 		ConnectionFsm_ActionFn_t A3_CCSetBackToPassivConnection,
 		ConnectionFsm_ActionFn_t A4_CCRemoveConnection,
-		ConnectionFsm_ActionFn_t A5_ActionDeleteConnection);
+		ConnectionFsm_ActionFn_t A5_ActionDeleteConnection,
+		ConnectionFsm_ActionFn_t A6_SetServoToFailsafe);
 
 /** delete a system state object */
 extern void DeleteConnectionFsm(ConnectionFsmObject_t systemObj);

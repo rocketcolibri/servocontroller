@@ -44,6 +44,7 @@ typedef enum
   CONN_IDLE, // not active
   CONN_IDENTIFIED,
   CONN_ACTIVE, //
+  CONN_FAILSAFE,
   CONN_NOF_STATE
 } Connection_State_t;
 
@@ -82,7 +83,8 @@ ConnectionFsmObject_t NewConnectionFsm(
 		ConnectionFsm_ActionFn_t A2_CCSetActiveConnection,
 		ConnectionFsm_ActionFn_t A3_CCSetBackToPassivConnection,
 		ConnectionFsm_ActionFn_t A4_CCRemoveConnection,
-		ConnectionFsm_ActionFn_t A5_ActionDeleteConnection)
+		ConnectionFsm_ActionFn_t A5_ActionDeleteConnection,
+		ConnectionFsm_ActionFn_t A6_SetServoToFailsafe)
 {
 	ConnectionFsm_t * this = malloc(sizeof(ConnectionFsm_t));
 	bzero(this, sizeof(ConnectionFsm_t));
@@ -105,17 +107,24 @@ ConnectionFsmObject_t NewConnectionFsm(
 	  /* state: CONN_IDENTIFIED */
 	{ /* events                              actions0                       actions1                  actions2     							next state */
 	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ NULL,                          NULL,                     NULL,						NULL },      CONN_IDENTIFIED },
-	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ A2_CCSetActiveConnection,  	  NULL,                     NULL,						NULL },      CONN_ACTIVE },
-	  /* CONN_EVENT_TIMEOUT*/             {{ A4_CCRemoveConnection, 		    A5_ActionDeleteConnection,NULL,						NULL },      CONN_IDLE },
-	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A4_CCRemoveConnection,   		  A5_ActionDeleteConnection,NULL, 					NULL },      CONN_IDLE },
+	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ A2_CCSetActiveConnection,  	NULL,                     NULL,						NULL },      CONN_ACTIVE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ A4_CCRemoveConnection, 		A5_ActionDeleteConnection,NULL,						NULL },      CONN_IDLE },
+	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A4_CCRemoveConnection,   		A5_ActionDeleteConnection,NULL, 					NULL },      CONN_IDLE },
 	},
 
 	/* state: CONN_ACTIVE */
 	{ /* events                              actions0                        actions1                  actions2     							next state */
 	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A3_CCSetBackToPassivConnection, NULL,                     NULL,					 NULL },      CONN_IDENTIFIED },
 	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ NULL,                           NULL,                     NULL,					 NULL },      CONN_ACTIVE },
-	  /* CONN_EVENT_TIMEOUT*/             {{ A3_CCSetBackToPassivConnection, A4_CCRemoveConnection,	   A5_ActionDeleteConnection,NULL },     	CONN_IDLE },
-	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A4_CCRemoveConnection,      	  A5_ActionDeleteConnection, NULL,					NULL },      CONN_IDLE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ A6_SetServoToFailsafe,          NULL,                     NULL,					 NULL },      CONN_FAILSAFE },
+	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A4_CCRemoveConnection,      	 A5_ActionDeleteConnection, NULL,					NULL },       CONN_IDLE },
+	},
+	/* state: CONN_FAILSAFE */
+	{ /* events                              actions0                        actions1                  actions2     							next state */
+	  /* CONN_EVENT_RECV_HELLO_CMD*/      {{ A3_CCSetBackToPassivConnection, NULL,                     NULL,					 NULL },      CONN_IDENTIFIED },
+	  /* CONN_EVENT_RECV_CDC_CMD*/        {{ NULL,                           NULL,                     NULL,					 NULL },      CONN_ACTIVE },
+	  /* CONN_EVENT_TIMEOUT*/             {{ NULL,                           NULL,                     NULL,					 NULL },      CONN_FAILSAFE },
+	  /* CONN_EVENT_PROTO_IVALID_CMD*/    {{ A4_CCRemoveConnection,      	 A5_ActionDeleteConnection, NULL,					 NULL },      CONN_IDLE },
 	}
 	};
     memcpy(&this->ConnectionFsm , &ConnectionFsm, sizeof(ConnectionFsm));
@@ -190,6 +199,13 @@ BOOL ConnectionFsmIs_CONN_ACTIVE(ConnectionFsmObject_t obj)
 	DBG_ASSERT(obj);
 	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
 	return CONN_ACTIVE == this->state;
+}
+
+BOOL ConnectionFsmIs_CONN_FAILSAFE(ConnectionFsmObject_t obj)
+{
+	DBG_ASSERT(obj);
+	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
+	return CONN_FAILSAFE == this->state;
 }
 
 void ConnectionFsmEventRecvHelloCmd(ConnectionFsmObject_t obj)

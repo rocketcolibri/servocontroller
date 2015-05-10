@@ -49,10 +49,7 @@ typedef struct Connection
   UINT8 hTrc; // trace handle
 } Connection_t;
 
-
-
 #define CONNECTION_NOF_ACTION 2
-
 
 void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonString)
 {
@@ -83,8 +80,6 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
         DBG_ASSERT_NO_RES(
             0==strcmp(this->pUserName, json_object_get_string(pUserObj)));
       }
-
-
       json_object *seqObj = json_object_object_get(jobj, "sequence");
       if (seqObj)
       {
@@ -162,66 +157,65 @@ void HandleJsonMessage(ConnectionObject_t connectionObject, const char *pJsonStr
   json_tokener_free(tok);
 }
 
-  static void ConnectionTimeoutHandler(int timerfd, void *obj)
-  {
-    Connection_t *this = (Connection_t *) obj;
-    DBG_ASSERT(this);
-    TIMERFD_Read(timerfd);
-    if (this->timeout == MAX_TIMEOUT_TIME)
-    {
-    	ConnectionFsmEventTimeout(this->connectionFsm);
-    	TRC_ERROR(this->hTrc, "timeout expired %s", this->pUserName);
-    }
-    else
-    {
-    	TRC_ERROR(this->hTrc, "this:0x%x timeout:%d",this, this->timeout);
-    	this->timeout++;
-    }
-  }
-
+static void ConnectionTimeoutHandler(int timerfd, void *obj)
+{
+	Connection_t *this = (Connection_t *) obj;
+	DBG_ASSERT(this);
+	TIMERFD_Read(timerfd);
+	if (this->timeout == MAX_TIMEOUT_TIME)
+	{
+		ConnectionFsmEventTimeout(this->connectionFsm);
+		TRC_ERROR(this->hTrc, "timeout expired %s", this->pUserName);
+	}
+	else
+	{
+		TRC_ERROR(this->hTrc, "this:0x%x timeout:%d", this, this->timeout);
+		this->timeout++;
+	}
+}
 
 static void A1_CCAddConnection(ConnectionFsmObject_t obj)
 {
-  	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
-  	ConnectionContainerAddConnection(pConnection->connectionContainer, pConnection,&pConnection->srcAddress);
+  	Connection_t *this = (Connection_t *)ConnectionFsmGetConnection(obj);
+  	ConnectionContainerAddConnection(this->connectionContainer, this,&this->srcAddress);
 }
-
-
 
 static void A2_CCSetActiveConnection(ConnectionFsmObject_t obj)
 {
-	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
-	ConnectionContainerSetActiveConnection(pConnection->connectionContainer, pConnection);
-	SystemFsmEventTransitionToActive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
+	Connection_t *this = (Connection_t *)ConnectionFsmGetConnection(obj);
+	ConnectionContainerSetActiveConnection(this->connectionContainer, this);
+	SystemFsmEventTransitionToActive(ConnectionContainerGetSystemFsm(this->connectionContainer));
 }
 
 static void A3_CCSetBackToPassivConnection(ConnectionFsmObject_t obj)
 {
-	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
+	Connection_t *this = (Connection_t *)ConnectionFsmGetConnection(obj);
+	ConnectionContainerSetActiveConnection(this->connectionContainer, NULL);
+	SystemFsmEventTransitionToPassive(ConnectionContainerGetSystemFsm(this->connectionContainer));
+}
 
-	ConnectionContainerSetActiveConnection(pConnection->connectionContainer, NULL);
-	SystemFsmEventTransitionToPassive(ConnectionContainerGetSystemFsm(pConnection->connectionContainer));
+static void A4_CCRemoveConnection(ConnectionFsmObject_t obj)
+{
+	Connection_t *this = (Connection_t *)ConnectionFsmGetConnection(obj);
+	ConnectionContainerRemoveConnection(this->connectionContainer, this);
+}
 
+static void A5_ActionDeleteConnection(ConnectionFsmObject_t obj)
+{
+	Connection_t *this = (Connection_t *)ConnectionFsmGetConnection(obj);
+	DeleteConnection((ConnectionObject_t)this);
+}
+
+static void A6_SetServoToFailsafe(ConnectionFsmObject_t obj)
+{
 	// set failsafe settings
 	ServoDriver_t *pServoDriver = ServoDriverGetInstance();
 	pServoDriver->SetFailsafe();
 }
 
-static void A4_CCRemoveConnection(ConnectionFsmObject_t obj)
-{
-	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
-	ConnectionContainerRemoveConnection(pConnection->connectionContainer, pConnection);
-}
-
-static void A5_ActionDeleteConnection(ConnectionFsmObject_t obj)
-{
-	Connection_t *pConnection = (Connection_t *)ConnectionFsmGetConnection(obj);
-	DeleteConnection((ConnectionObject_t)pConnection);
-}
-
-  ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnectionObject,
+ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnectionObject,
       const struct sockaddr_in *pSrcAddr, const int socketFd,  UINT8 hTrcSocket)
-  {
+{
     DBG_ASSERT(containerConnectionObject);
     DBG_ASSERT(pSrcAddr);
     Connection_t *this = malloc(sizeof(Connection_t));
@@ -239,27 +233,28 @@ static void A5_ActionDeleteConnection(ConnectionFsmObject_t obj)
 		A2_CCSetActiveConnection,
 		A3_CCSetBackToPassivConnection,
 		A4_CCRemoveConnection,
-		A5_ActionDeleteConnection);
+		A5_ActionDeleteConnection,
+		A6_SetServoToFailsafe);
     return (ConnectionObject_t)this;
-  }
+}
 
- void DeleteConnection(ConnectionObject_t *pConn)
- {
+void DeleteConnection(ConnectionObject_t *pConn)
+{
 	 Connection_t *this = (Connection_t *) pConn;
 	 Reactor_RemoveFdAndClose(this->hConnectionTimeoutPoll);
 	 DeleteConnectionFsm(this->connectionFsm);
 	 free(pConn);
- }
-  // getter
-  struct sockaddr_in* ConnectionGetAddress(ConnectionObject_t connectionObject)
-  {
-	  return &((Connection_t*) connectionObject)->srcAddress;
-  }
+}
 
-  int ConnectionGetSocket(ConnectionObject_t connectionObject)
-  {
-	  return ((Connection_t*) connectionObject)->socketFd;
-  }
+struct sockaddr_in* ConnectionGetAddress(ConnectionObject_t connectionObject)
+{
+  return &((Connection_t*) connectionObject)->srcAddress;
+}
+
+int ConnectionGetSocket(ConnectionObject_t connectionObject)
+{
+  return ((Connection_t*) connectionObject)->socketFd;
+}
 
   char* ConnectionGetUserName(ConnectionObject_t connectionObject)
   {

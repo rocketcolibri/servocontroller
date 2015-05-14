@@ -1,4 +1,5 @@
-
+LIBS = -lrt
+CFLAGS = -g
 include json-c/Makefile
 
 all: servocontroller

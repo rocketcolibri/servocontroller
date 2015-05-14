@@ -1,8 +1,5 @@
 #!/bin/sh
 
-# copy a patched version of the minunit header to include folder
-sudo cp minunit.h /usr/local/include
-
 # ServoBlaster
 cd ../ServoBlaster
 make clean all
@@ -12,7 +9,7 @@ cd ../RtspServer
 make clean all
 
 # ServoController
-cd ../Debug_Rpi
+cd ..
 make clean all
-cd ../Raspian_Install
 
+cd Raspian_Install

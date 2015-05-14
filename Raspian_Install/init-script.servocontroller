@@ -6,27 +6,27 @@
 # Should-Start:
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Start/stop ServoContoller
-# Description:       This script starts/stops ServoController
+# Short-Description: Start/stop servosontoller
+# Description:       This script starts/stops servosontroller
 ### END INIT INFO
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 . /lib/init/vars.sh
 
-OPTS=""
+OPTS="-s rpi"
 
 res=0
 
 case "$1" in
   start)
-	/usr/local/sbin/ServoController $OPTS &
+	/usr/local/sbin/servocontroller $OPTS &
 	;;
   restart|reload|force-reload)
 	killall ServoController
-	/usr/local/sbin/ServoController $OPTS >/dev/null
+	/usr/local/sbin/servocontroller $OPTS >/dev/null
 	;;
   stop)
-	killall ServoController
+	killall servocontroller
 	;;
   *)
 	echo "Usage:  servocontroller [start|stop]" >&2

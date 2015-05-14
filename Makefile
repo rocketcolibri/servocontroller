@@ -2,6 +2,8 @@ LIBS = -lrt
 CFLAGS = -g
 include json-c/Makefile
 
+.PHONY: all install uninstall
+
 all: servocontroller
 
 OBJ = CommandLineArguments.o \
@@ -47,4 +49,21 @@ clean:
 	rm -f $(LIBJSON_C_DIR)/*.o
 	rm -f base/*.o
 	rm -f servocontroller
+
+
+install: servocontroller
+	[ "`id -u`" = "0" ] || { echo "Must be run as root"; exit 1; }
+	cp -f servocontroller /usr/local/sbin
+	cp -f Raspian_Install/init-script.servocontroller /etc/init.d/servocontroller
+	chmod 755 /etc/init.d/servocontroller
+	update-rc.d servocontroller defaults 92 08
+	/etc/init.d/servocontroller start
+
+uninstall:
+	[ "`id -u`" = "0" ] || { echo "Must be run as root"; exit 1; }
+	[ -e /etc/init.d/servocontroller ] && /etc/init.d/servocontroller stop || :
+	update-rc.d servocontroller remove
+	rm -f /usr/local/sbin/servocontroller
+	rm -f /etc/init.d/servocontroller
+
 

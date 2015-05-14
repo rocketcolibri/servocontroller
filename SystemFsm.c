@@ -97,7 +97,7 @@ static void ExecuteEvent(SystemFsmObject_t obj,
 	DBG_ASSERT(obj);
 	System_t *this = (System_t *)obj;
 
-	static const char* statesStr[] = { "SYS_IDLE", "SYS_CONTRLLING" };
+	static const char* statesStr[] = { "SYS_IDLE", "SYS_CONTROLLING" };
 	static const char* eventsStr[] = { "TRANSITION_ACTIVE", "TRANSITION_PASSIV"};
 
 	System_State_t currentState = this->state;
@@ -116,7 +116,7 @@ static void ExecuteEvent(SystemFsmObject_t obj,
 
 	if(this->state != newState)
 	{
-		TRC_Log_Print(TRC_log, "System State machine: event %s initiates state change from %s to %s", eventsStr[event], statesStr[this->state], statesStr[newState]);
+		DBG_LOG_ENTRY_FMT("System: event %s: state %s to %s", eventsStr[event], statesStr[this->state], statesStr[newState]);
 		this->state = newState;
 	}
 }

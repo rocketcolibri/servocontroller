@@ -27,24 +27,24 @@
 void ServoDriverMockSetServos(UINT32 servoc, UINT32 *servov)
 {
 	UINT s=0;
-	printf("\n");
+	printf("\rServo Position:");
 	for(s=0; s < MAX_SERVOS; s++)
 	{
-		fprintf(stderr, "servo:%d=%d", s, servov[s]);
+		printf("%d=%-4d ", s, servov[s]);
 	}
 }
 
 extern void ServoDriverMockStoreFailsafePosition(UINT32 servoc, UINT32 *servov)
 {
-  UINT s=0;
-  printf("\nset failsafe");
-  for(s=0; s < MAX_SERVOS; s++)
-  {
-    fprintf(stderr, "servo:%d=%d", s, servov[s]);
-  }
+//  UINT s=0;
+//  printf("\nset failsafe");
+//  for(s=0; s < MAX_SERVOS; s++)
+//  {
+//    fprintf(stderr, "servo:%d=%d", s, servov[s]);
+//  }
 }
 
 extern void ServoDriverMockSetFailsafe()
 {
-  fprintf(stderr, "set failsafe");
+	DBG_LOG_ENTRY_FMT("Set setvos to failsafe poistion");
 }

@@ -149,9 +149,8 @@ static void ExecuteEvent(ConnectionFsmObject_t obj,
 	DBG_ASSERT(obj);
 	ConnectionFsm_t *this = (ConnectionFsm_t *)obj;
 
-	//static const char* statesStr[] = { "CONN_IDENTIFIED", "CONN_ACTIVE" };
-	//static const char* eventsStr[] = { "RECV_HELLO_CMD", "RECV_CDC_CMD", "TIMEOUT"};
-
+	static const char* statesStr[CONN_NOF_STATE] = {"CONN_IDLE", "CONN_IDENTIFIED", "CONN_ACTIVE", "CONN_FAILSAFE"};
+	static const char* eventsStr[CONN_NOF_EVENT] = { "EVENT_HELLO_CMD_RECV", "EVENT_CDC_CMD_RECV", "CONN_EVENT_TIMEOUT", "CONN_EVENT_PROTO_IVALID_CMD" };
 	Connection_State_t currentState = this->state;
 
 	// get new state
@@ -174,7 +173,7 @@ static void ExecuteEvent(ConnectionFsmObject_t obj,
 
 	if(this->state != newState)
 	{
-		//TRC_Log_Print(TRC_log, "System State machine: event %s initiates state change from %s to %s", eventsStr[event], statesStr[this->state], statesStr[newState]);
+		DBG_LOG_ENTRY_FMT("Connection: event %s: state %s to %s", eventsStr[event], statesStr[this->state], statesStr[newState]);
 		this->state = newState;
 	}
 }

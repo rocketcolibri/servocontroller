@@ -6,6 +6,7 @@
  */
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -33,12 +34,15 @@
 #include "MessageSinkCdc.h"
 
 #define MAX_TIMEOUT_TIME 3
+#define MAX_SRC_ADDR_NAME_LEN 512
 
 typedef struct ConnectionContainer ConnectionContainer_t;
 
 typedef struct Connection
 {
-  struct sockaddr_in srcAddress;
+  struct sockaddr srcAddress;
+  int srcAddressLen;
+  char srcAddressName[MAX_SRC_ADDR_NAME_LEN];
   int socketFd;
   char *pUserName;
   UINT32 lastSequence;
@@ -214,7 +218,7 @@ static void A6_SetServoToFailsafe(ConnectionFsmObject_t obj)
 }
 
 ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnectionObject,
-      const struct sockaddr_in *pSrcAddr, const int socketFd,  UINT8 hTrcSocket)
+      const struct sockaddr *pSrcAddr, int saLen,  const int socketFd,  UINT8 hTrcSocket)
 {
     DBG_ASSERT(containerConnectionObject);
     DBG_ASSERT(pSrcAddr);
@@ -222,6 +226,11 @@ ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConn
     bzero(this, sizeof(Connection_t));
     this->connectionContainer = containerConnectionObject;
     this->srcAddress = *pSrcAddr;
+    this->srcAddressLen = saLen;
+    if(0 == getnameinfo(pSrcAddr, saLen, this->srcAddressName, sizeof(this->srcAddressName), NULL, 0, NI_NUMERICHOST))
+    {
+    	DBG_MAKE_ENTRY(FALSE);
+    }
     this->socketFd = socketFd;
     this->hTrc = hTrcSocket; // inherits the trace handle from the socket
     this->hConnectionTimeoutPoll = Reactor_AddReadFd(TIMERFD_Create(1000 * 1000),
@@ -246,10 +255,21 @@ void DeleteConnection(ConnectionObject_t *pConn)
 	 free(pConn);
 }
 
-struct sockaddr_in* ConnectionGetAddress(ConnectionObject_t connectionObject)
+struct sockaddr* ConnectionGetAddress(ConnectionObject_t connectionObject)
 {
   return &((Connection_t*) connectionObject)->srcAddress;
 }
+
+int ConnectionGetAddressLen(ConnectionObject_t connectionObject)
+{
+  return ((Connection_t*) connectionObject)->srcAddressLen;
+}
+
+const char* ConnectionGetAddressName(ConnectionObject_t connectionObject)
+{
+  return ((Connection_t*) connectionObject)->srcAddressName;
+}
+
 
 int ConnectionGetSocket(ConnectionObject_t connectionObject)
 {

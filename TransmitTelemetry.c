@@ -41,11 +41,11 @@ typedef struct
 	LINKLIST *hTelemetrySource;
 } TransmitTelemetry_t;
 
-static struct json_object* GetJsonUserAndIp(const char *pUser, struct sockaddr_in* ipAddress)
+static struct json_object* GetJsonUserAndIp(const char *pUser, const char* ipAddress)
 {
 	json_object * jobj = json_object_new_object();
 	json_object_object_add(jobj, "user", json_object_new_string( pUser ? pUser : ""));
-	json_object_object_add(jobj, "ip", json_object_new_string( inet_ntoa (ipAddress->sin_addr)));
+	json_object_object_add(jobj, "ip", json_object_new_string( ipAddress));
 	return jobj;
 }
 
@@ -59,7 +59,7 @@ static char * GetJsonTrasmitTelemetryMsg(TransmitTelemetry_t *this, int sequence
 	 {
 		 json_object_object_add(jobj, "activeip",
 			 GetJsonUserAndIp( ConnectionGetUserName(activeConnection),
-					 	 	   ConnectionGetAddress(activeConnection)));
+					 	 	   ConnectionGetAddressName(activeConnection)));
 	 }
 	  json_object *jarray = json_object_new_array();
 	  void addConnectionToArray(ConnectionObject_t connection)
@@ -68,7 +68,7 @@ static char * GetJsonTrasmitTelemetryMsg(TransmitTelemetry_t *this, int sequence
 		  {
 			  json_object_array_add(jarray,
 							  GetJsonUserAndIp( ConnectionGetUserName(connection),
-							  					ConnectionGetAddress(connection)));
+							  					ConnectionGetAddressName(connection)));
 		  }
 	  }
 	  avlWalkAscending(connections, addConnectionToArray);
@@ -96,7 +96,7 @@ static void SendToAll(TransmitTelemetry_t *this, AVLTREE connections, const char
 	  struct sockaddr_in dest;
 	  memcpy(&dest, ConnectionGetAddress(connection), sizeof(struct sockaddr_in));
 	  dest.sin_port = htons(30001);
-	  TRC_INFO(this->hTrc, "\nactiveip: %s (%s): %s", ConnectionGetUserName(connection), inet_ntoa(ConnectionGetAddress(connection)->sin_addr), pJsonMsg);
+	  TRC_INFO(this->hTrc, "\nactiveip: %s (%s): %s", ConnectionGetUserName(connection), ConnectionGetAddressName(connection), pJsonMsg);
 	  sendto(ConnectionGetSocket(connection), pJsonMsg, strlen(pJsonMsg), 0,
 			  (struct sockaddr*)&dest, sizeof(struct sockaddr_in));
   }

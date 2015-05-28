@@ -27,14 +27,16 @@ extern void HandleJsonMessage( ConnectionObject_t connectionObject, const char *
    * @param hTrcSocket to trace debug messages, all connections of the socket uses the same trace output
    */
 extern ConnectionObject_t NewConnection(const ConnectionContainerObject_t containerConnection,
-		const struct sockaddr_in *pSrcAddr, const int socketFd, UINT8 hTrcSocket);
+		const struct sockaddr *pSrcAddr, int salen, const int socketFd, UINT8 hTrcSocket);
 
 /**
  * Delete a connection object
  */
 
 // getter
-extern struct sockaddr_in* ConnectionGetAddress(ConnectionObject_t connectionObject);
+extern struct sockaddr* ConnectionGetAddress(ConnectionObject_t connectionObject);
+extern int ConnectionGetAddressLen(ConnectionObject_t connectionObject);
+extern const char* ConnectionGetAddressName(ConnectionObject_t connectionObject);
 extern int ConnectionGetSocket(ConnectionObject_t connectionObject);
 extern char* ConnectionGetUserName(ConnectionObject_t connectionObject);
 extern void DeleteConnection(ConnectionObject_t *pConn);

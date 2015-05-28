@@ -24,21 +24,21 @@ extern void DeleteConnectionContainer(ConnectionContainerObject_t connectionCont
  * @param connectionContainerObject, this
  * @param pNewSrcAddr, address of the connection that becomes active
  */
-extern BOOL ConnectionContainerHandover(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pNewSrcAddr);
+extern BOOL ConnectionContainerHandover(ConnectionContainerObject_t connectionContainerObject, struct sockaddr *pNewSrcAddr);
 
 /**
  * Find a connection in the connection container.
  * @param connectionContainerObject, this
  * @param pSrcAddr, connection to search for
  */
-extern ConnectionObject_t ConnectionContainerFindConnection(ConnectionContainerObject_t connectionContainerObject, struct sockaddr_in *pSrcAddr);
+extern ConnectionObject_t ConnectionContainerFindConnection(ConnectionContainerObject_t connectionContainerObject, struct sockaddr *pSrcAddr);
 
 /**
  * Add a connection to the connection container.
  * @param connectionContainerObject, this
  * @param pSrcAddr, connection to be added
  */
-extern void ConnectionContainerAddConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct sockaddr_in *pSrcAddr);
+extern void ConnectionContainerAddConnection(ConnectionContainerObject_t connectionContainerObject, ConnectionObject_t connectionObject, struct  sockaddr *pSrcAddr);
 
 /**
  * Remove a connection from the connection container.
